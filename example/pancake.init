@@ -1,0 +1,6 @@
+puts "Initializing the aplication"
+require File.join(File.dirname(__FILE__), "my_app")
+
+MyApp.root = File.expand_path(File.join(File.dirname(__FILE__)))
+
+MyApp.initialize_stack
