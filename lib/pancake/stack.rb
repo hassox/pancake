@@ -7,6 +7,16 @@ module Pancake
       
       def initialize_stack
         raise "Application root not set" if root.nil?
+        # Here lies the application bootloader
+        
+        # Load any mounts this app has
+        Dir["#{root}/mounts/*/pancake.init"].each{|f| load f}
+        
+        # Load the App
+        Dir["#{root}/app/**/*.rb"].each{|f| require f}
+        
+        # Load the router
+        require "#{root}/config/router"
       end # initiailze stack
       
       def stack

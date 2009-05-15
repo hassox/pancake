@@ -11,7 +11,18 @@ module Pancake
       # initialize the application
       load "#{root}/pancake.init"
       
-      Pancake::Router
+      # Build Pancake
+      Rack::Builder.new do
+        run Pancake::Router
+      end
+    end
+    
+    def mount(&block)
+      Pancake::Router.prepare(&block)
+    end
+    
+    def env
+      ENV['RACK_ENV'] ||= "development"
     end
     
   end # self
