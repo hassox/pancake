@@ -1,3 +1,0 @@
-== pancake
-
-A gem that provides...
