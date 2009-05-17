@@ -1,6 +1,7 @@
 module Pancake
   class Stack
-    extend  Rack::Router::Routable
+    extend Rack::Router::Routable
+    extend Pancake::Middleware
     
     class << self
       attr_accessor :root
@@ -18,13 +19,6 @@ module Pancake
         # Load the router
         require "#{root}/config/router"
       end # initiailze stack
-      
-      def stack
-        the_app = self
-        Rack::Builder.new do
-          run the_app
-        end
-      end # setup
     end # self
       
     def this_stack
