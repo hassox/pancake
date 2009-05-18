@@ -3,6 +3,8 @@ module Pancake
   class << self
     attr_accessor :root
     
+    # Start Pancake.  This results in a rack application to pass to the 
+    # rackup file
     def start(opts)
       puts "Starting Pancake"
       raise "You must specify a root directory for pancake" unless opts[:root]

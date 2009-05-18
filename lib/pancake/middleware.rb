@@ -18,7 +18,7 @@ module Pancake
     
     # use this to prepend middleware to the stack
     # :api: public
-    def use_prepend(middleware, opts = {}, &block)
+    def prepend_use(middleware, opts = {}, &block)
       @middlewares.unshift SomeMiddleware.new(middleware, opts, &block)
     end
     

@@ -69,7 +69,7 @@ describe "Pancake::Middleware" do
     FooApp.class_eval do
       use GeneralMiddleware
       use FooMiddle
-      use_prepend BarMiddle
+      prepend_use BarMiddle
     end
     get "/"
     $current_env["pancake.spec.captures"].should == ["BarMiddle", "GeneralMiddleware", "FooMiddle"]  
