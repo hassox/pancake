@@ -37,7 +37,6 @@ module Pancake
         # :api: private
         def self.run?(conditions = {}) 
           opts = options
-          puts opts.inspect
           if conditions.keys.include?(:only)
             return conditions[:only].all?{|k,v| opts[k] == v}
           end
@@ -89,8 +88,7 @@ module Pancake
         unless conditions.keys.include?(:only) || conditions.keys.include?(:except)
           conditions[:only] = {:level => :default}
         end
-        puts conditions.inspect
-        each(conditions) do |name, bl|
+3        each(conditions) do |name, bl|
           bl.call(stack, :foo)
         end
       end
