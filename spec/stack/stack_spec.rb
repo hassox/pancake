@@ -9,6 +9,7 @@ describe "Pancake::Stack" do
   end
   
   describe "roots" do
+
     it "should provide access to setting the roots" do
       FooStack.roots.should be_empty
       FooStack.roots << File.expand_path(File.dirname(__FILE__))
@@ -31,8 +32,8 @@ describe "Pancake::Stack" do
     it "should iterate over the roots in the direction they're added" do
       FooStack.roots.should be_empty
       FooStack.roots << Pancake.get_root(__FILE__)
-      FooStack.roots << "/tmp"
-      FooStack.roots.map{|f| f}.should == [Pancake.get_root(__FILE__), "/tmp"]
+      FooStack.roots << "/foo"
+      FooStack.roots.map{|f| f}.should == [Pancake.get_root(__FILE__), "/foo"]
     end
   end # roots
   

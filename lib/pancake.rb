@@ -7,8 +7,8 @@ require 'rack/router'
   middleware 
   router
   stack/stack
+  stack/configuration
   stack/app
-  stack/roots
   stack/inheritance
   stack/bootloaders/base
 ).each do |file|

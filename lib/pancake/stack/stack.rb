@@ -24,6 +24,11 @@ module Pancake
       def initialized?
         !!@initialized
       end
+      
+      def roots
+        configuration.roots
+      end
+      
     end # self
   
   

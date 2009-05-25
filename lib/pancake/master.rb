@@ -27,5 +27,11 @@ module Pancake
       ENV['RACK_ENV'] ||= "development"
     end
     
+    # A helper method to get the expanded directory name of a __FILE__
+    # :api: public
+    def get_root(file)
+      File.expand_path(File.dirname(file))
+    end
+    
   end # self
 end # Pancake

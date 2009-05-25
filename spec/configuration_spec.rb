@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/spec_helper'
-require 'ruby-debug'
 
 describe "Pancake::Configuration" do
   
@@ -155,5 +154,15 @@ describe "Pancake::Configuration" do
       ci.bar = :foobar
       ci.bar.should == :foobar      
     end
+    
+    it "should not cache nil when accessing before defaults are set" do
+      c = @Conf.new
+      c.foo.should be_nil
+      @Conf.default :foo, :bar
+      c.foo.should == :bar
+      c.foo = :baz
+      c.foo.should == :baz
+    end
+    
   end
 end

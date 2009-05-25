@@ -4,39 +4,74 @@ module Pancake
     class Base      
       # Set a default on the the configuartion
       class << self
+        
+        # Set a default for this configuration class
+        # Provide a field/method name and a value to set this to.  
+        # If you don't provide a value, and instead provide a block, then 
+        # a proc will be called lazily when requested.
+        # 
+        # Example
+        #   config_klass = Pancake::Configuration.make
+        #   config_class.default :foo, :bar, "This foo is a bar"
+        #   config = config_class.new
+        #
+        # :api: public 
         def default(meth, *args, &block)
           value, description = args
-          value = block if block
+          if block
+            description = value
+            value = block
+          end
           defaults[meth][:value]       = value
           defaults[meth][:description] = description || ""
         end
-      
+        
+        # Provides access to any defined defaults.  This allows for introspection of any default
+        # values setup in the configuration as a hash
+        #
+        # :api: public
         def defaults
           @defaults ||= Hash.new{|h,k| h[k] = {:value => nil, :description => ""}}
           @defaults
         end
         
+        # Provides aaccess to the description for a default setting
+        # 
+        # :api: public
         def description_for(field)
-          defaults[field][:description]
+          if defaults.keys.include?(field)
+            defaults[field][:description]
+          else
+            ""
+          end
         end
       end
       
-      def singleton_class
+      # access to the singleton class
+      # :api: private
+      def singleton_class # :nodoc:
         class << self; self; end
       end
       
+      # Access to the configuration defaults via the instance.  Defers to the 
+      # clas smethod for defaults
+      # :api: public
       def defaults
         self.class.defaults
       end
       
+      # Access to the class descritpion for defaults
+      # :api: public
       def description_for(field)
         self.class.description_for(field)
       end
       
+      # Access to the currently set values for this configuration object
+      # :api: public
       def values
         @values ||= {}
       end
-      
+          
       private
       def method_missing(name, *args)
         if name.to_s =~ /(.*?)=$/
@@ -48,15 +83,19 @@ module Pancake
             when Proc
               instance_eval(&defaults[name][:value])
             else
-              set_actual_value(name, defaults[name][:value])
+              val = defaults[name][:value]
+              val = val.dup rescue val
+              set_actual_value(name, val)
             end
           else
-            set_actual_value(name, nil)
+            nil
           end            
         end
       end
       
-      def set_actual_value(name, val)
+      # Caches the values via a method rather than going through method_missing
+      # :api: private
+      def set_actual_value(name, val) # :nodoc:
         singleton_class.class_eval <<-RUBY
           def #{name}=(val)
             values[#{name.inspect}] = val
@@ -74,11 +113,16 @@ module Pancake
     class << self
       
       # Make a new configuration class
+      # :api: public
       def make(&block)
         Class.new(Pancake::Configuration::Base, &block)
       end
       
     end # self
-    
   end # Configuration
+  
+  def self.configuration
+    @configuration ||= Configuration.make.new
+  end
+  
 end # Pancake
