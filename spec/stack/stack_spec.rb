@@ -38,12 +38,13 @@ describe "Pancake::Stack" do
   
   describe "initialize stack" do
     it "should mark a stack as initialized once it has called the initialize_stack method" do
+      FooStack.roots << Pancake.get_root(__FILE__)
       FooStack.initialize_stack
       FooStack.should be_initialized
     end
     
     it "should not be initialized when it has not called initialize_stack" do
       FooStack.should_not be_initialized
-    end
+    end    
   end
 end
