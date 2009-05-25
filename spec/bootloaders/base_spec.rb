@@ -23,7 +23,7 @@ describe "Pancake::Stack::BootLoader" do
   
   it "should provide a bootloader instance" do
     FooStack::BootLoader.add(:my_initializer){|stack, config| def run!; :foo; end}
-    FooStack::BootLoader[:my_initializer].should inherit_from(Pancake::Stack::BootLoaderMixin::Base)
+    FooStack::BootLoader[:my_initializer].should inherit_from(Pancake::BootLoaderMixin::Base)
   end
   
   it "should allow me to add multiple boot loaders" do

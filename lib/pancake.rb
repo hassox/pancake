@@ -4,13 +4,14 @@ require 'rack/router'
 %w(
   master
   configuration
+  bootloaders
   middleware 
   router
   stack/stack
   stack/configuration
   stack/app
   stack/inheritance
-  stack/bootloaders/base
+  stack/bootloader
 ).each do |file|
   path = File.join(File.dirname(__FILE__), "pancake")
   require File.join(path, file)
