@@ -64,4 +64,41 @@ describe "Pancake::Stack::BootLoader" do
     $captures.should == [:foo, :paz, :baz, :fred, :barney, :bar]
     $captures.should == FooStack::BootLoader.map{|name, bootloader| name}
   end
+  
+  describe "types" do
+  
+    it "should run bootloaders marked as :init" do
+      FooStack::BootLoader.add(:bar, :level => :init ){|s,c| def run!; $captures << [:bar, :init   ]; end}
+      FooStack::BootLoader.add(:baz, :level => :init ){|s,c| def run!; $captures << [:baz, :init   ]; end}
+      FooStack::BootLoader.add(:paz, :level => :init, :before => :baz){|s,c| def run!; $captures << [:paz, :init]; end}
+      
+      FooStack::BootLoader.run!(:only => {:level => :init})
+      $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init]]
+    end
+    
+    it "should run default level bootloaders without running :init bootloaders" do
+      FooStack::BootLoader.add(:foo                  ){|s,c| def run!; $captures << [:foo, :default]; end}
+      FooStack::BootLoader.add(:bar, :level => :init ){|s,c| def run!; $captures << [:bar, :init   ]; end}
+      FooStack::BootLoader.add(:baz, :level => :init ){|s,c| def run!; $captures << [:baz, :init   ]; end}
+      FooStack::BootLoader.add(:paz, :level => :init, :before => :baz){|s,c| def run!; $captures << [:paz, :init]; end}
+      
+      FooStack::BootLoader.run!
+      $captures.should == [[:foo, :default]]
+    end
+    
+    it "should run init or then default level bootloaders individually" do
+      FooStack::BootLoader.add(:foo                  ){|s,c| def run!; $captures << [:foo, :default]; end}
+      FooStack::BootLoader.add(:grh                  ){|s,c| def run!; $captures << [:grh, :default]; end} 
+      FooStack::BootLoader.add(:bar, :level => :init ){|s,c| def run!; $captures << [:bar, :init   ]; end}
+      FooStack::BootLoader.add(:ptf, :before => :grh ){|s,c| def run!; $captures << [:ptf, :default]; end} 
+      FooStack::BootLoader.add(:baz, :level => :init ){|s,c| def run!; $captures << [:baz, :init   ]; end}
+      FooStack::BootLoader.add(:paz, :level => :init, :before => :baz){|s,c| def run!; $captures << [:paz, :init]; end}
+      
+      FooStack::BootLoader.run!
+      $captures.should == [[:foo, :default], [:ptf, :default], [:grh, :default]]
+      $captures = []
+      FooStack::BootLoader.run!(:only => {:level => :init})
+      $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init]]
+    end
+  end
 end

@@ -6,6 +6,21 @@ module Pancake
         # :api: :public
         attr_accessor :stack, :config
         
+        # Sets options for the bootloder
+        # By including conditions in the bootloader when you declare it
+        # You can selectively run bootloaders later
+        # :api: private
+        def self.options=(opts={}) # :nodoc:
+          @options = opts
+          @options[:level] ||= :default
+        end
+        
+        # Provides access to the bootloader options
+        # :api: private
+        def self.options # :nodoc:
+          @options ||= {}
+        end
+        
         def initialize(stack, config)
           @stack, @config = stack, config
         end
@@ -14,7 +29,23 @@ module Pancake
         # :api: private
         def self.call(stack, config)
           new(stack, config).run!
-        end        
+        end
+        
+        # Checks the conditions with the options of the bootloader
+        # To see if this one should be run
+        # Only the central bootloaders with the conditions will be checked
+        # :api: private
+        def self.run?(conditions = {}) 
+          opts = options
+          puts opts.inspect
+          if conditions.keys.include?(:only)
+            return conditions[:only].all?{|k,v| opts[k] == v}
+          end
+          if conditions.keys.include?(:except)
+            return conditions[:except].all?{|k,v| opts[k] != v}
+          end
+          true
+        end
       end
       
       # Provides access to an individual bootloader
@@ -37,23 +68,29 @@ module Pancake
       def add(name, opts = {}, &block)
         _bootloaders[name] = Class.new(Pancake::Stack::BootLoaderMixin::Base, &block)
         raise "You must declare a #run! method on your bootloader" unless _bootloaders[name].method_defined?(:run!)
+        before = opts.delete(:before)
+        after  = opts.delete(:after)
         
         # If there are no before or after keys, add it to the central bootloaders
-        if opts[:before]
-          _bootloader_map[opts[:before]][:before] << name
-        elsif opts[:after]
-          _bootloader_map[opts[:after]][:after] << name
+        if before
+          _bootloader_map[before][:before] << name
+        elsif after
+          _bootloader_map[after][:after] << name
         else
           _central_bootloaders << name
-        end         
-        
+        end
+        _bootloaders[name].options = opts
         _bootloaders[name]
       end      
       
       # Runs the bootloaders in order
       # :api: private 
-      def run! # :nodoc: 
-        each do |name, bl|
+      def run!(conditions = {}) # :nodoc:
+        unless conditions.keys.include?(:only) || conditions.keys.include?(:except)
+          conditions[:only] = {:level => :default}
+        end
+        puts conditions.inspect
+        each(conditions) do |name, bl|
           bl.call(stack, :foo)
         end
       end
@@ -86,8 +123,8 @@ module Pancake
       #   end
       # 
       # :api: public
-      def each
-        _map_bootloaders(_central_bootloaders).each do |n|
+      def each(conditions = {})
+        _map_bootloaders(_central_bootloaders, conditions).each do |n|
           yield n, _bootloaders[n]
         end
       end
@@ -114,13 +151,16 @@ module Pancake
       
       # Map out the bootloaders by name to run.
       # :api: private
-      def _map_bootloaders(names)
-        names.map do |name|
-          r = []
-          r << _map_bootloaders(_bootloader_map[name][:before])
-          r << name
-          r << _map_bootloaders(_bootloader_map[name][:after])
-        end.flatten
+      def _map_bootloaders(*names)
+        conditions = Hash === names.last ? names.pop : {}
+        names.flatten.map do |name|
+          if _bootloaders[name].run?(conditions)
+            r = []
+            r << _map_bootloaders(_bootloader_map[name][:before])
+            r << name
+            r << _map_bootloaders(_bootloader_map[name][:after])
+          end
+        end.flatten.compact
       end
 
     end # BootLoaders
