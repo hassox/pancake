@@ -3,15 +3,15 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Pancake::Middleware" do
   include Rack::Test::Methods
   
-  def app
-    FooApp.stack
-  end
-  
-  def default_env
-    Rack::MockRequest.env_for
-  end
-  
   before(:each) do
+    def app
+      FooApp.stack
+    end
+
+    def default_env
+      Rack::MockRequest.env_for
+    end
+
     $current_env = {}
     Object.class_eval {remove_const("GeneralMiddleware") if defined?(GeneralMiddleware)}
     Object.class_eval {remove_const("FooApp") if defined?(FooApp)}
@@ -24,7 +24,7 @@ describe "Pancake::Middleware" do
       
       def mark_env(env)
         env["pancake.spec.captures"] ||= []
-        env["pancake.spec.captures"] << self.class.name
+        env["pancake.spec.captures"] << self.class
       end
       
       def call(env)
@@ -47,7 +47,7 @@ describe "Pancake::Middleware" do
       use GeneralMiddleware
     end
     get "/"
-    $current_env["pancake.spec.captures"].should include("GeneralMiddleware")
+    $current_env["pancake.spec.captures"].should include(GeneralMiddleware)
   end
   
   it "should allow me to add multiple middlewares" do
@@ -57,7 +57,7 @@ describe "Pancake::Middleware" do
       use FooMiddle
     end
     get "/"
-    %w(GeneralMiddleware FooMiddle).each do |m|
+    [GeneralMiddleware, FooMiddle].each do |m|
       $current_env["pancake.spec.captures"].should include(m)
     end
   end
@@ -72,13 +72,13 @@ describe "Pancake::Middleware" do
       prepend_use BarMiddle
     end
     get "/"
-    $current_env["pancake.spec.captures"].should == ["BarMiddle", "GeneralMiddleware", "FooMiddle"]  
+    $current_env["pancake.spec.captures"].should == [BarMiddle, GeneralMiddleware, FooMiddle]  
   end
   
   it "should allow you to add middleware from outside the class" do
     FooApp.use GeneralMiddleware
     get "/"
-    $current_env["pancake.spec.captures"].should == ["GeneralMiddleware"]
+    $current_env["pancake.spec.captures"].should == [GeneralMiddleware]
   end
   
 end

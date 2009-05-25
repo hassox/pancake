@@ -4,7 +4,6 @@ module Pancake
     extend Pancake::Middleware
     
     class << self
-      attr_accessor :root
       
       def initialize_stack
         raise "Application root not set" if root.nil?

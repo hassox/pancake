@@ -1,7 +1,6 @@
 # This file initializes this application and any mounts it may have
 require File.join(File.dirname(__FILE__), "stack")
 
-MyApp::Stack.root = File.expand_path(File.join(File.dirname(__FILE__)))
+MyApp::Stack.roots << Pancake.get_root(__FILE__)
 
 MyApp::Stack.initialize_stack
-
