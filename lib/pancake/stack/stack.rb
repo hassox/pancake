@@ -6,7 +6,8 @@ module Pancake
     class << self
       
       def initialize_stack
-        raise "Application root not set" if root.nil?
+        puts roots.inspect
+        raise "Application root not set" if roots.empty?
         # Here lies the application bootloader
         
         # Load any mounts this app has
