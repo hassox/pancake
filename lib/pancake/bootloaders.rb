@@ -1,3 +1,4 @@
+require 'set'
 module Pancake
   module BootLoaderMixin
     include Enumerable
@@ -19,6 +20,9 @@ module Pancake
       def self.options # :nodoc:
         @options ||= {}
       end
+      
+      def self.proc=(prc); @proc = prc; end
+      def self.proc; @proc; end
       
       def initialize(stack, config)
         @stack, @config = stack, config
@@ -65,9 +69,15 @@ module Pancake
     # :api: public
     def add(name, opts = {}, &block)
       _bootloaders[name] = Class.new(Pancake::BootLoaderMixin::Base, &block)
+      _bootloaders[name].proc = block
       raise "You must declare a #run! method on your bootloader" unless _bootloaders[name].method_defined?(:run!)
       before = opts[:before]
       after  = opts[:after]
+      
+      if opts[:level]
+        levels << opts[:level]
+        levels.uniq!
+      end
       
       # If there are no before or after keys, add it to the central bootloaders
       if before
@@ -75,7 +85,7 @@ module Pancake
       elsif after
         _bootloader_map[after][:after] << name
       else
-        _central_bootloaders << name
+        _central_bootloaders << name unless _central_bootloaders.include?(name)
       end
       _bootloaders[name].options = opts
       _bootloaders[name]
@@ -112,6 +122,16 @@ module Pancake
       _bootloader_map.clear
     end
     
+    # Copies bootloaders from another bootloader to this one
+    # :api: public
+    def copy_to(other)
+      levels.each do |level|
+        each(:only => {:level => level}) do |n, bl|
+          other.add(n, bl.options, &bl.proc)
+        end
+      end
+    end
+    
     # Yields each bootloader in order along with it's name
     # 
     # Example
@@ -125,8 +145,7 @@ module Pancake
         yield n, _bootloaders[n]
       end
     end
-    
-    private
+  
     # Tracks the central bootloaders.  The central bootloaders are like the spine of the bootloader system
     # All other bootloaders hang off either before or after the central bootloaders
     # :api: private
@@ -146,6 +165,7 @@ module Pancake
       @_bootloaders ||= {}
     end
     
+    private
     # Map out the bootloaders by name to run.
     # :api: private
     def _map_bootloaders(*names)
@@ -158,6 +178,10 @@ module Pancake
           r << _map_bootloaders(_bootloader_map[name][:after])
         end
       end.flatten.compact
+    end
+    
+    def levels
+      @levels ||= [:default]
     end
 
   end # BootLoaders

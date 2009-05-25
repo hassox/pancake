@@ -50,6 +50,7 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader.add(:foo){|s,c| def run!; $captures << :foo; end}
     FooStack::BootLoader.add(:bar){|s,c| def run!; $captures << :bar; end}
     FooStack::BootLoader.add(:baz, :after => :foo){|s,c| def run!; $captures << :baz; end}
+    puts FooStack::BootLoader._bootloader_map
     FooStack::BootLoader.run!
     $captures.should == [:foo, :baz, :bar]
   end
@@ -65,7 +66,6 @@ describe "Pancake::Stack::BootLoader" do
     
     FooStack::BootLoader.run!
     $captures.should == [:foo, :paz, :baz, :fred, :barney, :bar]
-    $captures.should == FooStack::BootLoader.map{|name, bootloader| name}
   end
   
   describe "types" do
@@ -102,6 +102,14 @@ describe "Pancake::Stack::BootLoader" do
       $captures = []
       FooStack::BootLoader.run!(:only => {:level => :init})
       $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init]]
+    end
+    
+    it "should inherit from the default boot loaders" do
+      ::Pancake::Stack::DefaultBootLoader.add(:default_boot_loader_test){def run!; end}
+      puts ::Pancake::Stack::DefaultBootLoader.map{|n,bl| n}.inspect
+      class ::Bario < Pancake::Stack; end
+      puts Bario::BootLoader.map{|n,bl| n}.inspect
+      Bario::BootLoader.map{|n,bl| n}.should include(:default_boot_loader_test)
     end
   end
 end

@@ -1,14 +1,20 @@
 module Pancake
   class Stack
+    # The default bootloader is where the stack default bootloaders are stored
+    # These are shared across all bootloaders
+    class DefaultBootLoader # :nodoc:
+      extend ::Pancake::BootLoaderMixin
+    end
     
     ## Add the bootloaders to the new application stack
     Pancake::Stack.on_inherit do |base|
       base.class_eval do
-        class BootLoader
+        class self::BootLoader
           extend ::Pancake::BootLoaderMixin
         end
-        BootLoader.stack = self
-        BootLoader.reset!
+        self::BootLoader.stack = self
+        self::BootLoader.reset!
+        Pancake::Stack::DefaultBootLoader.copy_to(self::BootLoader)      
       end
     end # Pancake::Stack.on_inherit
     
@@ -16,3 +22,20 @@ module Pancake
 end # Pancake
 
 #################### Define the bootloaders here #############################
+Pancake::Stack::DefaultBootLoader.add(:mount_applications, :level => :init) do
+  def run!
+    # Mount any stacks this stack may have in it.
+    stack.roots.each do |root|
+      Dir["#{root}/mounts/*/pancake.init"].each{|f| load f if File.exists?(f)}
+    end
+  end
+end
+
+Pancake::Stack::DefaultBootLoader.add(:mount_applications, :level => :init) do
+  def run!
+    # Mount any stacks this stack may have in it.
+    stack.roots.each do |root|
+      Dir["#{root}/mounts/*/pancake.init"].each{|f| load f if File.exists?(f)}
+    end
+  end
+end

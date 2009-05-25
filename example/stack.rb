@@ -1,4 +1,5 @@
 module MyApp
-  class Stack < Pancake::Stack    
+  class Stack < Pancake::Stack
+    
   end
 end

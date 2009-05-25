@@ -20,5 +20,5 @@ end
 
 module Pancake
   # A simple rack application 
-  OK_APP = lambda{|e| [200, {"Content-Type" => "text/plain"},"OK"]}
+  OK_APP = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
 end # Panckae
