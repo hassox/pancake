@@ -5,7 +5,7 @@ describe "Pancake::Middleware" do
   
   before(:each) do
     def app
-      FooApp.stack
+      ::FooApp.stack
     end
 
     def default_env
@@ -13,12 +13,12 @@ describe "Pancake::Middleware" do
     end
 
     $current_env = {}
-    Object.class_eval {remove_const("GeneralMiddleware") if defined?(GeneralMiddleware)}
-    Object.class_eval {remove_const("FooApp") if defined?(FooApp)}
-    Object.class_eval {remove_const("FooMiddle") if defined?(FooMiddle)}
-    Object.class_eval {remove_const("BarMiddle") if defined?(BarMiddle)}
+    Object.class_eval {remove_const("GeneralMiddleware") if defined?(::GeneralMiddleware)}
+    Object.class_eval {remove_const("FooApp") if defined?(::FooApp)}
+    Object.class_eval {remove_const("FooMiddle") if defined?(::FooMiddle)}
+    Object.class_eval {remove_const("BarMiddle") if defined?(::BarMiddle)}
 
-    class GeneralMiddleware
+    class ::GeneralMiddleware
       attr_accessor :app
       def initialize(app, opts={});@app = app; end
       
@@ -33,7 +33,7 @@ describe "Pancake::Middleware" do
       end
     end # GeneralMiddlware
     
-    class FooApp
+    class ::FooApp
       extend Pancake::Middleware
       def call(env)
         $current_env = env
@@ -51,7 +51,7 @@ describe "Pancake::Middleware" do
   end
   
   it "should allow me to add multiple middlewares" do
-    class FooMiddle < GeneralMiddleware; end
+    class ::FooMiddle < GeneralMiddleware; end
     FooApp.class_eval do
       use GeneralMiddleware
       use FooMiddle
@@ -63,8 +63,8 @@ describe "Pancake::Middleware" do
   end
   
   it "should prepend middlewares" do
-    class FooMiddle < GeneralMiddleware; end
-    class BarMiddle < GeneralMiddleware; end
+    class ::FooMiddle < GeneralMiddleware; end
+    class ::BarMiddle < GeneralMiddleware; end
     
     FooApp.class_eval do
       use GeneralMiddleware

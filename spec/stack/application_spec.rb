@@ -3,10 +3,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Pancake::Stack.new_app_instance" do
   
   before(:each) do
-    clear_constants("FooStack", "BarStack")
-    
-    class FooStack < Pancake::Stack
+    class ::FooStack < Pancake::Stack
     end
+  end
+  
+  after(:each) do
+    clear_constants(:FooStack)
   end
   
   it "should provide a new instance of the applciation" do
@@ -14,7 +16,7 @@ describe "Pancake::Stack.new_app_instance" do
   end
   
   it "should allow me to overwrite the new_app_instance for this stack" do
-    class BarStack < Pancake::Stack
+    class ::BarStack < Pancake::Stack
       def self.new_app_instance
         ::Pancake::OK_APP
       end

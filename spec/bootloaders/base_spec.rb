@@ -4,10 +4,13 @@ describe "Pancake::Stack::BootLoader" do
   
   before(:each) do
     $captures = []
-    clear_constants("FooStack")
     
-    class FooStack < Pancake::Stack
+    class ::FooStack < Pancake::Stack
     end
+  end
+  
+  after(:each) do
+    clear_constants(:FooStack)
   end
   
   it "should not add the bootloader without it having a run! method" do

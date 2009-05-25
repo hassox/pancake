@@ -5,9 +5,9 @@ module Pancake
     Pancake::Stack.on_inherit do |base|
       base.class_eval do
         class BootLoader
-          extend BootLoaderMixin
+          extend ::Pancake::BootLoaderMixin
         end
-        BootLoader.stack = base
+        BootLoader.stack = self
         BootLoader.reset!
       end
     end # Pancake::Stack.on_inherit

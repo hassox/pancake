@@ -3,10 +3,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "pancake stack configuration" do
   
   before(:each) do
-    clear_constants("FooStack", "BarStack")
-    
-    class FooStack < Pancake::Stack
+    class ::FooStack < Pancake::Stack
     end
+  end
+  
+  after(:each) do
+    clear_constants(:FooStack)
   end
   
   it "should provide access to the stack configuration" do

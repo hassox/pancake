@@ -1,10 +1,23 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Pancake::Stack inheritance" do
+  before(:all) do
+    $on_inherit_blocks = Pancake::Stack.on_inherit.dup
+  end
+  after(:all) do
+    Pancake::Stack.on_inherit.clear
+    $on_inherit_blocks.each do |blk|
+      Pancake::Stack.on_inherit(&blk)
+    end
+  end
+  
   before(:each) do
     $collector = []
-    clear_constants("FooStack")
     Pancake::Stack.on_inherit.clear
+  end
+  
+  after(:each) do
+    clear_constants(:FooStack)
   end
   
   it "should be able to add inheritance hooks" do
@@ -12,7 +25,7 @@ describe "Pancake::Stack inheritance" do
       $collector << base
     end
     
-    class FooStack < Pancake::Stack
+    class ::FooStack < Pancake::Stack
     end
     
     $collector.should == [FooStack]
@@ -22,7 +35,7 @@ describe "Pancake::Stack inheritance" do
     Pancake::Stack.on_inherit{|b| $collector << b}
     Pancake::Stack.on_inherit{|b| $collector << :foo}
     
-    class FooStack < Pancake::Stack
+    class ::FooStack < Pancake::Stack
     end
     
     $collector.should == [FooStack, :foo]
