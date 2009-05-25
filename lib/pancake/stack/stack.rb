@@ -3,7 +3,7 @@ module Pancake
     extend Rack::Router::Routable
     extend Pancake::Middleware
     
-    class << self      
+    class << self
       def initialize_stack
         raise "Application root not set" if roots.empty?
         # Here lies the application bootloader

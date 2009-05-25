@@ -36,6 +36,7 @@ module Pancake
       # :api: public
       def add(name, opts = {}, &block)
         _bootloaders[name] = Class.new(Pancake::Stack::BootLoaderMixin::Base, &block)
+        raise "You must declare a #run! method on your bootloader" unless _bootloaders[name].method_defined?(:run!)
         
         # If there are no before or after keys, add it to the central bootloaders
         if opts[:before]

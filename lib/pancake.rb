@@ -2,7 +2,8 @@ require 'rubygems'
 require 'rack/router'
 
 %w(
-  master 
+  master
+  configuration
   middleware 
   router
   stack/stack

@@ -12,7 +12,7 @@ describe "Pancake::Stack::BootLoader" do
   
   it "should not add the bootloader without it having a run! method" do
     lambda do
-      FooStack::BootLoader.add(:foo){|s,c| }
+      FooStack::BootLoader.add(:foo){|s,c| :here }
     end.should raise_error
   end
   
