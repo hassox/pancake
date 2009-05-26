@@ -5,6 +5,10 @@ module Pancake
     # :api: overwritable
     def self.new_app_instance
       self.new
-    end    
+    end
+    
+    def call(env)
+      Pancake::OK_APP.call(env)
+    end
   end # Pancake
 end # Pancake
