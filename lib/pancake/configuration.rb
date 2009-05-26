@@ -8,7 +8,7 @@ module Pancake
         # Copy down the defaults that are defined when this is inherited
         def inherited(base)
           defaults.each do |meth, val|
-            base.defaults[meth] = val
+            base.defaults[meth] ||= val
           end
         end
         

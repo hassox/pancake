@@ -24,7 +24,12 @@ end # Pancake
 Pancake::Stack.on_inherit do |base, parent|
   base.class_eval do
     class Configuration < parent::Configuration; end
+    parent::Configuration.defaults.each{|k,v| Configuration.defaults[k] = v}
   end
 end
 
-require File.join(File.dirname(__FILE__), "configuration", "roots")
+####################
+# Setup the default configuration for each stack
+class Pancake::Stack::Configuration
+  default :roots, [], "The various roots of this stack"
+end

@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rack/router'
-require 'extlib'
 
 %w(
   master
