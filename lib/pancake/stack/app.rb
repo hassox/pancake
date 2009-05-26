@@ -4,7 +4,7 @@ module Pancake
     # Ovewrite this to provide custom application initialization
     # :api: overwritable
     def self.new_app_instance
-      OK_APP 
+      self.new
     end    
   end # Pancake
 end # Pancake

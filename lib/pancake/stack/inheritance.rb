@@ -11,7 +11,17 @@ module Pancake
     # Call back any registed code on inhertied
     # :api: private
     def self.inherited(base)
-      on_inherit.each{|blk| blk.call(base)}
+      ::Pancake::Stack.on_inherit.each{|blk| blk.call(base, self)}
     end
   end # Stack
 end # Pancake
+
+
+## Add the inherit hooks to inherited classes
+Pancake::Stack.on_inherit do |base, parent|
+  base.class_eval do
+    def self.inherited(new_base)
+      ::Pancake::Stack.on_inherit.each{|blk| blk.call(new_base, self)}
+    end
+  end
+end

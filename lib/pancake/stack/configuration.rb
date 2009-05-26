@@ -1,7 +1,7 @@
 module Pancake
   class Stack
     
-    module ConfigurationDefaults
+    class Configuration < Pancake::Configuration::Base
       module ClassMethods; end
       module InstanceMethods; end
     end
@@ -13,25 +13,18 @@ module Pancake
     # 
     # :api: public
     def self.configuration(&block)
-      @configuration ||= ::Pancake.default_stack_configuration.new
+      @configuration ||= self::Configuration.new
       @configuration.class.class_eval(&block) if block
       @configuration        
     end
   end # Stack
-  
-  # Add extensions to the default stack configuration
-  # This will affect all stack configurations
-  # Provide it a block and it will open the default configurations 
-  # anonymous class and let you edit it before returning the configuration class
-  # 
-  # :api: public
-  def self.default_stack_configuration(&block)
-    @DefaultStackConfiguration ||= ::Pancake::Configuration.make
-    if block
-      @DefaultStackConfiguration.class_eval(&block)
-    end
-    @DefaultStackConfiguration
-  end # self.default_stack_configuration
 end # Pancake
+
+# When a stack is inherited, a new configuration is built that inherits from the parent configuration
+Pancake::Stack.on_inherit do |base, parent|
+  base.class_eval do
+    class Configuration < parent::Configuration; end
+  end
+end
 
 require File.join(File.dirname(__FILE__), "configuration", "roots")

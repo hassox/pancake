@@ -43,18 +43,10 @@ module Pancake
       stack = _middlewares.reverse.inject(app) do |app, m|
         m.middleware.new(app, m.opts)
       end
-      
       stack
             
       # Wrap the stack in the router
       ### HERE's WHERE WE END FOR THE NIGHT
-      
-      # Rack::Builder.new do
-      #   middlewares.each do |m, opts|
-      #     use m.middleware, m.opts
-      #   end
-      #   run the_app
-      # end
     end # stack
 
   end # Stack

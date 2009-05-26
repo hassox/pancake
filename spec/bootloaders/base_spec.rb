@@ -105,8 +105,8 @@ describe "Pancake::Stack::BootLoader" do
     end
     
     it "should inherit from the default boot loaders" do
-      ::Pancake::Stack::DefaultBootLoader.add(:default_boot_loader_test){def run!; end}
-      puts ::Pancake::Stack::DefaultBootLoader.map{|n,bl| n}.inspect
+      ::Pancake::Stack::BootLoader.add(:default_boot_loader_test){def run!; end}
+      puts ::Pancake::Stack::BootLoader.map{|n,bl| n}.inspect
       class ::Bario < Pancake::Stack; end
       puts Bario::BootLoader.map{|n,bl| n}.inspect
       Bario::BootLoader.map{|n,bl| n}.should include(:default_boot_loader_test)

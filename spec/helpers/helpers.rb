@@ -8,7 +8,6 @@ module Pancake
               remove_const klass
             end
           rescue => e
-            puts e.message
           end
         end
       end # clear_constnat3

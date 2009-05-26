@@ -4,6 +4,7 @@ describe "Pancake::Stack.new_app_instance" do
   
   before(:each) do
     class ::FooStack < Pancake::Stack
+      
     end
   end
   

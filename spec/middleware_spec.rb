@@ -33,14 +33,19 @@ describe "Pancake::Middleware" do
       end
     end # GeneralMiddlware
     
-    class ::FooApp
-      extend Pancake::Middleware
+    class ::FooApp < Pancake::Stack
+      def self.new_app_instance; self.new; end
+      
       def call(env)
         $current_env = env
         [200,{"Content-Type" => "text/plain"}, ["FooApp"]]
       end
     end # FooApp
   end 
+  
+  after(:each) do
+    clear_constants(:GeneralMiddleware, :FooApp, :BarMiddle, :FooMiddle)
+  end
   
   it "should allow me to add middleware" do
     FooApp.class_eval do

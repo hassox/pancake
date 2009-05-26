@@ -31,7 +31,7 @@ describe "pancake stack configuration" do
   end
   
   it "should allow me to extend the configuration" do
-    Pancake.default_stack_configuration do
+    class Pancake::Stack::Configuration
       default :foo, :bar, "I am a foo default"
       default :bar do
         foobar
@@ -40,7 +40,7 @@ describe "pancake stack configuration" do
       def foobar
         :foobar
       end
-    end # FooStack.configuration_extenstions
+    end
     
     FooStack.configuration.foo.should == :bar
     FooStack.configuration.bar.should == :foobar
