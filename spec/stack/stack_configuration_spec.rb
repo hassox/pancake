@@ -41,9 +41,10 @@ describe "pancake stack configuration" do
         :foobar
       end
     end
+    class FooBarStack < Pancake::Stack; end
     
-    FooStack.configuration.foo.should == :bar
-    FooStack.configuration.bar.should == :foobar
+    FooBarStack.configuration.foo.should == :bar
+    FooBarStack.configuration.bar.should == :foobar
   end 
 
 end

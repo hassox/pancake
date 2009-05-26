@@ -5,6 +5,13 @@ module Pancake
       # Set a default on the the configuartion
       class << self
         
+        # Copy down the defaults that are defined when this is inherited
+        def inherited(base)
+          defaults.each do |meth, val|
+            base.defaults[meth] = val
+          end
+        end
+        
         # Set a default for this configuration class
         # Provide a field/method name and a value to set this to.  
         # If you don't provide a value, and instead provide a block, then 
