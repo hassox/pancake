@@ -18,13 +18,15 @@ module Pancake
         @_inhertiable_inner_classes
       end
       
-      # An inherited hook for any extended classes
+      # An inherited hook for any extended classes to perform the inheriting of inner 
+      # classes
+      # :api: private
       def inherited(base)
         super
         class_defs = inheritable_inner_classes.map do |klass|
           "class #{klass} < #{self}::#{klass}; end\n"
         end
-        base.class_eval class_defs.join
+        base.class_eval(class_defs.join)
       end
       
     end # InheritableInnerClasses

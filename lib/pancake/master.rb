@@ -1,4 +1,6 @@
 module Pancake
+  # A simple rack application 
+  OK_APP = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
   
   class << self
     attr_accessor :root

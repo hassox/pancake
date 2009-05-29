@@ -56,7 +56,7 @@ describe "Pancake Inheritance" do
     before(:each) do
       clear_constants(:MyFoo, :OtherFoo, :InnerFoo, :SomeFoo, :DeeperFoo)
       
-      class MyFoo
+      class ::MyFoo
         inheritable_inner_classes :InnerFoo
         class InnerFoo; end
       end

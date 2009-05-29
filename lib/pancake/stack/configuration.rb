@@ -2,8 +2,6 @@ module Pancake
   class Stack
     
     class Configuration < Pancake::Configuration::Base
-      module ClassMethods; end
-      module InstanceMethods; end
     end
     
     # Provides access to the configuration block for the stack.

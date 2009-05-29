@@ -21,9 +21,6 @@ module Pancake
         @options ||= {}
       end
       
-      def self.proc=(prc); @proc = prc; end
-      def self.proc; @proc; end
-      
       def initialize(stack, config)
         @stack, @config = stack, config
       end
@@ -50,6 +47,14 @@ module Pancake
       end
     end
     
+    def self.extended(base)
+      base.class_eval do
+        class_inheritable_reader :_bootloaders, :_central_bootloaders, :_bootloader_map
+        @_bootloaders, @_central_bootloaders = {}, []
+        @_bootloader_map = Hash.new{|h,k| h[k] = {:before => [], :after => []}}
+      end
+    end
+    
     # Provides access to an individual bootloader
     # :api: public
     def [](name)
@@ -69,7 +74,6 @@ module Pancake
     # :api: public
     def add(name, opts = {}, &block)
       _bootloaders[name] = Class.new(Pancake::BootLoaderMixin::Base, &block)
-      _bootloaders[name].proc = block
       raise "You must declare a #run! method on your bootloader" unless _bootloaders[name].method_defined?(:run!)
       before = opts[:before]
       after  = opts[:after]
@@ -111,7 +115,7 @@ module Pancake
     # Access to the stack that this bootloader is responsible for
     # :api: public
     def stack
-      @stack
+      @stack ||= Object.full_const_get(self.name.split("::")[0..-2].join("::"))
     end
     
     # Resets the bootloaders on the stack
@@ -120,16 +124,6 @@ module Pancake
       _central_bootloaders.clear
       _bootloaders.clear
       _bootloader_map.clear
-    end
-    
-    # Copies bootloaders from another bootloader to this one
-    # :api: public
-    def copy_to(other)
-      levels.each do |level|
-        each(:only => {:level => level}) do |n, bl|
-          other.add(n, bl.options, &bl.proc)
-        end
-      end
     end
     
     # Yields each bootloader in order along with it's name
@@ -144,25 +138,6 @@ module Pancake
       _map_bootloaders(_central_bootloaders, conditions).each do |n|
         yield n, _bootloaders[n]
       end
-    end
-  
-    # Tracks the central bootloaders.  The central bootloaders are like the spine of the bootloader system
-    # All other bootloaders hang off either before or after the central bootloaders
-    # :api: private
-    def _central_bootloaders # :nodoc:
-      @_central_bootloaders ||= []
-    end
-    
-    # Keeps track of bootloaders to run before or after other bootloaders
-    # :api: private
-    def _bootloader_map # :nodoc:
-      @_bootloader_map ||= Hash.new{|h,k| h[k] = {:before => [], :after => []}}
-    end
-    
-    # Provide access to the raw bootloader classes
-    # :api: private
-    def _bootloaders # :nodoc:
-      @_bootloaders ||= {}
     end
     
     private

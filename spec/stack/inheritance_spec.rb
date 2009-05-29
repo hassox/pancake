@@ -14,6 +14,7 @@ describe "Pancake::Stack inheritance" do
   
     before(:each) do
       $collector = []
+      clear_constants(:FooStack)
       Pancake::Stack.on_inherit.clear
     end
   
@@ -25,10 +26,7 @@ describe "Pancake::Stack inheritance" do
       Pancake::Stack.on_inherit do |base, parent|
         $collector << base
       end
-    
-      class ::FooStack < Pancake::Stack
-      end
-    
+      class ::FooStack < Pancake::Stack; end
       $collector.should == [FooStack]
     end
   
@@ -57,15 +55,20 @@ describe "Pancake::Stack inheritance" do
       clear_constants(:FooStack, :BarStack)
     end
     
-    it "should allow us to inherit a stack" do
-      class ::BarStack < ::FooStack; end
-      BarStack.configuration.should_not == FooStack.configuration
-      BarStack.roots.object_id.should_not == FooStack.roots.object_id
+    describe "configuration" do
+      it "should inherit the configuration with a stack" do
+        class ::BarStack < ::FooStack; end
+        BarStack::Configuration.should inherit_from(FooStack::Configuration)
+      end
     end
     
-    it "should not inherit the router" do
-      class ::BarStack < ::FooStack; end
-      BarStack::Router.should_not == FooStack::Router
+    describe "router" do
+      it "should not inherit the router" do
+        pending do
+          class ::BarStack < ::FooStack; end
+          BarStack::Router.should_not == FooStack::Router
+        end
+      end
     end
     
     

@@ -1,17 +1,13 @@
 module Pancake
   class Configuration
     
-    class Base      
+    class Base     
+      class_inheritable_reader :defaults 
+      @defaults = Hash.new{|h,k| h[k] = {:value => nil, :description => ""}}
+      
       # Set a default on the the configuartion
       class << self
-        
-        # Copy down the defaults that are defined when this is inherited
-        def inherited(base)
-          defaults.each do |meth, val|
-            base.defaults[meth] ||= val
-          end
-        end
-        
+
         # Set a default for this configuration class
         # Provide a field/method name and a value to set this to.  
         # If you don't provide a value, and instead provide a block, then 
@@ -33,24 +29,11 @@ module Pancake
           defaults[meth][:description] = description || ""
         end
         
-        # Provides access to any defined defaults.  This allows for introspection of any default
-        # values setup in the configuration as a hash
-        #
-        # :api: public
-        def defaults
-          @defaults ||= Hash.new{|h,k| h[k] = {:value => nil, :description => ""}}
-          @defaults
-        end
-        
         # Provides aaccess to the description for a default setting
         # 
         # :api: public
         def description_for(field)
-          if defaults.keys.include?(field)
-            defaults[field][:description]
-          else
-            ""
-          end
+          defaults.keys.include?(field) ? defaults[field][:description] : ""
         end
       end
       
@@ -104,13 +87,13 @@ module Pancake
       # :api: private
       def set_actual_value(name, val) # :nodoc:
         singleton_class.class_eval <<-RUBY
-          def #{name}=(val)
-            values[#{name.inspect}] = val
-          end
+          def #{name}=(val)                               # def foo=(val)
+            values[#{name.inspect}] = val                 #   values[:foo] = val
+          end                                             # end
           
-          def #{name}
-            values[#{name.inspect}]
-          end
+          def #{name}                                     # def foo
+            values[#{name.inspect}]                       #   values[:foo]   
+          end                                             # end
         RUBY
         values[name] = val
       end
