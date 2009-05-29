@@ -2,6 +2,7 @@ module Pancake
   class Stack
     extend Rack::Router::Routable
     extend ::Pancake::Middleware
+    extend ::Pancake::Hooks::OnInherit
   
     def self.initialize_stack
       raise "Application root not set" if roots.empty?

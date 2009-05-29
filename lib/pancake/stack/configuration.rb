@@ -20,14 +20,6 @@ module Pancake
   end # Stack
 end # Pancake
 
-# When a stack is inherited, a new configuration is built that inherits from the parent configuration
-Pancake::Stack.on_inherit do |base, parent|
-  base.class_eval do
-    class Configuration < parent::Configuration; end
-    parent::Configuration.defaults.each{|k,v| Configuration.defaults[k] = v}
-  end
-end
-
 ####################
 # Setup the default configuration for each stack
 class Pancake::Stack::Configuration

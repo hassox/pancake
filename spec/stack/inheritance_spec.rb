@@ -41,6 +41,7 @@ describe "Pancake::Stack inheritance" do
     
       $collector.should == [FooStack, :foo]
     end
+    
   end
   
   describe "Inheriting Stacks" do

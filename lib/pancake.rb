@@ -1,14 +1,23 @@
 require 'rubygems'
 require 'rack/router'
+require 'extlib/class'
+require 'extlib/boolean'
+require 'extlib/module'
+require 'extlib/nil'
+require 'extlib/numeric'
+require 'extlib/object'
+require 'extlib/symbol'
 
 %w(
+  hooks/on_inherit
+  hooks/inheritable_inner_classes
+  core_ext/object
   master
   configuration
   bootloaders
   middleware 
   router
   stack/stack
-  stack/inheritance
   stack/configuration
   stack/app
   stack/router
