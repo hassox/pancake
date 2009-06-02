@@ -1,0 +1,12 @@
+class SomeMount < Pancake::Stack
+  roots << Pancake.get_root(__FILE__)
+  
+  add_routes do |r|
+    r.map "/paz", :to => Proc.new{|e|
+      [200, {"Content-Type" => "text/html", "Content-Length" => "12"}, "In SomeMount"]
+    }
+    r.map "/",    :to => Proc.new{|e|
+      [200, {"Content-Type" => "text/html", "Content-Length" => "18"}, "In SomeMount Index"]
+    }
+  end
+end

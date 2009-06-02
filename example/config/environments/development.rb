@@ -1,6 +1,6 @@
 puts "Loading Development configuration"
 
-Pancake.configuration.configs(MyApp::Stack) do |config|
+Pancake.configuration.configs(MyApp) do |config|
   config.foo = :foo
 end
 
