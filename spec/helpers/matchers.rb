@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   module Matchers
     
     class InheritFrom

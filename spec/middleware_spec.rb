@@ -1,8 +1,16 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Pancake::Middleware" do
+  before(:all) do
+    $pk_mid = Pancake.middlewares.dup
+  end
+  
+  after(:all) do
+    Pancake.middlewares.replace $pk_mid
+  end
   
   before(:each) do
+    Pancake.middlewares.clear
     def app
       @app
     end
@@ -47,6 +55,53 @@ describe "Pancake::Middleware" do
   
   after(:each) do
     clear_constants(:GeneralMiddleware, :FooApp, :BarMiddle, :FooMiddle, :BarApp, :BazApp)
+  end
+  
+  describe "pancake middlewares" do
+    before(:each) do
+      @root = File.join(Pancake.get_root(__FILE__), "fixtures", "foo_stack")
+      @the_app = Proc.new{|e| }
+    end
+    
+    it "should allow me to add middleware to pancake" do
+      Pancake.use GeneralMiddleware
+      @app = Pancake.start(:root => @root){ FooApp.stack }
+      get "/"
+      $current_env["pancake.spec.captures"].should include(GeneralMiddleware)
+    end
+    
+    it "should allow me to add multiple middlewares to panckae" do
+      class FooMiddle < GeneralMiddleware; end
+      Pancake.use GeneralMiddleware
+      FooApp.use  FooMiddle
+      @app = Pancake.start(:root => @root){ FooApp.stack }
+      get "/"
+      $current_env["pancake.spec.captures"].should == [GeneralMiddleware, FooMiddle]
+    end
+    
+    it "should put the pancake middlewares out in front" do
+      class ::FooMiddle < GeneralMiddleware; end
+      class ::BarMiddle < GeneralMiddleware; end
+      class ::BarApp < FooApp; end
+      class ::BazApp < FooApp; end
+      
+      BarApp.use BarMiddle
+      BazApp.use FooMiddle
+      Pancake.use GeneralMiddleware
+      
+      FooApp.add_routes do |r|
+        r.map "/bar", :to => BarApp.stack, :anchor => true
+        r.map "/baz", :to => BazApp.stack, :anchor => true
+      end
+      BarApp.stack_routes.clear
+      BazApp.stack_routes.clear
+      
+      @app = Pancake.start(:root => @root){ FooApp.stack }
+      get "/baz"
+      $current_env["pancake.spec.captures"].should == [GeneralMiddleware, FooMiddle]
+      get "/bar"
+      $current_env["pancake.spec.captures"].should == [GeneralMiddleware, BarMiddle]
+    end
   end
   
   it "should allow me to add middleware" do

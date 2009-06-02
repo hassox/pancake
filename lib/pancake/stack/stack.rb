@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   class Stack
     attr_reader :app
     
@@ -50,9 +50,7 @@ module Pancake
             
       mwares = self.class.middlewares
       
-      @app = mwares.reverse.inject(app) do |a, m|
-        m.middleware.new(a, m.opts, &m.block)
-      end
+      @app = Pancake::Middleware.build(app, mwares)
       
       prepare do |r|
         self.class.stack_routes.each{|sr| instance_exec(r, &sr)}

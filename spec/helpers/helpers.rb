@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   module Spec
     module Helpers
       def clear_constants(*classes)

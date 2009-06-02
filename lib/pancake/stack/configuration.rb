@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   class Stack
     
     class Configuration < Pancake::Configuration::Base

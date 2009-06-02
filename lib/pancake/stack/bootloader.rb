@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   class Stack
     inheritable_inner_classes :BootLoader
     

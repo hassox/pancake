@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   class Configuration
     
     class Base     

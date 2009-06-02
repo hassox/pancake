@@ -1,10 +1,16 @@
-module Pancake
+class Pancake
   module Middleware
     def self.extended(base)
       base.class_eval do
         # Provides an inherited reader for middlewares
         class_inheritable_reader :middlewares
         @middlewares = []
+      end
+    end
+    
+    def self.build(app, mwares)
+      mwares.reverse.inject(app) do |a, m|
+        m.middleware.new(a, m.opts, &m.block)
       end
     end
     

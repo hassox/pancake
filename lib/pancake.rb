@@ -13,11 +13,11 @@ require 'extlib/blank'
   hooks/on_inherit
   hooks/inheritable_inner_classes
   core_ext/object
-  master
   configuration
   bootloaders
-  middleware 
+  middleware
   router
+  master
   stack/stack
   stack/configuration
   stack/app

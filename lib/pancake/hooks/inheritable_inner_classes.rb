@@ -1,4 +1,4 @@
-module Pancake
+class Pancake
   module Hooks 
     module InheritableInnerClasses
       def self.extended(base)

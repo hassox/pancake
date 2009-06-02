@@ -1,7 +1,9 @@
-module Pancake
+class Pancake
   # A simple rack application 
   OK_APP      = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
   MISSING_APP = lambda{|e| [404, {"Content-Type" => "text/plain", "Content-Length" => "9"},"NOT FOUND"]}
+  
+  extend Middleware
   
   class << self
     attr_accessor :root
@@ -9,7 +11,6 @@ module Pancake
     # Start Pancake.  This results in a rack application to pass to the 
     # rackup file
     def start(opts, &block)
-      puts "Starting Pancake"
       raise "You must specify a root directory for pancake" unless opts[:root]
       self.root = opts[:root]
       
@@ -18,6 +19,7 @@ module Pancake
       
       # Build Pancake
       the_app = instance_eval(&block)
+      Pancake::Middleware.build(the_app, middlewares)
     end
     
     def env

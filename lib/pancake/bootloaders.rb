@@ -1,5 +1,5 @@
 require 'set'
-module Pancake
+class Pancake
   module BootLoaderMixin
     include Enumerable
     class Base
