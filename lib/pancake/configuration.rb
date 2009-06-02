@@ -112,7 +112,7 @@ module Pancake
   end # Configuration
   
   def self.configuration
-    @configuration ||= Configuration.make.new
+    @configuration ||= Configuration.new
   end
   
 end # Pancake

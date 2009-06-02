@@ -35,11 +35,12 @@ module Pancake
       self.class
     end
 
-    def initialize(app = nil, config = Configuration.new)
+    def initialize(app = nil, opts = {})
       self.class.initialize_stack unless self.class.initialized?
       
+      
       app = app || self.class.new_app_instance
-      @config = config
+      @configuration = opts[:config] || Configuration.new
       
       mwares = self.class.middlewares
       

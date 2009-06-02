@@ -15,6 +15,11 @@ module Pancake
       @configuration.class.class_eval(&block) if block
       @configuration        
     end
+    
+    def configuration
+      @configuration ||= self.class.configuration.new
+    end
+    
   end # Stack
 end # Pancake
 
