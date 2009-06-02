@@ -46,7 +46,7 @@ class Pancake
       @app = Pancake::Middleware.build(app, mwares)
       
       prepare do |r|
-        self.class.stack_routes.each{|sr| instance_exec(r, &sr)}
+        self.class.stack_routes.each{|sr| self.instance_exec(r, &sr)}
         r.map nil, :to => @app # Fallback route 
       end
       

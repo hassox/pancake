@@ -6,7 +6,7 @@ end
 # 2009-06-02
 # Adapted for ruby 1.9 where the method is deinfed on Object
 unless Object.method_defined?(:instance_exec)
-  class Ojbect
+  class Object
    # Like instace_eval but allows parameters to be passed.
     def instance_exec(*args, &block)
       mname = "__instance_exec_#{Thread.current.object_id.abs}_#{object_id.abs}"

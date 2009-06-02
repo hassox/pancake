@@ -34,6 +34,14 @@ Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
   end
 end
 
+Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
+  def run!
+    stack_class.roots.each do |root|
+      Dir["#{root}/app/**/*.rb"].each{|f| require f}
+    end
+  end
+end
+
 Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
   def run!
     stack_class.roots.each do |root|
@@ -42,10 +50,3 @@ Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
   end
 end
 
-Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
-  def run!
-    stack_class.roots.each do |root|
-      Dir["#{root}/app/**/*.rb"].each{|f| require f}
-    end
-  end
-end

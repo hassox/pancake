@@ -10,4 +10,7 @@ MyApp.add_routes do |r|
   
   r.map "/sinatra/one", :to => SinatraOne
   r.map "/sinatra/two", :to => SinatraTwo
+  
+  ::ActionController::Base.relative_url_root = "/rails"
+  r.map "/rails",       :to => ::ActionController::Dispatcher.new($stdout) 
 end
