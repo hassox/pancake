@@ -112,12 +112,18 @@ class Pancake
   end # Configuration
   
   class PancakeConfig < Configuration::Base
-    def stacks
+    def stacks(label = nil)
       @stacks ||=  {}
+      result = label.nil? ? @stacks : @stacks[label]
+      yield result if block_given?
+      result
     end
     
-    def configs
+    def configs(label = nil)
       @configs ||= {}
+      result = label.nil? ? @configs : @configs[label]
+      yield result if block_given?
+      result
     end
   end
   

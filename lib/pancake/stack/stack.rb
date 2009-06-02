@@ -11,15 +11,8 @@ class Pancake
       raise "Application root not set" if roots.empty?
       
       # Run any :init level bootloaders for this stack
-      self::BootLoader.run!(:only => {:level => :init})
-      
-      roots.each do |root|  
-        # Load the App
-        Dir["#{root}/app/**/*.rb"].each{|f| require f if File.exists?(f)}
-      
-        # Load the router
-        require "#{root}/config/router" if File.exists?("#{root}/config/router")
-      end
+      self::BootLoader.run!(:stack_class => self, :only => {:level => :init})
+
       @initialized = true
     end # initiailze stack
       

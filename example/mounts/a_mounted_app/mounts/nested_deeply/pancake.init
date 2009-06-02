@@ -1,8 +1,0 @@
-# This won't get called unless there's something to reference it
-module NestedDeeply
-  class Foo
-    def self.call(env)
-      [200, {"Content-Type" => "text/html"}, "In NestedDeeply"]
-    end
-  end
-end

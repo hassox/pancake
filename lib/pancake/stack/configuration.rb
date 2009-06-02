@@ -17,6 +17,7 @@ class Pancake
     end
     
     def configuration(label = self.class)
+      yield self.class.configuration(label) if block_given?
       self.class.configuration(label)
     end
     

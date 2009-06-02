@@ -3,6 +3,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "pancake stack configuration" do
   
   before(:each) do
+    Pancake.configuration.stacks.clear
+    Pancake.configuration.configs.clear
     class ::FooStack < Pancake::Stack
     end
     FooStack.roots << Pancake.get_root(__FILE__)
@@ -48,10 +50,7 @@ describe "pancake stack configuration" do
   end 
   
   describe "configurations" do
-    before(:each) do
-      Pancake.configuration.stacks.clear
-    end
-    
+
     it "should provide a configuration object for the stack" do
       app = FooStack.stack
       app.configuration.should be_an_instance_of(FooStack::Configuration)
@@ -79,8 +78,8 @@ describe "pancake stack configuration" do
     
     it "should setup access to the configuration object through Pancakes configuration" do
       app = FooStack.stack
-      Pancake.configuration.stacks[FooStack].should equal app
-      Pancake.configuration.configs[FooStack].should equal app.configuration
+      Pancake.configuration.stacks(FooStack).should equal app
+      Pancake.configuration.configs(FooStack).should equal app.configuration
     end
     
     it "should allow me to create a configuration with a label" do
@@ -90,9 +89,17 @@ describe "pancake stack configuration" do
     
     it "should create a stack with an app_name" do
       FooStack.stack(:app_name => "my.app.name")  
-      Pancake.configuration.stacks[FooStack].should be_nil
-      Pancake.configuration.stacks["my.app.name"].should be_an_instance_of(FooStack)
-      Pancake.configuration.configs["my.app.name"].should be_an_instance_of(FooStack::Configuration)
+      Pancake.configuration.stacks(FooStack).should be_nil
+      Pancake.configuration.stacks("my.app.name").should be_an_instance_of(FooStack)
+      Pancake.configuration.configs("my.app.name").should be_an_instance_of(FooStack::Configuration)
+    end
+    
+    it "should provide access to the configuration in a block" do
+      Pancake.configuration.configs(FooStack) do |config|
+        config.foo = :foo
+      end
+      @app = FooStack.stack
+      @app.configuration.foo.should == :foo
     end
   end
 

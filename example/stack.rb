@@ -5,10 +5,5 @@ module MyApp
         [200, {"Content-Type" => "text/plain", "Content-Length" => "3"}, ["foo"]]
       }
     end
-    
-    def self.new_app_instance
-      MyApp::Bar
-    end
-    
   end
 end
