@@ -6,7 +6,7 @@ describe "stack router" do
   end
   before(:each) do
     
-    INNER_APP = Proc.new{ |e| 
+    ::INNER_APP = Proc.new{ |e| 
       [
         200, 
         {"Content-Type" => "text/plain"},

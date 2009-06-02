@@ -47,7 +47,7 @@ module Pancake
       yield configuration if block_given?
       
       app = app || self.class.new_app_instance
-      
+            
       mwares = self.class.middlewares
       
       @app = mwares.reverse.inject(app) do |a, m|
@@ -55,7 +55,7 @@ module Pancake
       end
       
       prepare do |r|
-        self.class.stack_routes.each{|sr| sr.call(r)}
+        self.class.stack_routes.each{|sr| instance_exec(r, &sr)}
         r.map nil, :to => @app # Fallback route 
       end
       

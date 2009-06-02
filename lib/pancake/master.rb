@@ -8,7 +8,7 @@ module Pancake
     
     # Start Pancake.  This results in a rack application to pass to the 
     # rackup file
-    def start(opts)
+    def start(opts, &block)
       puts "Starting Pancake"
       raise "You must specify a root directory for pancake" unless opts[:root]
       self.root = opts[:root]
@@ -17,13 +17,7 @@ module Pancake
       load "#{root}/pancake.init"
       
       # Build Pancake
-      Rack::Builder.new do
-        run Pancake::Router
-      end
-    end
-    
-    def mount(&block)
-      Pancake::Router.prepare(&block)
+      the_app = instance_eval(&block)
     end
     
     def env
