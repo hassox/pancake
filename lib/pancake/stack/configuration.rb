@@ -18,6 +18,10 @@ module Pancake
   end # Stack
 end # Pancake
 
+Pancake::Stack.on_inherit do |base, parent|
+  parent.roots.each{|r| base.roots << r}
+end
+
 ####################
 # Setup the default configuration for each stack
 class Pancake::Stack::Configuration

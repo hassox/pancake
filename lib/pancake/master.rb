@@ -1,6 +1,7 @@
 module Pancake
   # A simple rack application 
-  OK_APP = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
+  OK_APP      = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
+  MISSING_APP = lambda{|e| [404, {"Content-Type" => "text/plain", "Content-Length" => "9"},"NOT FOUND"]}
   
   class << self
     attr_accessor :root

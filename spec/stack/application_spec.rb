@@ -13,7 +13,7 @@ describe "Pancake::Stack.new_app_instance" do
   end
   
   it "should provide a new instance of the applciation" do
-    FooStack.new_app_instance.should be_an_instance_of(FooStack)
+    FooStack.new_app_instance.should == Pancake::MISSING_APP
   end
   
   it "should allow me to overwrite the new_app_instance for this stack" do

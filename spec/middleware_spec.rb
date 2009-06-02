@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe "Pancake::Middleware" do
-  include Rack::Test::Methods
   
   before(:each) do
     def app
@@ -36,13 +35,14 @@ describe "Pancake::Middleware" do
     end # GeneralMiddlware
     
     class ::FooApp < Pancake::Stack
-      def self.new_app_instance; self.new; end
+      def self.new_app_instance; self end
       
-      def call(env)
+      def self.call(env)
         $current_env = env
         [200,{"Content-Type" => "text/plain"}, ["FooApp"]]
       end
     end # FooApp
+    FooApp.roots << Pancake.get_root("/tmp")
   end 
   
   after(:each) do

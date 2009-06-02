@@ -1,5 +1,7 @@
 module Pancake
   class Stack
+    attr_reader :app
+    
     include Rack::Router::Routable
     extend Middleware
     extend Hooks::OnInherit
@@ -32,23 +34,30 @@ module Pancake
     def this_stack
       self.class
     end
+
+    def initialize(app = nil, config = Configuration.new)
+      self.class.initialize_stack unless self.class.initialized?
+      
+      app = app || self.class.new_app_instance
+      @config = config
+      
+      mwares = self.class.middlewares
+      
+      @app = mwares.reverse.inject(app) do |a, m|
+        m.middleware.new(a, m.opts, &m.block)
+      end
+      
+      prepare do |r|
+        self.class.stack_routes.each{|sr| sr.call(r)}
+        r.map nil, :to => @app # Fallback route 
+      end
+      
+    end
     
     # Construct a stack using the application, wrapped in the middlewares
     # :api: public
     def self.stack(opts = {}, &block)
-      the_app = method(:initialize).arity == 1 ? new(opts, &block) : new(&block)
-      mwares = middlewares
-      
-      # We build the router first then add the middleware then the app at the bottom
-      app = new_app_instance
-      
-      stack = mwares.reverse.inject(app) do |app, m|
-        m.middleware.new(app, m.opts)
-      end
-      stack
-            
-      # Wrap the stack in the router
-      ### HERE's WHERE WE END FOR THE NIGHT
+      new(nil, opts, &block)
     end # stack
 
   end # Stack
