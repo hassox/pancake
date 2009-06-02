@@ -1,0 +1,25 @@
+require 'sinatra'
+require 'haml'
+
+class PancakeSinatra < Sinatra::Base
+  set :root, File.expand_path(File.dirname(__FILE__))
+  inheritable_inner_classes :Bar, :Baz
+  
+  class Bar; end
+  class Baz; end
+  
+  get "/bar" do
+    haml :bar
+  end
+  
+  get /^\/?$/ do
+    haml :index
+  end
+  
+  def klass 
+    self.class
+  end
+end
+
+class SinatraOne < PancakeSinatra; end
+class SinatraTwo < PancakeSinatra; end
