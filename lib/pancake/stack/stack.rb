@@ -37,12 +37,12 @@ module Pancake
     # :api: public
     def self.stack(opts = {}, &block)
       the_app = method(:initialize).arity == 1 ? new(opts, &block) : new(&block)
-      middlewares = _middlewares
+      mwares = middlewares
       
       # We build the router first then add the middleware then the app at the bottom
       app = new_app_instance
       
-      stack = _middlewares.reverse.inject(app) do |app, m|
+      stack = mwares.reverse.inject(app) do |app, m|
         m.middleware.new(app, m.opts)
       end
       stack
