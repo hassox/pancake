@@ -26,7 +26,6 @@ describe "pancake stack configuration" do
   end
 
   it "should provide access to the roots of the stack through the config object" do
-    FooStack.roots << Pancake.get_root(__FILE__)
     FooStack.roots.should == [Pancake.get_root(__FILE__)]
     FooStack.configuration.roots.should == [Pancake.get_root(__FILE__)]
   end
@@ -50,12 +49,17 @@ describe "pancake stack configuration" do
   
   describe "configurations" do
     before(:each) do
-      Pancake::Configuration.stacks.clear
+      Pancake.configuration.stacks.clear
     end
     
     it "should provide a configuration object for the stack" do
       app = FooStack.stack
       app.configuration.should be_an_instance_of(FooStack::Configuration)
+    end
+    
+    it "should put a copy of the application at the stack identified by the class" do
+      app = FooStack.stack
+      Pancake.configuration.stacks[FooStack].should equal(app)
     end
     
     it "should allow me to set a configuration object manually" do
@@ -75,7 +79,20 @@ describe "pancake stack configuration" do
     
     it "should setup access to the configuration object through Pancakes configuration" do
       app = FooStack.stack
-      Pancake.configuration.stacks(FooStack).should equal app.configuration
+      Pancake.configuration.stacks[FooStack].should equal app
+      Pancake.configuration.configs[FooStack].should equal app.configuration
+    end
+    
+    it "should allow me to create a configuration with a label" do
+      FooStack.configuration(:my_config).should be_an_instance_of(FooStack::Configuration)
+      FooStack.configuration(:my_config).should_not equal(FooStack.configuration)
+    end
+    
+    it "should create a stack with an app_name" do
+      FooStack.stack(:app_name => "my.app.name")  
+      Pancake.configuration.stacks[FooStack].should be_nil
+      Pancake.configuration.stacks["my.app.name"].should be_an_instance_of(FooStack)
+      Pancake.configuration.configs["my.app.name"].should be_an_instance_of(FooStack::Configuration)
     end
   end
 

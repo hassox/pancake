@@ -10,14 +10,14 @@ module Pancake
     # If no block is provided, it just returns the configuration object.
     # 
     # :api: public
-    def self.configuration(&block)
-      @configuration ||= self::Configuration.new
-      @configuration.class.class_eval(&block) if block
-      @configuration        
+    def self.configuration(label = self, &block)
+      config = Pancake.configuration.configs[label] ||= self::Configuration.new
+      config.class.class_eval(&block) if block
+      config 
     end
     
-    def configuration
-      @configuration ||= self.class.configuration.new
+    def configuration(label = self.class)
+      self.class.configuration(label)
     end
     
   end # Stack

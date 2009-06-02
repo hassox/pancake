@@ -12,10 +12,12 @@ module Pancake
 end # Pancake
 
 #################### Define the bootloaders here #############################
+# :level => :init bootloaders only have the stack class available
+# They do not have :stack available
 Pancake::Stack::BootLoader.add(:mount_applications, :level => :init) do
   def run!
     # Mount any stacks this stack may have in it.
-    stack.roots.each do |root|
+    stack_class.roots.each do |root|
       Dir["#{root}/mounts/*/pancake.init"].each{|f| load f if File.exists?(f)}
     end
   end

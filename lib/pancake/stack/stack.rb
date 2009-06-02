@@ -36,11 +36,17 @@ module Pancake
     end
 
     def initialize(app = nil, opts = {})
+      app_name = opts.delete(:app_name) || self.class
       self.class.initialize_stack unless self.class.initialized?
+      Pancake.configuration.stacks[app_name] = self
       
+      # Get a new configuration
+      Pancake.configuration.configs[app_name] = opts[:config] if opts[:config]
+      configuration(app_name) # get the configuration if there's none been specified
+      
+      yield configuration if block_given?
       
       app = app || self.class.new_app_instance
-      @configuration = opts[:config] || Configuration.new
       
       mwares = self.class.middlewares
       

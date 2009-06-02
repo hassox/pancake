@@ -4,7 +4,7 @@ module Pancake
     include Enumerable
     class Base
       # :api: :public
-      attr_accessor :stack, :config
+      attr_accessor :config
       
       # Sets options for the bootloder
       # By including conditions in the bootloader when you declare it
@@ -21,14 +21,24 @@ module Pancake
         @options ||= {}
       end
       
-      def initialize(stack, config)
-        @stack, @config = stack, config
+      def stack
+        raise "No Stack Configured" unless @config[:stack]
+        @config[:stack]
+      end
+      
+      def stack_class
+        raise "No Stack Class Configured" unless @config[:stack_class]
+        @config[:stack_class]
+      end
+      
+      def initialize(config)
+        @config = config
       end
       
       # Creates a new instance and runs it
       # :api: private
-      def self.call(stack, config)
-        new(stack, config).run!
+      def self.call(config)
+        new(config).run!
       end
       
       # Checks the conditions with the options of the bootloader
@@ -97,12 +107,19 @@ module Pancake
     
     # Runs the bootloaders in order
     # :api: private 
-    def run!(conditions = {}) # :nodoc:
-      unless conditions.keys.include?(:only) || conditions.keys.include?(:except)
-        conditions[:only] = {:level => :default}
+    def run!(options = {}) # :nodoc:
+      unless options.keys.include?(:only) || options.keys.include?(:except)
+        options[:only] = {:level => :default}
       end
+      conditions = if options[:only]
+        {:only => options.delete(:only)}
+      else
+        {:except => options.delete(:except)}
+      end
+      options[:stack_class] ||= stack
+
       each(conditions) do |name, bl|
-        bl.call(stack, :foo)
+        bl.call(options)
       end
     end
     

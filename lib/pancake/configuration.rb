@@ -111,8 +111,18 @@ module Pancake
     end # self
   end # Configuration
   
+  class PancakeConfig < Configuration::Base
+    def stacks
+      @stacks ||=  {}
+    end
+    
+    def configs
+      @configs ||= {}
+    end
+  end
+  
   def self.configuration
-    @configuration ||= Configuration.new
+    @configuration ||= PancakeConfig.new
   end
   
 end # Pancake
