@@ -1,0 +1,18 @@
+Pancake:
+rack-bug                  - development
+deflect                   - production
+etag                      - production
+deflator                  - production
+rack-cache                - production
+ShowExceptions            - development
+content_length            - all
+content_type              - all
+mime-type                 - all
+session                   - all cookie (configurable)
+methodoverride            - all
+NestedParams              - all
+warden                    - all 
+
+
+Pancake Stacks:
+[file - for each root]    - development
