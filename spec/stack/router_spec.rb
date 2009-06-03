@@ -107,4 +107,17 @@ describe "stack router" do
     response["rack_router.params"]["originator"].should == "FooApp"
     
   end
+  
+  describe "Pancake route builder" do
+    it "should allow me to mount an application" do
+      FooApp.add_routes do |r|
+        r.mount "/foo", INNER_APP, :action => "foo"
+      end
+      @app = FooApp.stack
+      get "/foo"
+      result = JSON.parse(last_response.body)
+      result["SCRIPT_NAME"].should == "/foo"
+      result["rack_router.params"]["action"].should == "foo"
+    end
+  end
 end

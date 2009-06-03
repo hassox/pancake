@@ -1,4 +1,4 @@
-class Pancake
+module Pancake
   class Stack
     attr_reader :app
     
@@ -45,7 +45,7 @@ class Pancake
       
       @app = Pancake::Middleware.build(app, mwares)
       
-      prepare do |r|
+      prepare(:builder => Pancake::RouteBuilder) do |r|
         self.class.stack_routes.each{|sr| self.instance_exec(r, &sr)}
         r.map nil, :to => @app # Fallback route 
       end
@@ -57,6 +57,10 @@ class Pancake
     def self.stack(opts = {}, &block)
       new(nil, opts, &block)
     end # stack
+    
+    def klass
+      self.class
+    end
 
   end # Stack
 end # Pancake

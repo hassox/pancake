@@ -1,10 +1,16 @@
-class Pancake
+module Pancake
   module Middleware
     def self.extended(base)
       base.class_eval do
         # Provides an inherited reader for middlewares
-        class_inheritable_reader :middlewares
-        @middlewares = []
+        if base.is_a?(Class)
+          class_inheritable_reader :middlewares
+          @middlewares = []
+        else
+          def self.middlewares
+            @middlewares ||= []
+          end
+        end
       end
     end
     

@@ -1,4 +1,4 @@
-class Pancake 
+module Pancake 
   class Stack
     # An internal accessor for building the routes of a stack
     class_inheritable_reader :stack_routes
