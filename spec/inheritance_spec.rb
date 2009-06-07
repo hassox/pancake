@@ -64,15 +64,20 @@ describe "Pancake Inheritance" do
     
     it "should inherit the inner class along with the outer class" do
       class ::OtherFoo < MyFoo; end
-      OtherFoo::InnerFoo.should inherit_from(MyFoo::InnerFoo)
+      OtherFoo::InnerFoo.superclass.should equal(MyFoo::InnerFoo)
+      OtherFoo::InnerFoo.should_not equal(MyFoo::InnerFoo)
     end
     
     it "should inherit the inner class multiple times" do
       class ::OtherFoo < MyFoo; end
       class ::SomeFoo < OtherFoo; end
       class ::DeeperFoo < SomeFoo; end
-      SomeFoo::InnerFoo.should inherit_from(OtherFoo::InnerFoo)
-      DeeperFoo::InnerFoo.should inherit_from(SomeFoo::InnerFoo)
+      
+      SomeFoo::InnerFoo.superclass.should equal(OtherFoo::InnerFoo)
+      SomeFoo::InnerFoo.should_not equal(OtherFoo::InnerFoo)
+      DeeperFoo::InnerFoo.superclass.should equal(SomeFoo::InnerFoo)
+      DeeperFoo::InnerFoo.should_not equal(OtherFoo::InnerFoo)
+      DeeperFoo::InnerFoo.superclass.should equal(SomeFoo::InnerFoo)
     end
     
     it "should allow additional inner classes to be declared without polluting the parent" do

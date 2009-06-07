@@ -52,23 +52,23 @@ describe "pancake stack configuration" do
   describe "configurations" do
 
     it "should provide a configuration object for the stack" do
-      app = FooStack.stack
+      app = FooStack.stackup
       app.configuration.should be_an_instance_of(FooStack::Configuration)
     end
     
     it "should put a copy of the application at the stack identified by the class" do
-      app = FooStack.stack
+      app = FooStack.stackup
       Pancake.configuration.stacks[FooStack].should equal(app)
     end
     
     it "should allow me to set a configuration object manually" do
       config = FooStack::Configuration.new
-      app = FooStack.stack(:config => config)
+      app = FooStack.stackup(:config => config)
       app.configuration.should equal(config)
     end
     
     it "should allow me to have access to the configuration object when creating the stack through a block" do
-      app = FooStack.stack do |config|
+      app = FooStack.stackup do |config|
         config.foo = :foo
         config.bar = :bar
       end
@@ -77,7 +77,7 @@ describe "pancake stack configuration" do
     end
     
     it "should setup access to the configuration object through Pancakes configuration" do
-      app = FooStack.stack
+      app = FooStack.stackup
       Pancake.configuration.stacks(FooStack).should equal app
       Pancake.configuration.configs(FooStack).should equal app.configuration
     end
@@ -88,7 +88,7 @@ describe "pancake stack configuration" do
     end
     
     it "should create a stack with an app_name" do
-      FooStack.stack(:app_name => "my.app.name")  
+      FooStack.stackup(:app_name => "my.app.name")  
       Pancake.configuration.stacks(FooStack).should be_nil
       Pancake.configuration.stacks("my.app.name").should be_an_instance_of(FooStack)
       Pancake.configuration.configs("my.app.name").should be_an_instance_of(FooStack::Configuration)
@@ -98,7 +98,7 @@ describe "pancake stack configuration" do
       Pancake.configuration.configs(FooStack) do |config|
         config.foo = :foo
       end
-      @app = FooStack.stack
+      @app = FooStack.stackup
       @app.configuration.foo.should == :foo
     end
   end

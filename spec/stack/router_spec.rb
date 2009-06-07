@@ -41,7 +41,7 @@ describe "stack router" do
       r.map "/foo", :to => INNER_APP, :with => {:action => "foo action"}, :anchor => true
     end
     
-    @app = FooApp.stack
+    @app = FooApp.stackup
     expected = {
       "SCRIPT_NAME" => "/foo",
       "PATH_INFO"   => "",
@@ -57,7 +57,7 @@ describe "stack router" do
       r.map "/foobar", :to => Proc.new{|e| [200, {}, ["IN THE FOOBAR APP"]]}, :anchor => true
       r.map "/foo"  , :to => INNER_APP, :anchor => true
     end
-    @app = FooApp.stack
+    @app = FooApp.stackup
     get "/foobar"
     last_response.body.should == "IN THE FOOBAR APP"
     
@@ -78,7 +78,7 @@ describe "stack router" do
       r.map "/:foo", :to => INNER_APP, :with => {:hah => "hah"}, :anchor => true
     end
     
-    @app = FooApp.stack
+    @app = FooApp.stackup
     get "/some_foo"
     JSON.parse(last_response.body).should == {
       "SCRIPT_NAME" => "/some_foo",
@@ -96,7 +96,7 @@ describe "stack router" do
       r.map "/bar", :to => INNER_APP, :with => {"originator" => "BarApp"}, :anchor => true
     end
     
-    @app = BarApp.stack
+    @app = BarApp.stackup
 
     get "/bar"
     response = JSON.parse(last_response.body)
@@ -113,7 +113,7 @@ describe "stack router" do
       FooApp.add_routes do |r|
         r.mount "/foo", INNER_APP, :action => "foo"
       end
-      @app = FooApp.stack
+      @app = FooApp.stackup
       get "/foo"
       result = JSON.parse(last_response.body)
       result["SCRIPT_NAME"].should == "/foo"

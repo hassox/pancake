@@ -108,5 +108,14 @@ describe "Pancake::Stack::BootLoader" do
       class ::Bario < Pancake::Stack; end
       Bario::BootLoader.map{|n,bl| n}.should include(:default_boot_loader_test)
     end
+    
+    it "should let me pass options to the bootloaders and pass them on" do
+      FooStack::BootLoader.add(:foo){ def run!; config[:result] << :foo; end}
+      FooStack::BootLoader.add(:bar){ def run!; config[:result] << :bar; end}
+      
+      opts = { :result => [] }
+      FooStack::BootLoader.run!(opts)
+      opts[:result].should == [:foo, :bar]
+    end
   end
 end

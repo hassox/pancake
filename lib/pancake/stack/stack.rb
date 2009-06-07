@@ -2,10 +2,10 @@ module Pancake
   class Stack
     attr_reader :app
     
-    include Rack::Router::Routable
-    extend Middleware
+    # extend Hooks::InheritableInnerClasses
     extend Hooks::OnInherit
-    extend Hooks::InheritableInnerClasses
+    include Rack::Router::Routable
+    extend Pancake::Middleware
   
     def self.initialize_stack
       raise "Application root not set" if roots.empty?
@@ -54,7 +54,7 @@ module Pancake
     
     # Construct a stack using the application, wrapped in the middlewares
     # :api: public
-    def self.stack(opts = {}, &block)
+    def self.stackup(opts = {}, &block)
       new(nil, opts, &block)
     end # stack
     

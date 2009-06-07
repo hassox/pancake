@@ -1,18 +1,50 @@
-Pancake:
-rack-bug                  - development
-deflect                   - production
-etag                      - production
-deflator                  - production
-rack-cache                - production
-ShowExceptions            - development
-content_length            - all
-content_type              - all
-mime-type                 - all
-session                   - all cookie (configurable)
-methodoverride            - all
-NestedParams              - all
-warden                    - all 
+MIDDLEWARE                  RUN ENV                         LABEL
 
+Pancake:
+rack-bug                  - development                   - debugger
+deflect                   - production                    - nil
+etag                      - production                    - etag
+deflator                  - production                    - deflator
+rack-cache                - production                    - cache
+ShowExceptions            - development                   - exceptions
+content_length            - all                           - nil
+content_type              - all                           - nil
+mime-type                 - all                           - nil
+session                   - all cookie (configurable)     - session
+methodoverride            - all                           - nil
+NestedParams              - all                           - nil
+rack-uploads              - all                           - upload_parsing
+warden                    - all                           - auth
 
 Pancake Stacks:
-[file - for each root]    - development
+[file - for each root]    - development                   - static
+
+
+middleware, opts, block   : middleware 
+
+class MyApp
+  use Middleware, :middleware => :opts
+  
+  mixture.add(:foo, :after => :session).use(MyFoo)
+  mixture.replace(:session).use( MyOtherSession )
+  mixture.configure(:session){|config| #stuff }
+end
+
+  use Middleware, {:middleware => :opts}, {:name => :auth, :after => :session, :env => :all}
+  
+  
+  
+  with_use :env => :all, :after => :session do
+    use Middlware, :middleware => :opts
+  end
+  
+  mware(:auth, :after => :session, :env => :all).use Middlware, :middleware => :opts
+  mware_replace(:session).use MySessions, :session => :opts
+  
+  use(Middleware, :middleware => :opts).after(:session).env(:all).register
+  use(Middleware, :middleware => :opts).register(::auth, after => :session, :env => :all)
+
+
+configuration.mware(:authentication, :after => :session, :env => :all).use( MiddleWare, {:middleware => :opts}) do |mw|
+  # Stuff in there if there's a middlware block on initialization
+end
