@@ -23,6 +23,7 @@ require 'extlib/blank'
   stack/app
   stack/router
   stack/bootloader
+  more/controller
 ).each do |file|
   path = File.join(File.dirname(__FILE__), "pancake")
   require File.join(path, file)
