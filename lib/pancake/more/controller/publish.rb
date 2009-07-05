@@ -79,6 +79,13 @@ module Pancake
       as_declaration(:date, *args)
     end
     
+    # Coerces the specified parameter into a string.
+    #
+    # :api: public
+    def self.as_string(*args) 
+      as_declaration(:string, *args)
+    end
+    
     # Takes a parameters hash, and validates each entry against the options
     # defined for this action. It will flag required params when missing, 
     # insert defaults or coerce values into the desired type. It mutates
