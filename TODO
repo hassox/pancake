@@ -8,3 +8,20 @@ Path Management:
   Many roots must be enabled for when using as a gem, and mounting in an app
   Paths should be inheritable across stacks, and should be tied to a specific stack
   Path management should be a mixin to allow any class to implement
+
+Controller Publish Declaration:
+  Allow requirements to be declared for multiple controllers at once
+  Support syntax for coercing multiple values into a single param entry i.e. two date strings into a range
+  Default values should be generated with a method rather than a static value alone
+  The list of params should be able to be flagged as exclusive i.e. no additional parameters may be passed in
+  Handle nested params
+  Collect options suitable for a OPTIONS request from a client
+  Mechanism to whitelist fields from a model
+  
+Renderable Mixin
+  Design interface for adapters -- adapters allow support for different template libs
+  Compiled templates need to be cached
+  Options used by the mixin need to be configurable
+  Templates should be inheritable
+  The target class should be able to inject arbitrary helpers into the template context
+  Layouts, views and partials should be supported
