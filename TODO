@@ -1,1 +1,5 @@
 TODO:
+
+Middleware Stack:
+  Add stack types, eg, development, production, staging, demo etc.  Allow multiple [:production, :demo]
+  
