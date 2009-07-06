@@ -3,3 +3,8 @@ TODO:
 Middleware Stack:
   Add stack types, eg, development, production, staging, demo etc.  Allow multiple [:production, :demo]
   
+Path Management:
+  Allow named paths to be setup.  Paths should include a glob similar to merb push paths
+  Many roots must be enabled for when using as a gem, and mounting in an app
+  Paths should be inheritable across stacks, and should be tied to a specific stack
+  Path management should be a mixin to allow any class to implement
