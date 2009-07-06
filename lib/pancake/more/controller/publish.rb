@@ -62,28 +62,30 @@ module Pancake
       @pending_publication_opts = opts
     end
     
-    # For each of the following methods, there is a corresponding method
-    # prefixed with 'validate_and_coerce_' in the ActionOptions class. 
-
-    # Coerces the specified parameter into an integer.
+    # Used when declaring configuration for parameters in the publish
+    # declaration. It returns an array of the type, default value an 
+    # additional options.
+    #
+    # Here is an example where we declare an integer and that it is required
+    #
+    #   as(:integer, :req)
+    #
+    # Or that it is optional, but has a default value if it is missing.
+    #
+    #   as(:integer, 21)
+    #
+    # The current supported types are
+    # - :integer
+    # - :date
+    # - :string
+    #
+    # For details on the options supported by each type, please see the 
+    # corresponding methods declared in the ActionOptions class. These methods
+    # are named as the type, prefixed with 'validate_and_coerce_'
     #
     # :api: public
-    def self.as_integer(*args) 
-      as_declaration(:integer, *args)
-    end
-    
-    # Coerces the specified parameter into a date.
-    #
-    # :api: public
-    def self.as_date(*args) 
-      as_declaration(:date, *args)
-    end
-    
-    # Coerces the specified parameter into a string.
-    #
-    # :api: public
-    def self.as_string(*args) 
-      as_declaration(:string, *args)
+    def self.as(type, default = :req, opts = {})
+      [type, default, opts]
     end
     
     # Takes a parameters hash, and validates each entry against the options
@@ -100,15 +102,13 @@ module Pancake
     # This hook is used in conjunction with the #publish method to expose 
     # instance methods as actions. Obviously, it should never be called 
     # directly :)
+    #
+    # :api: private
     def self.method_added(name)
       if @pending_publication_opts
         self.actions[name.to_s] = ActionOptions.new(formats, @pending_publication_opts)
         @pending_publication_opts = nil
       end
-    end
-    
-    def self.as_declaration(type, default = :req, opts = {})
-      [type, default, opts]
     end
     
   end # Controller

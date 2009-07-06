@@ -8,13 +8,13 @@ describe "Pancake::Controller publish declaration" do
       publish
       def simple_publish; end
       
-      publish :id => as_integer
+      publish :id => as(:integer)
       def integer_test; end
       
-      publish :start => as_date
+      publish :start => as(:date)
       def date_test; end
       
-      publish :page => as_integer(12)
+      publish :page => as(:integer, 12)
       def default_test; end
       
       publish :provides => [:xml, :json]
@@ -23,15 +23,15 @@ describe "Pancake::Controller publish declaration" do
       publish :only_provides => :xml
       def only_provides_test; end
       
-      publish :name => as_string(:opt)
+      publish :name => as(:string, :opt)
       def optional_test; end
       
       publish :provides => [:json, :txt],
-              :id       => as_integer(:req), 
-              :name     => as_string("Campion"), 
-              :melon    => as_integer(50),
-              :jam      => as_string(:opt),
-              :squeeze  => as_string(:req)
+              :id       => as(:integer, :req), 
+              :name     => as(:string, "Campion"), 
+              :melon    => as(:integer, 50),
+              :jam      => as(:string, :opt),
+              :squeeze  => as(:string, :req)
       def complex_test; end
     end
   end
