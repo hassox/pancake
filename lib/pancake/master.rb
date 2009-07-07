@@ -31,6 +31,14 @@ module Pancake
     def get_root(file)
       File.expand_path(File.dirname(file))
     end
+  
+    def stack_labels
+      @stack_labels ||= []
+    end
+    
+    def stack_labels=(labels)
+      @stack_labels = labels
+    end
     
   end # self
 end # Pancake
