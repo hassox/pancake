@@ -16,18 +16,25 @@ module Pancake
       end
     end # self.extended
     
-    def middlewares
-      self::StackMiddleware.middlewares
+    def middlewares(*labels)
+      self::StackMiddleware.middlewares(*labels)
     end
     
     def stack(name = nil, opts = {})
-      self::StackMiddleware.new(name, opts)
+      if self::StackMiddleware._mwares[name] && mw = self::StackMiddleware._mwares[name]
+        unless mw.stack == self
+          mw = self::StackMiddleware._mwares[name] = self::StackMiddleware._mwares[name].dup
+        end
+        mw
+      else
+        self::StackMiddleware.new(name, self, opts)
+      end
     end
     
     # Use this to define middleware to include in the stackå
     # :api: public
     def use(middleware, opts = {}, &block)
-      self::StackMiddleware.use(middleware, opts, &block)
+      stack(middleware).use(middleware, opts, &block)
     end # use
     
     # use this to prepend middleware to the stack
@@ -41,7 +48,8 @@ module Pancake
       class_inheritable_reader :_central_mwares, :_mwares, :_before, :_after
       @_central_mwares, @_before, @_after, @_mwares = [], {}, {}, {}
       
-      attr_reader :middleware, :config, :block, :name, :options
+      attr_reader :middleware, :name
+      attr_accessor :config, :block, :stack, :options
       
       class << self
         def use(mware, opts, &block)
@@ -55,20 +63,27 @@ module Pancake
           _after.clear
         end
         
-        def middlewares
+        def middlewares(*labels)
           _central_mwares.map do |name|
-            map_middleware(name)
+            map_middleware(name, *labels)
           end.flatten
         end
         
-        def map_middleware(name)
+        def map_middleware(name, *labels)
           result = []
           _before[name] ||= []
           _after[name]  ||= []
-          result << _before[name].map{|n| map_middleware(n)}
-          result << _mwares[name]
-          result << _after[name].map{|n| map_middleware(n)}
-          result.flatten
+          if _mwares[name] && _mwares[name].use_for_labels?(*labels)
+            result << _before[name].map{|n| map_middleware(n)}
+            result << _mwares[name]
+            result << _after[name].map{|n| map_middleware(n)}
+            result.flatten
+          end
+          result
+        end
+        
+        def [](name)
+          _mwares[name]
         end
       end
       
@@ -76,14 +91,24 @@ module Pancake
         self.class._mwares[name]
       end
       
-      def initialize(name, options = {})
-        @name, @options = name, options
+      def initialize(name, stack, options = {})
+        @name, @stack, @options = name, stack, options
+        @options[:labels] ||= [:any]
+      end
+      
+      # delete this middleware from the stack
+      # :api: public
+      def delete!
+        self.class._mwares.delete(name)
+        self.class._before.delete(name)
+        self.class._after.delete(name)
+        self.class._central_mwares.delete(name)
+        self
       end
       
       def use(mware, config = {}, &block)
         @middleware, @config, @block = mware, config, block
         @name = @middleware if name.nil?
-        raise "This middleware has already been declareed" if self.class._central_mwares.include?(name)
         if options[:before]
           raise "#{options[:before].inspect} middleware is not defined for this stack" unless self.class._mwares.keys.include?(options[:before])
           self.class._before[options[:before]] ||= []
@@ -97,6 +122,18 @@ module Pancake
         end
         self.class._mwares[name] = self
         self
+      end
+      
+      def use_for_labels?(*labels)
+        return true if labels.empty? || options[:labels].nil? || options[:labels].include?(:any)
+        !(options[:labels] & labels).empty?
+      end
+      
+      def dup
+        result = super
+        result.config = result.config.dup
+        result.options = result.options.dup
+        result
       end
     end
   end # Middleware

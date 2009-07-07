@@ -145,6 +145,60 @@ describe "Pancake::Middleware" do
     $current_env["p.s.c"].should == [GeneralMiddleware]
   end
   
+  describe "replace middleware" do
+    before(:each) do
+      FooApp.stack(:replaceable).use(GeneralMiddleware, :some => :option){ :original }
+      class FooMiddle < GeneralMiddleware; end
+    end
+    
+    it "should replace the middleware with another middleware" do
+      orig = FooApp::StackMiddleware[:replaceable]
+      orig.middleware.should == GeneralMiddleware
+      orig.config.should == {:some => :option}
+      
+      FooApp.stack(:replaceable).use(FooMiddle, :foo => :options)
+      replaced = FooApp.stack(:replaceable)
+      replaced.middleware.should == FooMiddle
+      replaced.config.should == {:foo => :options}
+    end
+  end
+  
+  describe "deleteing middleware" do
+    before(:each) do
+      FooApp.stack(:deleteable).use(GeneralMiddleware, :some => :option){ :original }
+    end
+    
+    it "should delete the middleware" do
+      orig = FooApp::StackMiddleware[:deleteable]
+      orig.should_not be_nil
+      orig.middleware.should == GeneralMiddleware
+      FooApp.stack(:deleteable).delete!
+      FooApp::StackMiddleware[:deleteable].should be_nil
+    end
+    
+    it "should not include middleware that depends on being deleted" do
+      class FooMiddle < GeneralMiddleware; end
+      FooApp.stack(:foo, :after => :deleteable).use(FooMiddle)
+      FooApp.middlewares.map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle]
+      FooApp.stack(:deleteable).delete!
+      FooApp.middlewares.map{|m| m.middleware}.should == []
+    end
+  end
+  
+  describe "edit middleware" do
+    before(:each) do
+      FooApp.stack(:editable).use(GeneralMiddleware,:some => :config)
+    end
+    
+    it "should allow me to update settings for middleware" do
+      FooApp.stack(:editable).config.should == {:some => :config}
+      FooApp.stack(:editable).config = {:foo => :bar}
+      FooApp.stack(:editable).config.should == {:foo => :bar}
+    end
+  end
+  
+
+  
   describe "Inherited middleware" do
     before(:each) do
       class FooMiddle < GeneralMiddleware; end
@@ -166,16 +220,22 @@ describe "Pancake::Middleware" do
       FooApp.middlewares.map{|m| m.middleware}.should == [GeneralMiddleware]
     end
     
-    it "should inherit multiple children deep" do
-      pending("No prepend use yet") do
-        FooApp.use GeneralMiddleware
+    describe "editing inherited middlware" do
+      it "should not edit the parent when editing the child" do
+        FooApp.use GeneralMiddleware, :some => :option
         class BarApp < FooApp; end
-        BarApp.prepend_use FooMiddle
-        class BazApp < BarApp; end
-        BazApp.use BarMiddle
-        FooApp.middlewares.map{|m| m.middleware}.should == [GeneralMiddleware]
-        BarApp.middlewares.map{|m| m.middleware}.should == [FooMiddle, GeneralMiddleware]
-        BazApp.middlewares.map{|m| m.middleware}.should == [FooMiddle, GeneralMiddleware, BarMiddle]
+        BarApp.stack(GeneralMiddleware).middleware.should == GeneralMiddleware
+        BarApp.stack(GeneralMiddleware).config = {:foo => :bar}
+        BarApp.stack(GeneralMiddleware).config.should == {:foo => :bar}
+        FooApp.stack(GeneralMiddleware).config.should == {:some => :option}
+      end
+      
+      it "should not update the parent when updating a childs config" do
+        FooApp.use GeneralMiddleware, :some => :option
+        class BarApp < FooApp; end
+        BarApp.stack(GeneralMiddleware).config[:another] = :option
+        FooApp.stack(GeneralMiddleware).config.should == {:some => :option}
+        BarApp.stack(GeneralMiddleware).config.should == {:some => :option, :another => :option}
       end
     end
   end
@@ -321,4 +381,39 @@ describe "Pancake::Middleware" do
     end
     
   end # Stack Inheritance
+  
+  describe "types of stacks" do
+    before(:each) do
+      class FooMiddle < GeneralMiddleware; end
+      class BarMiddle < GeneralMiddleware; end
+      class BazMiddle < GeneralMiddleware; end
+      
+      FooApp.stack(:general,  :labels => [:production]        ).use(GeneralMiddleware)
+      FooApp.stack(:foo,      :labels => [:production, :demo] ).use(FooMiddle)
+      FooApp.stack(:bar,      :labels => [:test]              ).use(BarMiddle)
+      FooApp.stack(:baz,      :labels => [:any]               ).use(BazMiddle)
+    end
+    
+    it "should differentiate between stack types" do
+      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle]
+      FooApp.middlewares(:demo).map{|m| m.middleware}.should == [FooMiddle, BazMiddle]
+      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, BazMiddle]
+      FooApp.middlewares(:demo, :test).map{|m| m.middleware}.should == [FooMiddle, BarMiddle,BazMiddle]
+    end
+    
+    it "should add a middleware that is not declared with any particular label to all stacks" do
+      class PazMiddle < GeneralMiddleware; end
+      FooApp.stack(:paz).use(PazMiddle)
+      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, BazMiddle, PazMiddle]
+      FooApp.middlewares(:demo).map{|m| m.middleware}.should == [FooMiddle, BazMiddle, PazMiddle]
+      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle, PazMiddle]
+    end
+    
+    it "should not use a middleware if it is dependent on middleware that is not in the correct stack" do
+      class PazMiddle < GeneralMiddleware; end
+      FooApp.stack(:paz, :after => :bar).use(PazMiddle)
+      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle]
+      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, PazMiddle, BazMiddle]
+    end
+  end
 end
