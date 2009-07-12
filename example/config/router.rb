@@ -6,7 +6,7 @@ MyApp.add_routes do |r|
   r.map "/foo",       :to => Proc.new{|e|
     [200, {"Content-Type" => "text/plain", "Content-Length" => "3"}, ["foo"]]
   }
-  r.map "/some",      :to => SomeMount.stack
+  r.map "/some",      :to => SomeMount.stackup
   
   r.map "/sinatra/one", :to => SinatraOne
   r.map "/sinatra/two", :to => SinatraTwo

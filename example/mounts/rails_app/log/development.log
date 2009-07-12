@@ -338,3 +338,28 @@ Completed in 2ms (View: 1, DB: 0) | 200 OK [http://localhost/man/im/in/rails/foo
 Processing FooController#index (for 127.0.0.1 at 2009-06-03 14:55:58) [GET]
 Rendering foo/index
 Completed in 2ms (View: 1, DB: 0) | 200 OK [http://localhost/man/im/in/rails/foo/]
+
+
+Processing ApplicationController#index (for 127.0.0.1 at 2009-07-12 12:37:22) [GET]
+
+ActionController::RoutingError (No route matches "" with {:method=>:get}):
+  rack (1.0.0) bin/rackup:176
+  /usr/bin/rackup:19:in `load'
+  /usr/bin/rackup:19
+
+Rendering rescues/layout (not_found)
+
+
+Processing ApplicationController#index (for 127.0.0.1 at 2009-07-12 12:37:27) [GET]
+
+ActionController::RoutingError (No route matches "/" with {:method=>:get}):
+  rack (1.0.0) bin/rackup:176
+  /usr/bin/rackup:19:in `load'
+  /usr/bin/rackup:19
+
+Rendering rescues/layout (not_found)
+
+
+Processing FooController#index (for 127.0.0.1 at 2009-07-12 12:37:36) [GET]
+Rendering foo/index
+Completed in 7ms (View: 6, DB: 0) | 200 OK [http://localhost/man/im/in/rails/foo]

@@ -14,7 +14,7 @@ module Pancake
       self::BootLoader.run!(:stack_class => self, :only => {:level => :init})
 
       @initialized = true
-    end # initiailze stack
+    end # initiailze stack 
       
     def self.initialized?
       !!@initialized
@@ -41,7 +41,7 @@ module Pancake
       
       app = app || self.class.new_app_instance
             
-      mwares = self.class.middlewares
+      mwares = self.class.middlewares(Pancake.stack_labels)
       
       @app = Pancake::Middleware.build(app, mwares)
       

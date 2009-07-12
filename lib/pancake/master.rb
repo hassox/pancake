@@ -33,11 +33,12 @@ module Pancake
     end
   
     def stack_labels
-      @stack_labels ||= []
+      return @stack_labels unless @stack_labels.nil? || @stack_labels.empty?
+      self.stack_labels = [:production]
     end
     
-    def stack_labels=(labels)
-      @stack_labels = labels
+    def stack_labels=(*labels)
+      @stack_labels = labels.flatten.compact
     end
     
   end # self

@@ -3,7 +3,7 @@ module Pancake
     
     def self.build(app, mwares)
       mwares.reverse.inject(app) do |a, m|
-        m.middleware.new(a, m.options, &m.block)
+         m.middleware.new(a, m.options, &m.block)
       end
     end
     
