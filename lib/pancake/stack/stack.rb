@@ -1,6 +1,6 @@
 module Pancake
   class Stack
-    attr_reader :app
+    attr_accessor :app
     
     # extend Hooks::InheritableInnerClasses
     extend Hooks::OnInherit
@@ -32,24 +32,14 @@ module Pancake
       app_name = opts.delete(:app_name) || self.class
       self.class.initialize_stack unless self.class.initialized?
       Pancake.configuration.stacks[app_name] = self
-      
-      # Get a new configuration
-      Pancake.configuration.configs[app_name] = opts[:config] if opts[:config]
-      configuration(app_name) # get the configuration if there's none been specified
-      
-      yield configuration if block_given?
-      
-      app = app || self.class.new_app_instance
-            
-      mwares = self.class.middlewares(Pancake.stack_labels)
-      
-      @app = Pancake::Middleware.build(app, mwares)
-      
-      prepare(:builder => Pancake::RouteBuilder) do |r|
-        self.class.stack_routes.each{|sr| self.instance_exec(r, &sr)}
-        r.map nil, :to => @app # Fallback route 
-      end
-      
+
+      self.class::BootLoader.run!({  
+        :stack_class  => self.class,
+        :stack        => self,
+        :app          => app,
+        :app_name     => app_name,
+        :except       => {:level => :init}
+      }.merge(opts))
     end
     
     # Construct a stack using the application, wrapped in the middlewares

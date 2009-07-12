@@ -363,3 +363,8 @@ Rendering rescues/layout (not_found)
 Processing FooController#index (for 127.0.0.1 at 2009-07-12 12:37:36) [GET]
 Rendering foo/index
 Completed in 7ms (View: 6, DB: 0) | 200 OK [http://localhost/man/im/in/rails/foo]
+
+
+Processing FooController#index (for 127.0.0.1 at 2009-07-12 13:05:43) [GET]
+Rendering foo/index
+Completed in 7ms (View: 5, DB: 0) | 200 OK [http://localhost/man/im/in/rails/foo]

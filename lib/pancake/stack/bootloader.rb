@@ -50,3 +50,46 @@ Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
   end
 end
 
+###### -================== Stack Building BootLoaders
+# Pancake stacks need to be built with the following options
+# MyApp::BootLoader.run!({
+#   :stack_class  => self.class,
+#   :stack        => self,
+#   :app          => app,
+#   :app_name     => app_name,
+# })
+#
+
+Pancake::Stack::BootLoader.add(:stack_configuration) do
+  def run!
+    stack     = config[:stack]
+    app_name  = config[:app_name] 
+
+    Pancake.configuration.configs[app_name] = config[:config] if config[:config]
+    stack.configuration(app_name) # get the configuration if there's none been specified
+  end
+end
+
+Pancake::Stack::BootLoader.add(:initialize_application) do
+  def run!
+    config[:app] ||= config[:stack_class].new_app_instance
+  end
+end
+
+Pancake::Stack::BootLoader.add(:build_middleware_stack) do
+  def run!
+    mwares = config[:stack_class].middlewares(Pancake.stack_labels)
+    config[:stack].app = Pancake::Middleware.build(config[:app], mwares)
+  end
+end
+
+Pancake::Stack::BootLoader.add(:router) do
+  def run!
+    unless config[:no_router]
+      config[:stack].send(:prepare, :builder => Pancake::RouteBuilder) do |r|
+        config[:stack_class].stack_routes.each{|sr| config[:stack].instance_exec(r, &sr)}
+        r.map nil, :to => config[:stack].app # Fallback route 
+      end
+    end
+  end
+end
