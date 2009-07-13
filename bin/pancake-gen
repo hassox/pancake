@@ -11,4 +11,3 @@ when "stack"
 else
   puts "Unknown Generator"
 end
-
