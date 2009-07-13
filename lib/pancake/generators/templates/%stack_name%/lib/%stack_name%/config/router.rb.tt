@@ -1,0 +1,4 @@
+<%= stack_name.camel_case %>.add_routes do |r|
+  # Add your routes here
+  
+end

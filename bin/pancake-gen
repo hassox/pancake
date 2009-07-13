@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'thor'
+require 'thor/runner'
+require 'pancake/generators'
+
+# TODO update for pancake to have a version
+case ARGV.shift
+when "stack"
+  Pancake::Generators::Stack.start
+else
+  puts "Unknown Generator"
+end
+

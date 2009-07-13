@@ -1,0 +1,18 @@
+puts "Loading Development Environment"
+
+# Get Access
+Pancake.configuration.configs(<%= stack_name.camel_case %> ) do |config|
+  config.foo = :foo
+end
+
+# Allows Pancake to selectively apply middlewares in the stack.  
+# If a middleware is not declared with a specific stack label then it will always be loaded
+# You can specify Middleware to be active under particular stack labels only however.
+# 
+# Example
+# <%= stack_name.camel_case %>.stack(:my_middlware, :labels => [:demo, :development]).use(Middlware, :with => :opts)
+#
+# This would only include the middleware Middlware in stacks with either the :demo, or :development label 
+#
+# Setting The Pancake.stack_labels will use any relevant stacks
+Pancake.stack_lables = [:development]
