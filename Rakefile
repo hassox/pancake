@@ -31,7 +31,7 @@ spec = Gem::Specification.new do |s|
   
   s.require_path = 'lib'
   s.autorequire = GEM
-  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/*")
+  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")
 end
 
 task :default => :spec
