@@ -14,9 +14,6 @@ module Pancake
       raise "You must specify a root directory for pancake" unless opts[:root]
       self.root = opts[:root]
       
-      # initialize the application
-      load "#{root}/pancake.init"
-      
       # Build Pancake
       the_app = instance_eval(&block)
       Pancake::Middleware.build(the_app, middlewares)
