@@ -1,1 +1,54 @@
-h1. This, is an experiment....
+h3. Whats this then
+
+A tool for making pancake stacks. Where, as you know, pancake == ruby web thing.
+
+It essentially takes the awesome "rack":rack.github.com and "rack router":http://github.com/carllerche/rack-router/ and mixes it with flour and water and eggs to bind it together into a pancake thin layer of goodness providing a structured way of orgnaising (stacking) your assortment of ruby web things. In doing so, it  allows you to provide each of your ruby web things (lets call them "middlewares") with some underlying contextual functionality.
+
+h3. Why stack pancakes?
+Well, simply put, reuse! I'm building something... and what do you know i need another forum/asset manager/bla thing etc. Typically I can:
+
+  * Write/include the functionality directly in to my current app.
+  * Add a second app, theme it up similarly and use apache/nginx/other configs to glue it up, and perhaps come up with a devious approach for auth with some cunning SSO... or not
+
+What we'd like to facilitate with pancake is you take your existing much loved forum/asset manager/bla thing etc and mount it into pancake, sharing auth and other contextual information between apps.
+
+Insert helpful diagram here...
+
+h3. Getting Started
+
+h4. You'll need to have installed (as well as your usual ruby stuffs)...
+
+* wycats-thor 
+* Carllerches rack router
+
+h4. Installing
+
+gem install hassox-pancake
+
+h4. Starting
+
+pancake-gen yummy-app
+
+cd yummy-app
+
+Edit pancake.init and add a line like:
+require File.join(File.dirname(__FILE__), "mounts", "yummy-app"
+
+Create a config.ru that has something like:
+require 'rubygems'
+require 'pancake'
+
+class YummyApp < Pancake::Stack;end
+
+#Pancake.get_root(__FILE__) is just an easy way of saying CWD
+YummyApp.roots << Pancake.get_root(__FILE__)
+run Pancake.start(:root => Pancake.get_root(__FILE__){ YummyApp.stackup }
+
+Create config/router.rb with:
+
+home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
+
+YummyApp.add_routes do |r|
+  r.map "/", :to => home
+end
+
