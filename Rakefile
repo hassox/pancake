@@ -27,7 +27,7 @@ spec = Gem::Specification.new do |s|
   
   # Uncomment this to add a dependency
   # s.add_dependency "foo"
-  s.add_dependency "thor", ">=0.10.26"
+  #s.add_dependency "thor", ">=0.10.26"
   
   s.require_path = 'lib'
   s.autorequire = GEM

@@ -1,7 +1,7 @@
 require 'rubygems'
 
 require ::File.join(::File.dirname(__FILE__), "../lib/pancake") # Normally just pancake
-
+require 'my_app.rb'
 # get the application to run.  The applicadtion in the Pancake.start block
 # is the master application.  It will have all requests directed to it through the 
 # pancake middleware

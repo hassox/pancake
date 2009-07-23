@@ -7,6 +7,7 @@ module Pancake
     include Rack::Router::Routable
     extend Pancake::Middleware
   
+    #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack
       raise "Application root not set" if roots.empty?
       
