@@ -1,3 +1,5 @@
+__This read me is getting thrown to get there in little bits of time snatched between other bits of snatched time... it will be magnificient, eventually... please bare with it...
+
 h3. Whats this then
 
 A tool for making pancake stacks. Where, as you know, pancake == ruby web thing.
@@ -5,6 +7,7 @@ A tool for making pancake stacks. Where, as you know, pancake == ruby web thing.
 It essentially takes the awesome "rack":rack.github.com and "rack router":http://github.com/carllerche/rack-router/ and mixes it with flour and water and eggs to bind it together into a pancake thin layer of goodness providing a structured way of orgnaising (stacking) your assortment of ruby web things. In doing so, it  allows you to provide each of your ruby web things (lets call them "middlewares") with some underlying contextual functionality.
 
 h3. Why stack pancakes?
+
 Well, simply put, reuse! I'm building something... and what do you know i need another forum/asset manager/bla thing etc. Typically I can:
 
   * Write/include the functionality directly in to my current app.
