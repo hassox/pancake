@@ -24,7 +24,6 @@ h4. You'll need to have installed (as well as your usual ruby stuffs)...
 * wycats-thor 
 * Carllerches rack router
 
-
 h4. Installing
 
 gem install hassox-pancake
@@ -43,6 +42,16 @@ require File.join(File.dirname(__FILE__), "mounts", "yummy-app"
 
 Create a config.ru that has something like:
 <pre>
+
+pancake-gen yummy-app
+
+cd yummy-app
+
+Edit pancake.init and add a line like:
+require File.join(File.dirname(__FILE__), "mounts", "yummy-app"
+
+Create a config.ru that has something like:
+
 require 'rubygems'
 require 'pancake'
 
@@ -53,8 +62,10 @@ YummyApp.roots << Pancake.get_root(__FILE__)
 run Pancake.start(:root => Pancake.get_root(__FILE__){ YummyApp.stackup }
 </pre>
 
-Create config/router.rb with:
 <pre>
+
+Create config/router.rb with:
+
 home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
 
 YummyApp.add_routes do |r|
