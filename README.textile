@@ -26,49 +26,75 @@ h4. You'll need to have installed (as well as your usual ruby stuffs)...
 
 h4. Installing
 
-gem install hassox-pancake
-
-h4. Starting
-
 <pre>
-pancake-gen yummy-app
-</pre>
-cd yummy-app
-
-Edit pancake.init and add a line like:
-<pre>
-require File.join(File.dirname(__FILE__), "mounts", "yummy-app"
+$sudo gem install hassox-pancake
 </pre>
 
-Create a config.ru that has something like:
+h4. Installing
+
 <pre>
-
-pancake-gen yummy-app
-
-cd yummy-app
-
-Edit pancake.init and add a line like:
-require File.join(File.dirname(__FILE__), "mounts", "yummy-app"
-
-Create a config.ru that has something like:
-
-require 'rubygems'
-require 'pancake'
-
-class YummyApp < Pancake::Stack;end
-
-#Pancake.get_root(__FILE__) is just an easy way of saying CWD
-YummyApp.roots << Pancake.get_root(__FILE__)
-run Pancake.start(:root => Pancake.get_root(__FILE__){ YummyApp.stackup }
+$pancake-gen stack yummy-app
 </pre>
 
+h4. Does it work?
+
+(I've used curl here, feel free to use your point your browser to http://localhost:9292/ instead)
 <pre>
+$cd yummy-app/lib/yummy-app
+$rackup config.ru 
+Loading Development Environment
+</pre>
 
-Create config/router.rb with:
+Now in your browser, visit http://localhost:9292/
+Or, with curl like here:
+<pre>
+$curl -I localhost:9292
+127.0.0.1 - - [26/Jul/2009 15:42:55] "HEAD / HTTP/1.1" 404 9 0.0011
+HTTP/1.1 404 Not Found
+Connection: close
+Date: Sun, 26 Jul 2009 05:42:55 GMT
+Content-Type: text/plain
+Content-Length: 9
+</pre>
 
+You should see 'NOT FOUND' in your browser window and something like this appear in your rackup console window.
+<pre>
+127.0.0.1 - - [26/Jul/2009 15:42:55] "GET / HTTP/1.1" 404 9 0.0011
+</pre>
+
+That 404 is good news! The stack is running.. we just haven't cooked any pancakes yet, theres nothing to find. Next step add something...
+
+h4. Routing
+
+Edit config/router.rb with:
+
+<pre>
 home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
 
 YummyApp.add_routes do |r|
   r.map "/", :to => home
 end
 </pre>
+
+Now, restart the server (^C) and try again:
+<pre>
+$rackup config.ru
+thor:bug_report glenn$ rackup config.ru 
+Loading Development Environment
+</pre>
+
+Reload you page and you should see "Welcome home".
+
+And, in your console window, rack should log the request like so:
+
+<pre>
+127.0.0.1 - - [26/Jul/2009 16:16:23] "GET / HTTP/1.1" 200 12 0.0012
+127.0.0.1 - - [26/Jul/2009 16:16:23] "GET /favicon.ico HTTP/1.1" 200 12 0.0012
+<pre>
+
+h4. Whats next:
+
+Well we don't want to be writing our apps as lambdas jemmied into the router, instead next we start to build stacks, out of other middlewares... merbs, other pancake stacks, some sinatra, more rack ups or what ever.
+
+To be contd...
+
