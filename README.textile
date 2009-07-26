@@ -30,7 +30,7 @@ h4. Installing
 $sudo gem install hassox-pancake
 </pre>
 
-h4. Installing
+h4. Create your own stack
 
 <pre>
 $pancake-gen stack yummy-app
@@ -87,9 +87,11 @@ And, in your console window, rack should log the request like so:
 127.0.0.1 - - [26/Jul/2009 16:16:23] "GET / HTTP/1.1" 200 12 0.0012
 127.0.0.1 - - [26/Jul/2009 16:16:23] "GET /favicon.ico HTTP/1.1" 200 12 0.0012
 </pre>
+
 h4. Whats next:
 
 Well we don't want to be writing our apps as lambdas jemmied into the router, instead next we start to build stacks, out of other middlewares... merbs, other pancake stacks, some sinatra, more rack ups or what ever.
 
 To be continued...
+__btw if anyone can tell me how to stop the pre tags adding extra vertical white space.. i'll, love you forever__
 
