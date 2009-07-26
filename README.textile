@@ -78,7 +78,6 @@ end
 Now, restart the server (^C) and try again:
 <pre>
 $rackup config.ru
-thor:bug_report glenn$ rackup config.ru 
 Loading Development Environment
 </pre>
 Reload you page and you should see "Welcome home".
