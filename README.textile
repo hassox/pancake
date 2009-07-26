@@ -41,7 +41,7 @@ h4. Does it work?
 (I've used curl here, feel free to use your point your browser to http://localhost:9292/ instead)
 <pre>
 $cd yummy-app/lib/yummy-app
-$rackup config.ru 
+$rackup config.ru
 Loading Development Environment
 </pre>
 
