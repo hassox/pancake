@@ -1,3 +1,3 @@
 class <%= stack_name.camel_case %> < Pancake::Stack
-  roots << File.join(Pancake.get_root(__FILE__))
+  roots << File.join(Pancake.get_root(__FILE__), "<%= stack_name %>")
 end

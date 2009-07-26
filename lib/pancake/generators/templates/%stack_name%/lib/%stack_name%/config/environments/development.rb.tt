@@ -15,4 +15,4 @@ end
 # This would only include the middleware Middlware in stacks with either the :demo, or :development label 
 #
 # Setting The Pancake.stack_labels will use any relevant stacks
-Pancake.stack_lables = [:development]
+Pancake.stack_labels = [:development]
