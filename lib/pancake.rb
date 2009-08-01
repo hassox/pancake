@@ -8,11 +8,14 @@ require 'extlib/numeric'
 require 'extlib/object'
 require 'extlib/symbol'
 require 'extlib/blank'
+require "extlib/dictionary"
 
 %w(
+  paths
   hooks/on_inherit
   hooks/inheritable_inner_classes
   core_ext/object
+  core_ext/symbol
   configuration
   bootloaders
   middleware
