@@ -1,15 +1,29 @@
 module Pancake
+  # The route builder for pancake stacks.
+  # Mixin to this class to extend the router with new methods
   class RouteBuilder < Rack::Router::Builder::Simple
     
-    # Use this to mount a rack application in the URL namesapce
-    # :api: public
+    # Mounts an application inside the router
+    # 
+    # @param [String] path        The relative url path prefix to mount this application at in the url namespace
+    # @param [Object] app         The rack complient application to mount at <path>
+    # @param [Hash]   with        The options of parameters to set when the route is matched
+    # @param [Hash]   conditions  Conditions that must be met for this route to match
+    #
+    # @see http://github.com/carllerche/rack-router/tree/master
+    # @api public
+    # @since 0.1.0
+    # @author Daniel Neighman
     def mount(path, app, with = {}, conditions = {})
       map path, :to => app, :with => with, :conditions => conditions
     end
     
-    # Use this to mount a rails applciation at a giving path
-    # You can only mount one rails application since rails is not namespaced
-    # :api: public
+    # Mount a rails application inside a pancake router.
+    # Be sure you know what you're doing when you use this
+    #
+    # @api public
+    # @since 0.1.0
+    # @author Daniel Neighman
     def mount_rails(path, with = {}, conditions = {})
       if Rails.version =~ /^2\.3/
         ::ActionController::Base.relative_url_root = path

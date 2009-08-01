@@ -1,4 +1,3 @@
-# @author Daniel Neighman
 module Pancake
   # Pancake::Paths provides a mixin for path management.  
   # A path consists of a name, and paths + globs.  

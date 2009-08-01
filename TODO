@@ -1,10 +1,4 @@
 TODO:
-  
-Path Management:
-  Allow named paths to be setup.  Paths should include a glob similar to merb push paths
-  Many roots must be enabled for when using as a gem, and mounting in an app
-  Paths should be inheritable across stacks, and should be tied to a specific stack
-  Path management should be a mixin to allow any class to implement
 
 Controller Publish Declaration:
   Allow requirements to be declared for multiple controllers at once
@@ -22,6 +16,3 @@ Renderable Mixin
   Templates should be inheritable
   The target class should be able to inject arbitrary helpers into the template context
   Layouts, views and partials should be supported
-
-Stack Initialization
-  Create bootloaders for initialization so that initialization for can be done completely via bootloaders
