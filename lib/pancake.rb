@@ -14,6 +14,7 @@ require "extlib/dictionary"
   paths
   hooks/on_inherit
   hooks/inheritable_inner_classes
+  core_ext/class
   core_ext/object
   core_ext/symbol
   configuration

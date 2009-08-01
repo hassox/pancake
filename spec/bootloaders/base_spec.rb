@@ -6,6 +6,7 @@ describe "Pancake::Stack::BootLoader" do
     $captures = []
     
     class ::FooStack < Pancake::Stack
+      roots << File.join(Pancake.get_root(__FILE__), "..", "fixtures", "foo_stack")
     end
   end
   
@@ -41,7 +42,7 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader.add(:foo){ def run!; $captures << :foo; end}
     FooStack::BootLoader.add(:bar){ def run!; $captures << :bar; end}
     FooStack::BootLoader.add(:baz, :before => :bar){ def run!; $captures << :baz; end}
-    FooStack::BootLoader.run!
+    FooStack.new
     $captures.should == [:foo, :baz, :bar]
   end
   
@@ -50,7 +51,7 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader.add(:foo){ def run!; $captures << :foo; end}
     FooStack::BootLoader.add(:bar){ def run!; $captures << :bar; end}
     FooStack::BootLoader.add(:baz, :after => :foo){ def run!; $captures << :baz; end}
-    FooStack::BootLoader.run!
+    FooStack.new
     $captures.should == [:foo, :baz, :bar]
   end
   
@@ -63,7 +64,7 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader.add(:fred,   :before => :bar   ){ def run!; $captures << :fred; end}
     FooStack::BootLoader.add(:barney, :after  => :fred  ){ def run!; $captures << :barney; end}
     
-    FooStack::BootLoader.run!
+    FooStack.new
     $captures.should == [:foo, :paz, :baz, :fred, :barney, :bar]
   end
   
@@ -78,16 +79,6 @@ describe "Pancake::Stack::BootLoader" do
       $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init]]
     end
     
-    it "should run default level bootloaders without running :init bootloaders" do
-      FooStack::BootLoader.add(:foo                  ){ def run!; $captures << [:foo, :default]; end}
-      FooStack::BootLoader.add(:bar, :level => :init ){ def run!; $captures << [:bar, :init   ]; end}
-      FooStack::BootLoader.add(:baz, :level => :init ){ def run!; $captures << [:baz, :init   ]; end}
-      FooStack::BootLoader.add(:paz, :level => :init, :before => :baz){ def run!; $captures << [:paz, :init]; end}
-      
-      FooStack::BootLoader.run!
-      $captures.should == [[:foo, :default]]
-    end
-    
     it "should run init or then default level bootloaders individually" do
       FooStack::BootLoader.add(:foo                  ){ def run!; $captures << [:foo, :default]; end}
       FooStack::BootLoader.add(:grh                  ){ def run!; $captures << [:grh, :default]; end} 
@@ -96,11 +87,8 @@ describe "Pancake::Stack::BootLoader" do
       FooStack::BootLoader.add(:baz, :level => :init ){ def run!; $captures << [:baz, :init   ]; end}
       FooStack::BootLoader.add(:paz, :level => :init, :before => :baz){ def run!; $captures << [:paz, :init]; end}
       
-      FooStack::BootLoader.run!
-      $captures.should == [[:foo, :default], [:ptf, :default], [:grh, :default]]
-      $captures = []
-      FooStack::BootLoader.run!(:only => {:level => :init})
-      $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init]]
+      FooStack.new
+      $captures.should == [[:bar, :init], [:paz, :init], [:baz, :init], [:foo, :default], [:ptf, :default], [:grh, :default]]
     end
     
     it "should inherit from the default boot loaders" do
@@ -114,7 +102,7 @@ describe "Pancake::Stack::BootLoader" do
       FooStack::BootLoader.add(:bar){ def run!; config[:result] << :bar; end}
       
       opts = { :result => [] }
-      FooStack::BootLoader.run!(opts)
+      FooStack.new(nil, opts)
       opts[:result].should == [:foo, :bar]
     end
   end

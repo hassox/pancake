@@ -59,16 +59,7 @@ end
 #   :app_name     => app_name,
 # })
 #
-
-Pancake::Stack::BootLoader.add(:stack_configuration) do
-  def run!
-    stack     = config[:stack]
-    app_name  = config[:app_name] 
-
-    Pancake.configuration.configs[app_name] = config[:config] if config[:config]
-    stack.configuration(app_name) # get the configuration if there's none been specified
-  end
-end
+# 
 
 Pancake::Stack::BootLoader.add(:initialize_application) do
   def run!

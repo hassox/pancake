@@ -10,14 +10,21 @@ module Pancake
     
       # Provides an inheritance hook to all extended classes
       # Allows ou to hook into the inheritance 
-      # :api: public
       def inherited(base)
         super
         _on_inherit.each{|b| b.call(base,self)}
       end
     
       # A hook to add code when the stack is inherited
-      # :api: public
+      # The code will be executed when the class is inherited
+      # 
+      # @example 
+      #   MyClass.on_inherit do |base, parent|
+      #     # do stuff here between the child and parent
+      #   end
+      #
+      # @api public
+      # @author Daniel Neighman
       def on_inherit(&block)
         _on_inherit << block if block
         _on_inherit

@@ -33,7 +33,12 @@ module Pancake
       app_name = opts.delete(:app_name) || self.class
       self.class.initialize_stack unless self.class.initialized?
       Pancake.configuration.stacks[app_name] = self
-
+      
+      # setup the configuration for this stack
+      Pancake.configuration.configs[app_name] = opts[:config] if opts [:config]
+      self.configuration(app_name)
+      yield self.configuration(app_name) if block_given?
+      
       self.class::BootLoader.run!({  
         :stack_class  => self.class,
         :stack        => self,
