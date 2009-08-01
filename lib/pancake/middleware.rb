@@ -23,8 +23,8 @@ module Pancake
     
     # Build a middleware stack given an application and some middleware classes
     #
-    # @params [Object] app a rack application to wrap in the middlware list
-    # @params [Array<StackMiddleware>] mwares an array of StackMiddleware instances where each instance
+    # @param [Object] app a rack application to wrap in the middlware list
+    # @param [Array<StackMiddleware>] mwares an array of StackMiddleware instances where each instance
     #   defines a middleware to use in constructing the stack
     #
     # @example 
@@ -67,9 +67,8 @@ module Pancake
     #   The name of a given middleware.  Each piece of middleware has a name in the stack.
     #   By naming middleware we can refer to it later, swap it out for a different class or even just remove it from the stack.
     # @param        [Hash] opts An options hash
-    # @option opts  [Array<Symbol>] :labels 
+    # @option opts  [Array<Symbol>] :labels ([:any])
     #   An array of symbols, or a straight symbol that defines what stacks this middleware sould be active in
-    #   If no label(s) are specified, the label for the middleware is :any
     # @option opts [Object] :before
     #   Sets this middlware to be run after the middleware named.  Name is either the name given to the 
     #   middleware stack, or the Middleware class itself.
@@ -80,29 +79,29 @@ module Pancake
     # @example Declaring un-named middleware via the stack
     #   MyClass.stack.use(MyMiddleware)
     #
-    #   This middleware will be named MyMiddleware, and can be specified with (:before | :after) => MyMiddleware
+    # This middleware will be named MyMiddleware, and can be specified with (:before | :after) => MyMiddleware
     #
     # @example Declaring a named middleware via the stack
     #   MyClass.stack(:foo).use(MyMiddleware)
     #
-    #   This middleware will be named :foo and can be specified with (:before | :after) => :foo
+    # This middleware will be named :foo and can be specified with (:before | :after) => :foo
     #
     # @example Declaring a named middleware with a :before key
     #   MyClass.stack(:foo, :before => :bar).use(MyMiddleware)
     #  
-    #   This middleware will be named :foo and will be run before the middleware named :bar
-    #   If :bar is not run, :foo will not be run either
+    # This middleware will be named :foo and will be run before the middleware named :bar
+    # If :bar is not run, :foo will not be run either
     # 
     # @example Declaring a named middlware with an :after key
     #   MyClass.stack(:foo, :after => :bar).use(MyMiddleware)
     #   
-    #   This middleware will be named :foo and will be run after the middleware named :bar
-    #   If :bar is not run, :foo will not be run either 
+    # This middleware will be named :foo and will be run after the middleware named :bar
+    # If :bar is not run, :foo will not be run either 
     #
     # @example Declaring a named middleware with some labels
     #   MyClass.stack(:foo, :lables => [:demo, :production, :staging]).use(MyMiddleware)
     #  
-    #   This middleware will only be run when pancake is set with the :demo, :production or :staging labels
+    # This middleware will only be run when pancake is set with the :demo, :production or :staging labels
     #
     # @example A full example
     #   MyClass.stack(:foo, :labels => [:staging, :development], :after => :session).use(MyMiddleware)
@@ -166,7 +165,9 @@ module Pancake
       class_inheritable_reader :_central_mwares, :_mwares, :_before, :_after
       @_central_mwares, @_before, @_after, @_mwares = [], {}, {}, {}
       
+      # @api private
       attr_reader :middleware, :name
+      # @api private
       attr_accessor :config, :block, :stack, :options
       
       class << self
@@ -192,7 +193,7 @@ module Pancake
         # @example No Labels Specified
         #   MyClass::StackMiddleware.middlewares
         #   
-        #   This will include all defined middlewares in the given stack
+        # This will include all defined middlewares in the given stack
         #
         # @return [Array<StackMiddleware>] 
         #   An array of the middleware definitions to use in the order that they should be applied
@@ -217,7 +218,7 @@ module Pancake
         # @example 
         #   MyClass::StackMiddleware.map_middleware(:foo, :production, :demo)
         #  
-        #   Constructs the middleware list based on the middleware named :foo, including all :before, and :after groups
+        # Constructs the middleware list based on the middleware named :foo, including all :before, and :after groups
         # 
         # @return [Array<StackMiddleware>]
         #   Provides an array of StackMiddleware instances in the array [<before :foo>, <:foo>, <after :foo>]
@@ -264,9 +265,8 @@ module Pancake
       # @param          [Object]  name a name for this middleware definition.  Usually a symbol, but could be the class.
       # @param          [Object]  stack the stack owner of this middleware.  
       # @param          [Hash]    options an options hash.  Provide labels for this middleware.  
-      # @option options [Array]   :labels 
+      # @option options [Array]   :labels ([:any])
       #   The labels that are associated with this middleware
-      #   By default this is set to :any
       # @option options [Object]  :before A middleware name to add this middleware before
       # @option options [Object]  :after A middleware name to add this middleware after
       #

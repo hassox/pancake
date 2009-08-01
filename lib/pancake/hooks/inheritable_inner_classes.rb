@@ -24,9 +24,9 @@ module Pancake
       #     class Bar < Foo::Bar; end
       #   end
       #
-      #   This provides a more organic inheritance where the child gets their own 
-      #   version of the inner class which is actually inherited from the parents inner class.
-      #   The inheritance chain remains intact.
+      # This provides a more organic inheritance where the child gets their own 
+      # version of the inner class which is actually inherited from the parents inner class.
+      # The inheritance chain remains intact.
       #
       # @api public
       # @since 0.1.0

@@ -10,7 +10,7 @@ module Pancake
     
     # Start Pancake.  This provides a full pancake stack to use inside a rack application
     # 
-    # @params       [Hash]    opts
+    # @param        [Hash]    opts
     # @option opts  [String]  :root   The root of the pancake stack
     # 
     # @example Starting a pancake stack
@@ -54,7 +54,7 @@ module Pancake
     # @example 
     #   Pancake.stack_labels == [:development, :demo]
     #  
-    #   This would activate middleware marked with :development or :demo or the implicit :any label
+    #   # This would activate middleware marked with :development or :demo or the implicit :any label
     # 
     # @return [Array<Symbol>] 
     #   An array of labels to activate
@@ -70,7 +70,7 @@ module Pancake
     
     # Sets the stack labels to activate the associated middleware
     # 
-    # @params [Array<Symbol>, Symbol] An array of labels or a single label, specifying the middlewares to activate
+    # @param [Array<Symbol>, Symbol] An array of labels or a single label, specifying the middlewares to activate
     #
     # @example 
     #   Pancake.stack_labels = [:demo, :production]

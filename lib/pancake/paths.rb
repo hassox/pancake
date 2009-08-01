@@ -59,7 +59,7 @@ module Pancake
     # @example Using Multiple paths:
     #   MyClass.push_paths(:foo, ["/path/one", "/path/two"], "**/*.rb")
     #
-    # @exception [Pancake::NoPathsGiven] raised when an empty paths array is provided
+    # @raise [Pancake::NoPathsGiven] raised when an empty paths array is provided
     # @author Daniel Neighman
     # @since 0.1.1
     # @api public
@@ -72,9 +72,9 @@ module Pancake
     
     # Provides the directories or raw paths that are associated with a given name.
     # 
-    # @params       [Symbol]    name  The name for the paths group
-    # @params       [Hash]      opts  An options hash
-    # @option opts  [Boolean]   :invert inverts the order of the returned paths
+    # @param        [Symbol]    name  The name for the paths group
+    # @param        [Hash]      opts  An options hash
+    # @option opts  [Boolean]   :invert (false) inverts the order of the returned paths
     #
     # @example Read Directories:
     #   MyClass.dirs_for(:models)
@@ -106,7 +106,7 @@ module Pancake
     #
     # @param        [Symbol]    name    The name of the path group
     # @param        [Hash]      opts    A hash of options
-    # @option opts  [Boolean]   :invert Inverts the order of the paths
+    # @option opts  [Boolean]   :invert (false) Inverts the order of the paths
     #
     # @example
     #   MyClass.dirs_and_glob_for(:models)  
@@ -137,7 +137,7 @@ module Pancake
     # 
     # @param        [Symbol]  name    The name of the paths group
     # @param        [Hash]    opts    An options hash
-    # @option opts  [Boolean] :invert Inverts the order of the returned values
+    # @option opts  [Boolean] :invert (false) Inverts the order of the returned values
     #
     # @example 
     #   MyClass.paths_for(:model)
@@ -169,13 +169,13 @@ module Pancake
     #
     # @param        [Symbol]    name    The name of the paths group
     # @param        [Hash]      opts    An options hash
-    # @option opts  [Boolean]   :invert Inverts the order of returned paths and files
+    # @option opts  [Boolean]   :invert (false) Inverts the order of returned paths and files
     #
     # @example
-    #   Given the following:
-    #     /path/one/file1.rb
-    #     /path/one/file2.rb
-    #     /path/two/file1.rb
+    #   #Given the following:
+    #   #  /path/one/file1.rb
+    #   #  /path/one/file2.rb
+    #   #  /path/two/file1.rb
     #
     #     MyClass.push_path(:files, ["/path/one", "/path/two"], "**/*.rb")
     #
