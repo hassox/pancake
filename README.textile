@@ -70,7 +70,7 @@ h4. Routing
 Edit config/router.rb with:
 <pre>
   home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
-
+  
   YummyApp.add_routes do |r|
     r.map "/", :to => home
   end
