@@ -27,40 +27,40 @@ h4. You'll need to have installed (as well as your usual ruby stuffs)...
 h4. Installing
 
 <pre>
-$sudo gem install hassox-pancake
+ $sudo gem install hassox-pancake
 </pre>
 
 h4. Create your own stack
 
 <pre>
-$pancake-gen stack yummy-app
+ $pancake-gen stack yummy-app
 </pre>
 
 h4. Does it work?
 
 (I've used curl here, feel free to use your point your browser to http://localhost:9292/ instead)
 <pre>
-$cd yummy-app/lib/yummy-app
-$rackup config.ru
-Loading Development Environment
+ $cd yummy-app/lib/yummy-app
+ $rackup config.ru
+ Loading Development Environment
 </pre>
 
 Now in your browser, visit http://localhost:9292/
 Or, with curl like here:
 <pre>
-$curl -I localhost:9292
-127.0.0.1 - - [26/Jul/2009 15:42:55] "HEAD / HTTP/1.1" 404 9 0.0011
-HTTP/1.1 404 Not Found
-Connection: close
-Date: Sun, 26 Jul 2009 05:42:55 GMT
-Content-Type: text/plain
-Content-Length: 9
+ $curl -I localhost:9292
+ 127.0.0.1 - - [26/Jul/2009 15:42:55] "HEAD / HTTP/1.1" 404 9 0.0011
+ HTTP/1.1 404 Not Found
+ Connection: close
+ Date: Sun, 26 Jul 2009 05:42:55 GMT
+ Content-Type: text/plain
+ Content-Length: 9
 </pre>
 
 You should see 'NOT FOUND' in your browser window and something like this appear in your rackup console window.
 
 <pre>
-127.0.0.1 - - [26/Jul/2009 15:42:55] "GET / HTTP/1.1" 404 9 0.0011
+ 127.0.0.1 - - [26/Jul/2009 15:42:55] "GET / HTTP/1.1" 404 9 0.0011
 </pre>
 
 That 404 is good news! The stack is running.. we just haven't cooked any pancakes yet, theres nothing to find. Next step add something...
@@ -69,22 +69,22 @@ h4. Routing
 
 Edit config/router.rb with:
 <pre>
-home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
+ home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
 
-YummyApp.add_routes do |r|
-  r.map "/", :to => home
-end
+ YummyApp.add_routes do |r|
+   r.map "/", :to => home
+ end
 </pre>
 Now, restart the server (^C) and try again:
 <pre>
-$rackup config.ru
-Loading Development Environment
+ $rackup config.ru
+ Loading Development Environment
 </pre>
 Reload you page and you should see "Welcome home".
 And, in your console window, rack should log the request like so:
 <pre>
-127.0.0.1 - - [26/Jul/2009 16:16:23] "GET / HTTP/1.1" 200 12 0.0012
-127.0.0.1 - - [26/Jul/2009 16:16:23] "GET /favicon.ico HTTP/1.1" 200 12 0.0012
+ 127.0.0.1 - - [26/Jul/2009 16:16:23] "GET / HTTP/1.1" 200 12 0.0012
+ 127.0.0.1 - - [26/Jul/2009 16:16:23] "GET /favicon.ico HTTP/1.1" 200 12 0.0012
 </pre>
 
 h4. Whats next:
@@ -92,5 +92,4 @@ h4. Whats next:
 Well we don't want to be writing our apps as lambdas jemmied into the router, instead next we start to build stacks, out of other middlewares... merbs, other pancake stacks, some sinatra, more rack ups or what ever.
 
 To be continued...
-__btw if anyone can tell me how to stop the pre tags adding extra vertical white space.. i'll, love you forever__
 
