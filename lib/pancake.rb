@@ -33,7 +33,6 @@ require 'pancake/stack/bootloader'
 require 'pancake/stack/app'
 
 module Pancake
-  autoload :Controller, "pancake/more/controller"
   
   module Stacks
     autoload :Short,    "pancake/stacks/short"

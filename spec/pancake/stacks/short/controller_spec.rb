@@ -47,35 +47,35 @@ describe Pancake::Stacks::Short::Controller do
     end
     
     it "should call the 'show' action" do
-      @controller.params[:action] = "show"
+      @controller.params["action"] = "show"
       result = @controller.do_dispatch!
       result[0].should == 200
-      result[2].body.to_s.should  == "show"
+      result[2].body.join.should  == "show"
     end
     
     it "should dispatch to the index action by default" do
-      @controller.params[:action] = nil
+      @controller.params["action"] = nil
       result = @controller.do_dispatch!
       result[0].should == 200
-      result[2].body.to_s.should == "index"
+      result[2].body.join.should == "index"
     end
 
     it "should raise a Pancake::Response::NotFound exception when an action is now found" do
-      @controller.params[:action] = :does_not_exist
+      @controller.params["action"] = :does_not_exist
       lambda do
         @controller.do_dispatch!
       end.should raise_error(Pancake::Errors::NotFound)
     end
     
     it "should not dispatch to a protected method" do
-      @controller.params[:action] = "a_protected_method"
+      @controller.params["action"] = "a_protected_method"
       lambda do
         @controller.do_dispatch!
       end.should raise_error(Pancake::Errors::NotFound)
     end
     
     it "should not dispatch to a private method" do
-      @controller.params[:action] = "a_private_method"
+      @controller.params["action"] = "a_private_method"
       lambda do
         @controller.do_dispatch!
       end.should raise_error(Pancake::Errors::NotFound)
@@ -100,7 +100,7 @@ describe Pancake::Stacks::Short::Controller do
       end
       
       it "should not call a helper method" do
-        @controller.params[:action] = "some_helper_method"
+        @controller.params["action"] = "some_helper_method"
         lambda do
           result = @controller.do_dispatch!
         end.should raise_error(Pancake::Errors::NotFound)

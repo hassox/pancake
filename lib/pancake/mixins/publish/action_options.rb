@@ -13,7 +13,7 @@ module Pancake
         #
         # TODO: Allow params to be grouped together
         #
-        # :api: private
+        # @api private
         def initialize(default_formats, opts)
          # Extract the params — excluding configuration — and turn the keys into
          # strings. Additionally, check to see if someone has passed in a a raw
@@ -37,7 +37,7 @@ module Pancake
         # TODO: Flag missing params rather than just raising an error 
         # TODO: Allow defaults to be dynamically generated, i.e. method call
         #
-        # :api: private
+        # @api private
         def validate_and_coerce(incoming_params)
           missing = []
           params.each do |name, config|
@@ -62,7 +62,7 @@ module Pancake
         # Accepts a string and turns it into an integer. The opts argument is
         # only there to satisfy the interface. it is not used.
         #
-        # :api: private
+        # @api private
         def validate_and_coerce_integer(value, opts)
           value.to_i
         end
@@ -70,7 +70,7 @@ module Pancake
         # Accepts a string and turns it into a date. The opts argument is
         # only there to satisfy the interface. it is not used.
         #
-        # :api: private
+        # @api private
         def validate_and_coerce_date(value, opts)
           Date.parse(value)
         end
@@ -78,7 +78,7 @@ module Pancake
         # Turns the incoming value into a string. The opts argument is
         # only there to satisfy the interface. it is not used.
         #
-        # :api: private
+        # @api private
         def validate_and_coerce_string(value, opts)
           value.to_s
         end
@@ -88,7 +88,7 @@ module Pancake
         # symbols representing the base formats and will add to or overwrite 
         # them based on the options in the hash.
         #
-        # :api: private
+        # @api private
         def extract_format_options(defaults, opts)
           @formats = if opts[:provides]
             defaults + [opts[:provides]].flatten

@@ -1,7 +1,7 @@
 module Pancake
   # A simple rack application 
-  OK_APP      = lambda{|e| [200, {"Content-Type" => "text/plain", "Content-Length" => "2"},"OK"]}
-  MISSING_APP = lambda{|e| [404, {"Content-Type" => "text/plain", "Content-Length" => "9"},"NOT FOUND"]}
+  OK_APP      = lambda{|env| Rack::Response.new("OK",         200,  {"Content-Type" => "text/plain"}).finish}
+  MISSING_APP = lambda{|env| Rack::Response.new("NOT FOUND",  404,  {"Content-Type" => "text/plain"}).finish}
   
   extend Middleware
   

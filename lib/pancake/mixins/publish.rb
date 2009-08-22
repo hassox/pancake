@@ -16,13 +16,11 @@ module Pancake
       #
       #   provides :html, :xml
       #
-      # :api public
+      # @api public
       def provides(*args)
         self.formats = args
       end
-    
-      private
-    
+        
       # Causes the next method added immediately after it’s call to be defined 
       # as an action. It also generates an instance of ActionOptions, which 
       # encapsulates all the parameters the action accepts/expects and also
@@ -64,7 +62,7 @@ module Pancake
       #
       #   publish :only_provides => [:json, :xml]
       #
-      # :api: public
+      # @api public
       def publish(opts = {})
         @pending_publication_opts = opts
       end
@@ -104,7 +102,7 @@ module Pancake
       # insert defaults or coerce values into the desired type. It mutates
       # the params hash itself.
       #
-      # :api: private
+      # @api private
       def validate_and_coerce_params(action, params)
         actions[action].validate_and_coerce(params)
       end
@@ -114,7 +112,7 @@ module Pancake
       # instance methods as actions. Obviously, it should never be called 
       # directly :)
       #
-      # :api: private
+      # @api private
       def method_added(name)
         super
         if @pending_publication_opts
