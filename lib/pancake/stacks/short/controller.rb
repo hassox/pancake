@@ -6,28 +6,23 @@ module Pancake
       class Controller
         extend Mixins::Publish
         
+        # @api private
         def self.call(env)
           app = new(env)
           app.dispatch!
         end
         
-        attr_reader :env, :request, :status
+        # @api public
+        attr_reader :env, :request
+        
+        # @api public
+        attr_accessor :status
         
         def initialize(env)
           @env, @request = env, Rack::Request.new(env)
           @status = 200
           
           request.params.merge!(request.env['rack_router.params']) if request.env['rack_router.params']
-        end
-        
-        # Provides access to the rack request object
-        # 
-        # @example 
-        #   @controller.request
-        #
-        # @api public
-        def request
-          @request ||= Rack::Request.new(env)
         end
         
         # Provides access to the request params

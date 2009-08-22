@@ -27,9 +27,7 @@ end
 Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
   def run!
     stack_class.roots.each do |root|
-      ["config.rb", "environments/#{Pancake.env}.rb"].each do |f|
-        require "#{root}/config/#{f}" if File.exists?("#{root}/config/#{f}")
-      end
+      stack_class.paths_for(:config).each{|f| require f.join}
     end
   end
 end
@@ -37,7 +35,9 @@ end
 Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
   def run!
     stack_class.roots.each do |root|
-      Dir["#{root}/app/**/*.rb"].each{|f| require f}
+      [:models, :controllers].each do |type|
+        stack_class.paths_for(type).each{|f| require f.join}
+      end
     end
   end
 end
@@ -45,7 +45,7 @@ end
 Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
   def run!
     stack_class.roots.each do |root|
-      require "#{root}/config/router.rb" if File.exists?("#{root}/config/router.rb")
+      stack_class.paths_for(:router).each{|f| require f.join}
     end
   end
 end

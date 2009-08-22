@@ -6,7 +6,15 @@ module Pancake
     extend Hooks::OnInherit
     include Rack::Router::Routable
     extend Pancake::Middleware
-  
+    extend Pancake::Paths
+    
+    # Push the default paths in for this stack
+    push_paths(:config,       "config",               "config.rb")
+    push_paths(:config,       "config/environments",  "#{Pancake.env}.rb")
+    push_paths(:models,       "app/models",           "**/*.rb")
+    push_paths(:controllers,  "app/controllers",      "**/*.rb")
+    push_paths(:router,       "config",               "router.rb")
+
     #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack
       raise "Application root not set" if roots.empty?

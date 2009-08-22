@@ -39,7 +39,7 @@ module Pancake
         # @api public
         # @author Daniel Neighman
         def get(path, &block)
-          define_action(:get, path, block)
+          define_published_action(:get, path, block)
         end
         
         # Posts a resource to a given path
@@ -58,7 +58,7 @@ module Pancake
         # @api public
         # @author Daniel Neighman
         def post(path, &block)
-          define_action(:post, path, block)
+          define_published_action(:post, path, block)
         end
         
         # Puts a resource to a given path
@@ -77,7 +77,7 @@ module Pancake
         # @api public
         # @author Daniel Neighman
         def put(path, &block)
-          define_action(:put, path, block)
+          define_published_action(:put, path, block)
         end
         
         # Deletes the resource at a given path
@@ -96,7 +96,7 @@ module Pancake
         # @api public
         # @author Daniel Neighman
         def delete(path, &block)
-          define_action(:delete, path, block)
+          define_published_action(:delete, path, block)
         end
         
         private
@@ -107,7 +107,7 @@ module Pancake
         # @param [String] path - a string specifying the path to map the url to
         # @api private
         # @author Daniel Neighman
-        def define_action(method, path, block)
+        def define_published_action(method, path, block)
           Controller.publish unless @published
           @published = nil
           
