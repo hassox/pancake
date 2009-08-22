@@ -7,7 +7,7 @@ describe Pancake::Paths do
     class ::Foo
       extend Pancake::Paths
     end
-    @base_path = File.expand_path(File.join(File.dirname(__FILE__), "..", "fixtures", "paths"))
+    @base_path = File.expand_path(File.join(File.dirname(__FILE__), "fixtures", "paths"))
   end
   
   after(:all) do

@@ -274,7 +274,6 @@ module Pancake
       # @api private
       # @author Daniel Neighman
       def initialize(name, stack, options = {})
-        puts "Stack is #{stack.inspect}"
         @name, @stack, @options = name, stack, options
         @options[:labels] ||= [:any]
       end
