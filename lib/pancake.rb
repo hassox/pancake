@@ -10,7 +10,10 @@ require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
 
+require 'tilt'
+
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+
 require 'pancake/paths'
 require 'pancake/hooks/on_inherit'
 require 'pancake/hooks/inheritable_inner_classes'
@@ -22,6 +25,7 @@ require 'pancake/bootloaders'
 require 'pancake/middleware'
 require 'pancake/router'
 require 'pancake/master'
+require 'pancake/errors'
 require 'pancake/stack/stack'
 require 'pancake/stack/configuration'
 require 'pancake/stack/router'
@@ -33,5 +37,9 @@ module Pancake
   
   module Stacks
     autoload :Short,    "pancake/stacks/short"
+  end
+  
+  module Mixins
+    autoload :Publish,  "pancake/mixins/publish"
   end
 end

@@ -7,6 +7,8 @@ module Pancake
   #   by default, so the hooks in extlib aren’t useful. Additionally, the 
   #   the dispatch step gives us a point to hook in before and after the call.
   class Controller
+    extend Mixins::Publish
+    
     def self.call(env)
       new(env)      
     end

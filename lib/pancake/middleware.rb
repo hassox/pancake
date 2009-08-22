@@ -38,7 +38,14 @@ module Pancake
     # @author Daniel Neighman
     def self.build(app, mwares)
       mwares.reverse.inject(app) do |a, m|
-         m.middleware.new(a, m.options, &m.block)
+        case m.middleware.instance_method(:initialize).arity
+        when 1
+          m.middleware.new(a,&m.block)
+        when -2
+          m.middleware.new(a, m.options, &m.block)
+        else
+          raise "Don't know how to initialize #{m.middleware}"
+        end
       end
     end
     

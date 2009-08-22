@@ -1,8 +1,10 @@
-require File.dirname(__FILE__) + '/../../../spec_helper'
+require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Pancake::Controller publish declaration" do
   before(:each) do
-    class ::PancakeTest < Pancake::Controller
+    class ::PancakeTest
+      extend Pancake::Mixins::Publish
+      
       provides :html
       
       publish
@@ -41,32 +43,32 @@ describe "Pancake::Controller publish declaration" do
   end
   
   it "should publish an action" do
-    PancakeTest.actions['simple_publish'].is_a?(Pancake::Controller::ActionOptions).should == true
+    PancakeTest.actions['simple_publish'].is_a?(Pancake::Mixins::Publish::ActionOptions).should == true
   end
   
   it "should coerce a parameter into an integer" do
-    params, missing = PancakeTest.validate_and_coerce_params('integer_test', 'id' => "30")
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'integer_test', 'id' => "30")
     params['id'].should == 30
   end
   
   it "should coerce a parameter into a date" do
     date = Date.parse("2009/07/05")
-    params, missing = PancakeTest.validate_and_coerce_params('date_test', 'start' => "2009/07/05")
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'date_test', 'start' => "2009/07/05")
     params['start'].should == date
   end
   
   it "should flag required params that are missing" do
-    params, missing = PancakeTest.validate_and_coerce_params('integer_test', {})
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'integer_test', {})
     missing.include?(['id', :integer]).should == true
   end
   
   it "should allow parameters to be optional" do
-    params, missing = PancakeTest.validate_and_coerce_params('optional_test', {})
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'optional_test', {})
     missing.empty?.should == true
   end
   
   it "should return a default value for a parameter" do
-    params, missing = PancakeTest.validate_and_coerce_params('default_test', {})
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'default_test', {})
     params['page'].should == 12
   end
   
@@ -80,7 +82,7 @@ describe "Pancake::Controller publish declaration" do
   
   it "should allow complex declarations" do
     input = {'id' => "30", 'name' => "Purslane"}
-    params, missing = PancakeTest.validate_and_coerce_params('complex_test', input)
+    params, missing = PancakeTest.__send__(:validate_and_coerce_params, 'complex_test', input)
     params['id'].should == 30
     params['name'].should == "Purslane"
     params['melon'].should == 50

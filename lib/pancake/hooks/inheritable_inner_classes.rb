@@ -49,7 +49,7 @@ module Pancake
       def inherited(base)
         super
         class_defs = inheritable_inner_classes.map do |klass|
-          "class #{klass} < #{self}::#{klass}; end\n"
+          "class #{klass} < superclass::#{klass}; end\n"
         end
         # puts "#{base.name} is INHERITING INNER CLASSES #{class_defs.inspect}"
         base.class_eval(class_defs.join)

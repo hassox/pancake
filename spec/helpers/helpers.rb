@@ -11,6 +11,10 @@ module Pancake
           end
         end
       end # clear_constnat3
+      
+      def env_for(path = "/", opts = {})
+        Rack::MockRequest.env_for(path, opts)
+      end
     end # Helpers
   end # Spec
 end # Pancake
