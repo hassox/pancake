@@ -4,7 +4,8 @@ module Pancake
       inheritable_inner_classes :Controller
       
       class Controller
-        extend Mixins::Publish
+        extend  Mixins::Publish
+        include Mixins::Render
         
         # @api private
         def self.call(env)

@@ -40,5 +40,6 @@ module Pancake
   
   module Mixins
     autoload :Publish,  "pancake/mixins/publish"
+    autoload :Render,   "pancake/mixins/render"
   end
 end

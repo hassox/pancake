@@ -1,6 +1,7 @@
 module Pancake
   # Pancake::Paths provides a mixin for path management.  
-  # A path consists of a name, and paths + globs.  
+  # A path consists of a name, and paths + globs, and makes use of the Klass.roots that have been set as 
+  # file roots for each path and glob to be applied to.
   # Each name may have many (path + glob)s, so that many root paths may be added to the same name
   #
   # @example Adding Paths:
@@ -8,9 +9,9 @@ module Pancake
   #     extend Pancake::Paths
   #   end
   #   
-  #   Foo.push_paths(:model, "/path/to/models", "**/*.rb")
-  #   Foo.push_paths(:model, "/another/path/to/models", "**/*.rb")
-  #   Foo.push_paths(:model, "/yet/another")
+  #   Foo.push_paths(:model, "relative/path/to/models", "**/*.rb")
+  #   Foo.push_paths(:model, "another/path/to/models", "**/*.rb")
+  #   Foo.push_paths(:model, "yet/another")
   #
   # This will make available the directory and or full file paths for :model in the order they 
   # were declared.
@@ -18,19 +19,19 @@ module Pancake
   # When no glob is provided, the glob will be returned as nil
   # 
   # @example Reading Paths:
-  #   Foo.dirs_for(:model) == ["/path/to/models", "/another/path/to/models", "/yet/another"]
+  #   Foo.dirs_for(:model) == ["#{root}/relative/path/to/models", "#{root}/another/path/to/models", "#{root}/yet/another"]
   #   
   #   Foo.dirs_and_glob_for(:model) == [
-  #     ["/path/to/models",         "**/*.rb"], 
-  #     ["/another/path/to/models", "**/*.rb"],
-  #     ["/yet/another",            nil]
+  #     ["#{root}/relative/path/to/models",         "**/*.rb"], 
+  #     ["#{root}//another/path/to/models",         "**/*.rb"],
+  #     ["#{root}//yet/another",                    nil]
   #   ]
   #   
   #   Foo.paths_for(:model) == [
-  #     ["/path/to/models",         "/model1.rb"],
-  #     ["/path/to/models",         "/model2.rb"],
-  #     ["/path/to/models/sub",     "/model1.rb"],
-  #     ["/another/path/to/models", "/model3.rb"]
+  #     ["#{root}/relative/path/to/models",   "/model1.rb"],
+  #     ["#{root}/path/to/models",            "/model2.rb"],
+  #     ["#{root}/path/to/models/sub",        "/model1.rb"],
+  #     ["#{root}/another/path/to/models",    "/model3.rb"]
   #   ]
   # 
   # The paths are fully inheritable once they have extended a class.  
@@ -39,8 +40,9 @@ module Pancake
     
     def self.extended(base) #:nodoc:#
       base.class_eval do
-        deep_copy_class_inheritable_reader :_load_paths
+        deep_copy_class_inheritable_reader :_load_paths, :roots
         @_load_paths = Dictionary.new
+        @roots = []
       end
     end
     
@@ -51,13 +53,13 @@ module Pancake
     # @param [String, Nil]    glob  The glob to associate with the given path(s) and name
     #
     # @example No Glob:
-    #   MyClass.push_paths(:foo, "/path/for/foo")
+    #   MyClass.push_paths(:foo, "path/for/foo")
     #
     # @example Using a Glob:
-    #   MyClass.push_paths(:foo, "/path/for/foo", "**/*.rb")
+    #   MyClass.push_paths(:foo, "path/for/foo", "**/*.rb")
     #
     # @example Using Multiple paths:
-    #   MyClass.push_paths(:foo, ["/path/one", "/path/two"], "**/*.rb")
+    #   MyClass.push_paths(:foo, ["path/one", "path/two"], "**/*.rb")
     #
     # @raise [Pancake::NoPathsGiven] raised when an empty paths array is provided
     # @author Daniel Neighman
@@ -94,9 +96,11 @@ module Pancake
         result = []
         invert = !!opts[:invert]
         load_paths = invert ? _load_paths[name].reverse : _load_paths[name]
-        load_paths.each do |paths, glob|
-          paths = paths.reverse if invert
-          result << paths
+        roots.each do |root|
+          load_paths.each do |paths, glob|
+            paths = paths.reverse if invert
+            result << paths.map{|p| File.join(root, p)}
+          end
         end
         result.flatten
       end # if 
@@ -123,12 +127,14 @@ module Pancake
         result = []
         invert = !!opts[:invert]
         load_paths = invert ? _load_paths[name].reverse : _load_paths[name]
-        load_paths.each do |paths, glob|
-          paths = paths.reverse if invert
-          paths.each do |path| 
-            result << [path, glob]
-          end # paths.each
-        end # load_paths.each
+        roots.each do |root|
+          load_paths.each do |paths, glob|
+            paths = paths.reverse if invert
+            paths.each do |path| 
+              result << [File.join(root, path), glob]
+            end # paths.each
+          end # load_paths.each
+        end # roots.each
         result
       end # if
     end
@@ -187,13 +193,13 @@ module Pancake
     #   Results are retuned in declared order.  Only unique files are returned (the file part - the path)
     #   In the above example, the following would be returned for the standard call
     #     [
-    #       ["/path/one", "/file2.rb"],
-    #       ["/path/two", "/file1.rb"]
+    #       ["#{root}/path/one", "#{root}/file2.rb"],
+    #       ["#{root}/path/two", "#{root}/file1.rb"]
     #     ]
     #   For the inverted example the following is returned:
     #     [
-    #       ["/path/one/file2.rb"],
-    #       ["/path/one/file1.rb"]
+    #       ["#{root}/path/one/file2.rb"],
+    #       ["#{root}/path/one/file1.rb"]
     #     ]
     #
     # @api public
