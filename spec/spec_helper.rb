@@ -1,5 +1,6 @@
 $TESTING=true
 require 'rubygems'
+require 'date'
 require 'rack'
 require 'rack/test'
 require 'spec/rake/spectask'
@@ -17,4 +18,3 @@ Spec::Runner.configure do |config|
   config.include(Pancake::Spec::Helpers)
   config.include(Rack::Test::Methods)
 end
-

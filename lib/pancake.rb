@@ -10,25 +10,28 @@ require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
 
-%w(
-  paths
-  hooks/on_inherit
-  hooks/inheritable_inner_classes
-  core_ext/class
-  core_ext/object
-  core_ext/symbol
-  configuration
-  bootloaders
-  middleware
-  router
-  master
-  stack/stack
-  stack/configuration
-  stack/app
-  stack/router
-  stack/bootloader
-  more/controller
-).each do |file|
-  path = File.join(File.dirname(__FILE__), "pancake")
-  require File.join(path, file)
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+require 'pancake/paths'
+require 'pancake/hooks/on_inherit'
+require 'pancake/hooks/inheritable_inner_classes'
+require 'pancake/core_ext/class'
+require 'pancake/core_ext/object'
+require 'pancake/core_ext/symbol'
+require 'pancake/configuration'
+require 'pancake/bootloaders'
+require 'pancake/middleware'
+require 'pancake/router'
+require 'pancake/master'
+require 'pancake/stack/stack'
+require 'pancake/stack/configuration'
+require 'pancake/stack/router'
+require 'pancake/stack/bootloader'
+require 'pancake/stack/app'
+
+module Pancake
+  autoload :Controller, "pancake/more/controller"
+  
+  module Stacks
+    autoload :Short,    "pancake/stacks/short"
+  end
 end
