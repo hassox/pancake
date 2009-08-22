@@ -193,8 +193,8 @@ module Pancake
     #   Results are retuned in declared order.  Only unique files are returned (the file part - the path)
     #   In the above example, the following would be returned for the standard call
     #     [
-    #       ["#{root}/path/one", "#{root}/file2.rb"],
-    #       ["#{root}/path/two", "#{root}/file1.rb"]
+    #       ["#{root}/path/one", "/file2.rb"],
+    #       ["#{root}/path/two", "/file1.rb"]
     #     ]
     #   For the inverted example the following is returned:
     #     [

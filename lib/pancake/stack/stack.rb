@@ -32,10 +32,6 @@ module Pancake
     def self.roots
       configuration.roots
     end
-  
-    def this_stack
-      self.class
-    end
 
     def initialize(app = nil, opts = {})
       app_name = opts.delete(:app_name) || self.class
