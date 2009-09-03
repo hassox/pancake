@@ -4,39 +4,39 @@ describe Pancake::Stacks::Short, "routes" do
   before do
     class ::RoutedShortStack < Pancake::Stacks::Short
       roots << Pancake.get_root(__FILE__)
-      
+
       get "/foo" do
         "get - foo"
       end
-      
+
       get "/bar" do
         "get - bar"
       end
-      
+
       post "/foo" do
         "post - foo"
       end
-      
+
       post "/bar" do
         "post - bar"
       end
-      
+
       put "/foo" do
         "put - foo"
       end
-      
+
       put "/bar" do
         "put - bar"
       end
-      
+
       delete "/foo" do
         "delete - foo"
       end
-      
+
       delete "/bar" do
         "delete - bar"
       end
-      
+
       get "/baz/:var(/:date)" do
         "done: var == #{params[:var]} : date == #{params[:date]}"
       end
@@ -45,11 +45,11 @@ describe Pancake::Stacks::Short, "routes" do
   after do
     clear_constants "RoutedShortStack"
   end
-  
+
   def app
     RoutedShortStack.stackup
   end
-  
+
   %w(foo bar).each do |item|
     %w(get post put delete).each do |method|
       it "should #{method} /#{item}" do
@@ -59,19 +59,19 @@ describe Pancake::Stacks::Short, "routes" do
       end
     end # get post put delete
   end # foo bar
-  
+
   it "should return a not found if we try to get an action that has not been defined" do
     result = get "/blah"
     result.status.should == 404
   end
-  
-  
+
+
   it "should handle tricky routes" do
     result = get "/baz/hassox"
     result.status.should == 200
     result.body.should == "done: var == hassox : date == "
   end
-  
+
   it "should handle tricky routes with optional parameters" do
     result = get "/baz/hassox/2009-08-21"
     result.status.should == 200

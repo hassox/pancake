@@ -21,5 +21,12 @@ module Pancake
        self.code = 403
        self.description = "Access to this resource is denied."
      end
+
+     class Server < HttpError
+       self.name = "Server Error"
+       self.code = 500
+       self.description = "An internal server error"
+     end
+     
   end
 end

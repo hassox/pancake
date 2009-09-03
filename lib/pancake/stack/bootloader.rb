@@ -1,13 +1,13 @@
 module Pancake
   class Stack
     inheritable_inner_classes :BootLoader
-    
+
     # The default bootloader is where the stack default bootloaders are stored
     # These are shared across all bootloaders
     class BootLoader # :nodoc:
       extend ::Pancake::BootLoaderMixin
     end
-    
+
   end # Stack
 end # Pancake
 
@@ -59,7 +59,7 @@ end
 #   :app_name     => app_name,
 # })
 #
-# 
+#
 
 Pancake::Stack::BootLoader.add(:initialize_application) do
   def run!
@@ -73,14 +73,11 @@ Pancake::Stack::BootLoader.add(:build_middleware_stack) do
     config[:stack].app = Pancake::Middleware.build(config[:app], mwares)
   end
 end
-
+ 
 Pancake::Stack::BootLoader.add(:router) do
-  def run!
-    unless config[:no_router]
-      config[:stack].send(:prepare, :builder => Pancake::RouteBuilder) do |r|
-        config[:stack_class].stack_routes.each{|sr| config[:stack].instance_exec(r, &sr)}
-        r.map nil, :to => config[:stack].app # Fallback route 
-      end
-    end
-  end
+ def run!
+   unless config[:no_router]
+     config[:stack_class].router.app = config[:stack].app
+   end
+ end
 end

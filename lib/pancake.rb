@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'rack/router'
 require 'extlib/class'
 require 'extlib/boolean'
 require 'extlib/module'
@@ -9,7 +8,7 @@ require 'extlib/object'
 require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
-
+require 'usher'
 require 'tilt'
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
@@ -33,11 +32,11 @@ require 'pancake/stack/bootloader'
 require 'pancake/stack/app'
 
 module Pancake
-  
+
   module Stacks
     autoload :Short,    "pancake/stacks/short"
   end
-  
+
   module Mixins
     autoload :Publish,  "pancake/mixins/publish"
     autoload :Render,   "pancake/mixins/render"
