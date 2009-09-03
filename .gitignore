@@ -4,6 +4,7 @@ tmp/*
 TAGS
 *~
 .#*
+\#*#
 pkg
 .yardoc
 doc
