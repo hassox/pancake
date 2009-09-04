@@ -73,11 +73,15 @@ Pancake::Stack::BootLoader.add(:build_middleware_stack) do
     config[:stack].app = Pancake::Middleware.build(config[:app], mwares)
   end
 end
- 
+
 Pancake::Stack::BootLoader.add(:router) do
- def run!
+  def run!
    unless config[:no_router]
-     config[:stack_class].router.app = config[:stack].app
+     app_config = Pancake.configuration.configs(config[:app_name])
+     router = config[:stack_class].router.dup
+     app_config.router = router
+     router.app = config[:stack].app
+     router.configuration = app_config
    end
  end
 end

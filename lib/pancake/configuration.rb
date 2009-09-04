@@ -1,24 +1,24 @@
 module Pancake
   class Configuration
-    
-    class Base     
-      class_inheritable_reader :defaults 
+
+    class Base
+      class_inheritable_reader :defaults
       @defaults = Hash.new{|h,k| h[k] = {:value => nil, :description => ""}}
-      
+
       # Set a default on the the configuartion
       class << self
 
         # Set a default for this configuration class
-        # Provide a field/method name and a value to set this to.  
-        # If you don't provide a value, and instead provide a block, then 
+        # Provide a field/method name and a value to set this to.
+        # If you don't provide a value, and instead provide a block, then
         # a proc will be called lazily when requested.
-        # 
+        #
         # Example
         #   config_klass = Pancake::Configuration.make
         #   config_class.default :foo, :bar, "This foo is a bar"
         #   config = config_class.new
         #
-        # :api: public 
+        # :api: public
         def default(meth, *args, &block)
           value, description = args
           if block
@@ -28,40 +28,40 @@ module Pancake
           defaults[meth][:value]       = value
           defaults[meth][:description] = description || ""
         end
-        
+
         # Provides aaccess to the description for a default setting
-        # 
+        #
         # :api: public
         def description_for(field)
           defaults.keys.include?(field) ? defaults[field][:description] : ""
         end
       end
-      
+
       # access to the singleton class
       # :api: private
       def singleton_class # :nodoc:
         class << self; self; end
       end
-      
-      # Access to the configuration defaults via the instance.  Defers to the 
+
+      # Access to the configuration defaults via the instance.  Defers to the
       # clas smethod for defaults
       # :api: public
       def defaults
         self.class.defaults
       end
-      
+
       # Access to the class descritpion for defaults
       # :api: public
       def description_for(field)
         self.class.description_for(field)
       end
-      
+
       # Access to the currently set values for this configuration object
       # :api: public
       def values
         @values ||= {}
       end
-          
+
       private
       def method_missing(name, *args)
         if name.to_s =~ /(.*?)=$/
@@ -79,10 +79,10 @@ module Pancake
             end
           else
             nil
-          end            
+          end
         end
       end
-      
+
       # Caches the values via a method rather than going through method_missing
       # :api: private
       def set_actual_value(name, val) # :nodoc:
@@ -90,27 +90,27 @@ module Pancake
           def #{name}=(val)                               # def foo=(val)
             values[#{name.inspect}] = val                 #   values[:foo] = val
           end                                             # end
-          
+
           def #{name}                                     # def foo
-            values[#{name.inspect}]                       #   values[:foo]   
+            values[#{name.inspect}]                       #   values[:foo]
           end                                             # end
         RUBY
         values[name] = val
       end
-      
+
     end # Base
-    
+
     class << self
-      
+
       # Make a new configuration class
       # :api: public
       def make(&block)
         Class.new(Pancake::Configuration::Base, &block)
       end
-      
+
     end # self
   end # Configuration
-  
+
   class PancakeConfig < Configuration::Base
     def stacks(label = nil)
       @stacks ||=  {}
@@ -118,17 +118,23 @@ module Pancake
       yield result if block_given?
       result
     end
-    
+
     def configs(label = nil)
-      @configs ||= {}
+      @configs ||= Hash.new do |h,k|
+        if defined?(k::Configuration)
+          h[k] = k::Configuration.new
+        else
+          nil
+        end
+      end
       result = label.nil? ? @configs : @configs[label]
       yield result if block_given?
       result
     end
   end
-  
+
   def self.configuration
     @configuration ||= PancakeConfig.new
   end
-  
+
 end # Pancake

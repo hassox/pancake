@@ -41,13 +41,14 @@ describe Pancake::Stacks::Short, "routes" do
         "done: var == #{params[:var]} : date == #{params[:date]}"
       end
     end
+    @app = RoutedShortStack.stackup
   end
   after do
     clear_constants "RoutedShortStack"
   end
 
   def app
-    RoutedShortStack.stackup
+    @app
   end
 
   %w(foo bar).each do |item|
@@ -73,6 +74,7 @@ describe Pancake::Stacks::Short, "routes" do
   end
 
   it "should handle tricky routes with optional parameters" do
+    debugger
     result = get "/baz/hassox/2009-08-21"
     result.status.should == 200
     result.body.should == "done: var == hassox : date == 2009-08-21"

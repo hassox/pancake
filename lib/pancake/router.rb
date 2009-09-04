@@ -7,7 +7,7 @@ module Pancake
   # @author Daniel Neighman
   class Router < Usher::Interface::RackInterface
     class RackApplicationExpected < ArgumentError; end
-    attr_accessor :app
+    attr_accessor :configuration
     # Mounts an application in the router as a sub application in the
     # url space.  This will route directly to the sub application and
     # skip any middlewares etc.

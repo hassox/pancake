@@ -1,6 +1,6 @@
 module Pancake
-  # Pancake::Paths provides a mixin for path management.  
-  # A path consists of a name, and paths + globs, and makes use of the Klass.roots that have been set as 
+  # Pancake::Paths provides a mixin for path management.
+  # A path consists of a name, and paths + globs, and makes use of the Klass.roots that have been set as
   # file roots for each path and glob to be applied to.
   # Each name may have many (path + glob)s, so that many root paths may be added to the same name
   #
@@ -8,36 +8,36 @@ module Pancake
   #   class Foo
   #     extend Pancake::Paths
   #   end
-  #   
+  #
   #   Foo.push_paths(:model, "relative/path/to/models", "**/*.rb")
   #   Foo.push_paths(:model, "another/path/to/models", "**/*.rb")
   #   Foo.push_paths(:model, "yet/another")
   #
-  # This will make available the directory and or full file paths for :model in the order they 
+  # This will make available the directory and or full file paths for :model in the order they
   # were declared.
   #
   # When no glob is provided, the glob will be returned as nil
-  # 
+  #
   # @example Reading Paths:
   #   Foo.dirs_for(:model) == ["#{root}/relative/path/to/models", "#{root}/another/path/to/models", "#{root}/yet/another"]
-  #   
+  #
   #   Foo.dirs_and_glob_for(:model) == [
-  #     ["#{root}/relative/path/to/models",         "**/*.rb"], 
+  #     ["#{root}/relative/path/to/models",         "**/*.rb"],
   #     ["#{root}//another/path/to/models",         "**/*.rb"],
   #     ["#{root}//yet/another",                    nil]
   #   ]
-  #   
+  #
   #   Foo.paths_for(:model) == [
   #     ["#{root}/relative/path/to/models",   "/model1.rb"],
   #     ["#{root}/path/to/models",            "/model2.rb"],
   #     ["#{root}/path/to/models/sub",        "/model1.rb"],
   #     ["#{root}/another/path/to/models",    "/model3.rb"]
   #   ]
-  # 
-  # The paths are fully inheritable once they have extended a class.  
+  #
+  # The paths are fully inheritable once they have extended a class.
   module Paths
     class NoPathsGiven < ArgumentError; end
-    
+
     def self.extended(base) #:nodoc:#
       base.class_eval do
         deep_copy_class_inheritable_reader :_load_paths, :roots
@@ -45,7 +45,7 @@ module Pancake
         @roots = []
       end
     end
-    
+
     # Push a named path and optional glob onto the list of paths associated with <name>
     #
     # @param [Symbol]         name  The name to associate with the given path and glob
@@ -71,9 +71,9 @@ module Pancake
       _load_paths[name] ||= []
       _load_paths[name] << [paths, glob]
     end
-    
+
     # Provides the directories or raw paths that are associated with a given name.
-    # 
+    #
     # @param        [Symbol]    name  The name for the paths group
     # @param        [Hash]      opts  An options hash
     # @option opts  [Boolean]   :invert (false) inverts the order of the returned paths
@@ -103,9 +103,9 @@ module Pancake
           end
         end
         result.flatten
-      end # if 
+      end # if
     end
-    
+
     # Provides the list of paths (directories) and the associated globs for a given name.
     #
     # @param        [Symbol]    name    The name of the path group
@@ -113,7 +113,7 @@ module Pancake
     # @option opts  [Boolean]   :invert (false) Inverts the order of the paths
     #
     # @example
-    #   MyClass.dirs_and_glob_for(:models)  
+    #   MyClass.dirs_and_glob_for(:models)
     #
     # @return [Array] An array of [path, glob] arrays
     #   Returned in declared order unless the :invert option is set
@@ -130,7 +130,7 @@ module Pancake
         roots.each do |root|
           load_paths.each do |paths, glob|
             paths = paths.reverse if invert
-            paths.each do |path| 
+            paths.each do |path|
               result << [File.join(root, path), glob]
             end # paths.each
           end # load_paths.each
@@ -138,24 +138,24 @@ module Pancake
         result
       end # if
     end
-    
+
     # Provides an expanded, globbed list of paths and files for a given name.
-    # 
+    #
     # @param        [Symbol]  name    The name of the paths group
     # @param        [Hash]    opts    An options hash
     # @option opts  [Boolean] :invert (false) Inverts the order of the returned values
     #
-    # @example 
+    # @example
     #   MyClass.paths_for(:model)
     #   MyClass.paths_for(:model, :invert => true)
     #
-    # @return [Array] 
-    #   An array of [path, file] arrays.  These may be joined to get the full path.  
+    # @return [Array]
+    #   An array of [path, file] arrays.  These may be joined to get the full path.
     #   All matched files for [paths, glob] will be returned in declared and then found order unless +:invert+ is true.
     #   Any path that has a +nil+ glob associated with it will be excluded.
     #
     # @api public
-    # @since 0.1.1   
+    # @since 0.1.1
     # @author Daniel Neighman
     def paths_for(name, opts = {})
       result = []
@@ -167,9 +167,9 @@ module Pancake
           result << [path, full_path.gsub(path, "")]
         end
       end
-      result        
+      result
     end
-    
+
     # Provides an expanded, globbed list of paths and files for a given name.
     # The result includes only the last matched file of a given sub path and name.
     #
