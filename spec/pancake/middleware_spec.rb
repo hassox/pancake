@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-require "ruby-debug"
 
 describe "Pancake::Middleware" do
   before(:all) do
@@ -85,8 +84,8 @@ describe "Pancake::Middleware" do
       BarApp.use BarMiddle
       BazApp.use FooMiddle
       Pancake.use GeneralMiddleware
-      
-      FooApp.router do |r|
+
+      FooApp.with_router do |r|
         r.mount(BarApp.stackup, "/bar")
         r.mount(BazApp.stackup, "/baz")
       end

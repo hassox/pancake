@@ -25,7 +25,7 @@ module Pancake
       opts = cooerce_options_to_usher(opts)
       super(path, opts)
     end
-
+    
     private
     # Canoodles the options into a format that usher is happy to
     # accept.  This is so that we can have a different interface from

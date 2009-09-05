@@ -1,6 +1,6 @@
 module Pancake
   class Stack
-    attr_accessor :app, :app_name
+    attr_accessor :app_name
 
     # extend Hooks::InheritableInnerClasses
     extend Hooks::OnInherit

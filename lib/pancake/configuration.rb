@@ -121,7 +121,7 @@ module Pancake
 
     def configs(label = nil)
       @configs ||= Hash.new do |h,k|
-        if defined?(k::Configuration)
+        if (k.is_a?(Class) || k.is_a?(Module)) && defined?(k::Configuration)
           h[k] = k::Configuration.new
         else
           nil

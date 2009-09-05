@@ -5,7 +5,7 @@ require 'date'
 require 'spec/rake/spectask'
 
 GEM = "pancake"
-GEM_VERSION = "0.1.1"
+GEM_VERSION = "0.1.2"
 AUTHOR = "Daniel Neighman"
 EMAIL = "has.sox@gmail.com"
 HOMEPAGE = "http://github.com/hassox/pancake"
@@ -28,7 +28,7 @@ spec = Gem::Specification.new do |s|
   # Uncomment this to add a dependency
   # s.add_dependency "foo"
   #s.add_dependency "thor", ">=0.10.26"
-  
+  s.add_dependency "usher", ">=0.5.5"
   s.require_path = 'lib'
   s.autorequire = GEM
   s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")

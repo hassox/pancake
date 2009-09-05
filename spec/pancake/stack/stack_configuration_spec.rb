@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
-require "ruby-debug"
+
 describe "pancake stack configuration" do
 
   before(:each) do

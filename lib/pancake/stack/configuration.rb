@@ -27,5 +27,16 @@ end # Pancake
 ####################
 # Setup the default configuration for each stack
 class Pancake::Stack::Configuration
-  default :router, nil, "The router for this stack"
+  default :router, lambda{ _router }, "The router for this stack"
+  
+  def _router
+    @_router ||= begin
+      unless stack.nil?
+        r = stack.router.dup
+        r.app = app
+        r.configuration = self
+        r
+      end
+    end
+  end
 end

@@ -33,7 +33,7 @@ describe "stack router" do
 
   describe "mount" do
     it "should let me setup routes for the stack" do
-      FooApp.router do |r|
+      FooApp.with_router do |r|
         r.mount(INNER_APP, "/foo", :action => "foo action").name(:foo)
         r.mount(INNER_APP, "/bar", :action => "bar action").name(:root)
       end
@@ -50,7 +50,7 @@ describe "stack router" do
     end
 
     it "should allow me to stop the route from partially matching" do
-      FooApp.router do |r|
+      FooApp.with_router do |r|
         r.mount(INNER_APP, "/foo/bar", :action => "foo/bar", :_exact => true).name(:foobar)
       end
       @app = FooApp.stackup
@@ -75,7 +75,7 @@ describe "stack router" do
   describe "internal stack routes" do
     it "should pass through to the underlying app when adding a route" do
       FooApp.router.add("/bar", :action => "bar").name(:gary)
-      class FooApp
+      class ::FooApp
         def self.new_app_instance
           INNER_APP
         end
