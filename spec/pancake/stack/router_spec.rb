@@ -126,7 +126,7 @@ describe "stack router" do
         Pancake.url(BarApp,   :simple).should == "/bar/simple"
       end
     end
-    
+
   end
 
   describe "internal stack routes" do
@@ -156,24 +156,37 @@ describe "stack router" do
     end
   end
 
- # it "should allow me to inherit routes" do
- #   FooApp.add_routes do |r|
- #     r.map "/foo(/:stuff)", :to => INNER_APP, :with => {"originator" => "FooApp"}, :anchor => true
- #   end
- #   class BarApp < FooApp; end
- #   BarApp.add_routes do |r|
- #     r.map "/bar", :to => INNER_APP, :with => {"originator" => "BarApp"}, :anchor => true
- #   end
- #
- #   @app = BarApp.stackup
- #
- #   get "/bar"
- #   response = JSON.parse(last_response.body)
- #   response["rack_router.params"]["originator"].should == "BarApp"
- #
- #   get "/foo/thing"
- #   response = JSON.parse(last_response.body)
- #   response["rack_router.params"]["originator"].should == "FooApp"
- #
- # end
+  it "should allow me to inherit routes" do
+    FooApp.router do |r|
+      r.mount(INNER_APP, "/foo(/:stuff)", :_defaults => {"originator" => "FooApp"})
+    end
+    class ::BarApp < FooApp; end
+    BarApp.router do |r|
+      r.mount(INNER_APP, "/bar", :_defaults => {"originator" => "BarApp"})
+    end
+
+    @app = BarApp.stackup
+
+    get "/bar"
+    response = JSON.parse(last_response.body)
+    response["usher.params"]["originator"].should == "BarApp"
+
+    get "/foo/thing"
+    response = JSON.parse(last_response.body)
+    response["usher.params"]["originator"].should == "FooApp"
+  end
+
+  it "should generate an inherited route" do
+    FooApp.router do |r|
+      r.add("/simple").name(:simple)
+      r.mount(INNER_APP, "/foo(/:stuff)").name(:stuff)
+    end
+
+    class ::BarApp < FooApp; end
+
+    Pancake.url(BarApp, :simple).should == "/simple"
+    Pancake.url(BarApp, :stuff => "this_stuff").should == "/foo/this_stuff"
+    Pancake.url(BarApp, :stuff, :stuff => "that_stuff").should == "/foo/that_stuff"
+  end
+
 end

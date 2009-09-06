@@ -5,11 +5,11 @@ describe Pancake::Stacks::Short, "routes" do
     class ::RoutedShortStack < Pancake::Stacks::Short
       roots << Pancake.get_root(__FILE__)
 
-      get "/foo" do
+      get "/foo", :_name => :foo do
         "get - foo"
       end
 
-      get "/bar" do
+      get "/bar", :_name => :bar do
         "get - bar"
       end
 
@@ -39,7 +39,7 @@ describe Pancake::Stacks::Short, "routes" do
 
       get "/baz/:var(/:date)" do
         "done: var == #{params[:var]} : date == #{params[:date]}"
-      end
+      end.name(:baz)
     end
     @app = RoutedShortStack.stackup
   end
@@ -77,5 +77,16 @@ describe Pancake::Stacks::Short, "routes" do
     result = get "/baz/hassox/2009-08-21"
     result.status.should == 200
     result.body.should == "done: var == hassox : date == 2009-08-21"
+  end
+
+  describe "url generation" do
+    it "should generate a simple named  url" do
+      Pancake.url(RoutedShortStack, :foo).should == "/foo"
+    end
+
+    it "should generate a complex named  url" do
+      Pancake.url(RoutedShortStack, :baz, :var => "bar").should == "/baz/bar"
+      Pancake.url(RoutedShortStack, :baz, :var => "bar", :date => "today").should == "/baz/bar/today"
+    end
   end
 end

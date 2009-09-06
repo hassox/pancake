@@ -138,12 +138,15 @@ module Pancake
         # @api private
         # @author Daniel Neighman
         def attach_route(method, path, action_name, options)
+          name = options.delete(:_name)
           options[:conditions] ||= {}
           options[:conditions][:request_method] = method.to_s.upcase
           options[:default_values] ||= {}
           options[:default_values][:action] = action_name
           options[:_exact] = true unless options[:_exact] == false
-          router.mount(Controller, path, options)
+          r = router.mount(Controller, path, options)
+          r.name(name) if name
+          r
         end
 
         # provides for methods of the following form on Controller
