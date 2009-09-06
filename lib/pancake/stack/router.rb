@@ -1,13 +1,18 @@
 module Pancake
   class Stack
-    class_inheritable_accessor :router
-    @router = Pancake::Router.new
+    class_inheritable_accessor :_router
+    @_router = Pancake::Router.new
     
-    def self.with_router(config_label=self)
+    def self.router
+      yield _router if block_given?
+      _router
+    end
+    
+    def self.with_router
       yield router if block_given?
       router
     end
-    
+
   end
 end
 

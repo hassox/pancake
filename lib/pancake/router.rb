@@ -1,4 +1,21 @@
 module Pancake
+  # Generate a url for any pancake configuration that has a router
+  #
+  # @example
+  #   Pancake.url(UserManamgent, :login) # => "/users/login"
+  # @api public
+  def self.url(app_name, name_or_opts, opts = {})
+    config = Pancake.configuration.configs(app_name)
+    the_router = if config && config.router
+      config.router
+    elsif app_name.respond_to?(:router)
+      app_name.router
+    else
+      raise Pancake::Errors::UnknownRouter
+    end
+    the_router.url(name_or_opts, opts)
+  end
+  
   # The pancake router is a customized version of the Usher router.
   # Usher is a fast tree based router that can generate routes, have
   # nested routers, and even generate from nested routers.
@@ -26,21 +43,27 @@ module Pancake
       super(path, opts)
     end
     
+    # Generate a url
+    def url(name_or_path, options = {})
+      if Hash === name_or_path
+        name = nil
+        options = name_or_path
+      else
+        name = name_or_path
+      end
+      generate(name, options)
+    end
+    
     private
     # Canoodles the options into a format that usher is happy to
     # accept.  This is so that we can have a different interface from
     # the raw usher when we're first declaring the route.
     # @api private
     def cooerce_options_to_usher(opts)
-      new_opts = Hash.new{|h,k| h[k] = {}}
-      [:conditions, :default_values, :requirements].each do |attr|
-        if _opts = opts.delete(attr)
-          new_opts[attr].merge!(_opts)
-        end
-      end
-      new_opts[:default_values] ||= {}
-      new_opts[:default_values].merge!(opts) unless opts.empty?
-      new_opts
+      defaults = opts.delete(:_defaults)
+      opts[:default_values] ||= {}
+      opts[:default_values].merge!(defaults) if defaults
+      opts
     end
 
     # Overwrites the method in Rack::Interface::RackInterface to mash

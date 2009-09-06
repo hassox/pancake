@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "stack router" do
   before(:all) do
-    clear_constants "FooApp" ,"INNER_APP"
+    clear_constants "FooApp" ,"INNER_APP", "BarApp"
   end
   before(:each) do
 
@@ -33,15 +33,15 @@ describe "stack router" do
 
   describe "mount" do
     it "should let me setup routes for the stack" do
-      FooApp.with_router do |r|
-        r.mount(INNER_APP, "/foo", :action => "foo action").name(:foo)
-        r.mount(INNER_APP, "/bar", :action => "bar action").name(:root)
+      FooApp.router do |r|
+        r.mount(INNER_APP, "/foo", :_defaults => {:action => "foo action"}).name(:foo)
+        r.mount(INNER_APP, "/bar", :_defaults => {:action => "bar action"}).name(:root)
       end
 
       @app = FooApp.stackup
       expected = {
-        "SCRIPT_NAME" => "/foo",
-        "PATH_INFO"   => "",
+        "SCRIPT_NAME" => "",
+        "PATH_INFO"   => "/foo",
         "usher.params" => {"action" => "foo action"}
       }
 
@@ -51,12 +51,12 @@ describe "stack router" do
 
     it "should allow me to stop the route from partially matching" do
       FooApp.with_router do |r|
-        r.mount(INNER_APP, "/foo/bar", :action => "foo/bar", :_exact => true).name(:foobar)
+        r.mount(INNER_APP, "/foo/bar", :_defaults => {:action => "foo/bar"}, :_exact => true).name(:foobar)
       end
       @app = FooApp.stackup
       expected = {
-        "SCRIPT_NAME"   => "/foo/bar",
-        "PATH_INFO"     => "",
+        "SCRIPT_NAME"   => "",
+        "PATH_INFO"     => "/foo/bar",
         "usher.params"  => {"action" => "foo/bar"}
       }
       get "/foo/bar"
@@ -72,9 +72,66 @@ describe "stack router" do
     end
   end
 
+  describe "generating routes" do
+    before do
+      FooApp.router do |r|
+        r.add("/simple/route"    ).name(:simple)
+        r.add("/var/with/:var", :_defaults => {:var => "some_var"}).name(:defaults)
+        r.add("/complex/:var"    ).name(:complex)
+        r.add("/optional(/:var)" ).name(:optional)
+        r.add("/some/:unique_var")
+      end
+    end
+
+    it "should allow me to generate a named route for a stack" do
+      Pancake.url(FooApp, :simple).should == "/simple/route"
+    end
+
+    it "should allow me to generate a non-named route for a stack" do
+      Pancake.url(FooApp, :complex, :var => "a_variable").should == "/complex/a_variable"
+    end
+
+    it "should allow me to generate a route with values" do
+      Pancake.url(FooApp, :optional).should == "/optional"
+      Pancake.url(FooApp, :optional, :var => "some_var").should == "/optional/some_var"
+    end
+
+    it "should allow me to generate routes with defaults" do
+      Pancake.url(FooApp, :defaults).should == "/var/with/some_var"
+      Pancake.url(FooApp, :defaults, :var => "this_is_a_var").should == "/var/with/this_is_a_var"
+    end
+
+    it "should allow me to generate a route by params" do
+      Pancake.url(FooApp, :unique_var => "unique_var").should == "/some/unique_var"
+    end
+
+    describe "mounted route generation" do
+      before do
+        class ::BarApp < Pancake::Stack; end
+        BarApp.roots << Pancake.get_root(__FILE__)
+        BarApp.router do |r|
+          r.add("/simple").name(:simple)
+          r.add("/some/:var", :_defaults => {:var => "foo"}).name(:foo)
+        end
+        FooApp.router.mount(BarApp.stackup, "/bar")
+      end
+
+      it "should allow me to generate a simple nested named route" do
+        Pancake.url(BarApp, :simple).should == "/bar/simple"
+      end
+
+      it "should allow me to generate a simple nested named route for a named app" do
+        FooApp.router.mount(BarApp.stackup(:app_name => :bar_app), "/different")
+        Pancake.url(:bar_app, :simple).should == "/different/simple"
+        Pancake.url(BarApp,   :simple).should == "/bar/simple"
+      end
+    end
+    
+  end
+
   describe "internal stack routes" do
     it "should pass through to the underlying app when adding a route" do
-      FooApp.router.add("/bar", :action => "bar").name(:gary)
+      FooApp.router.add("/bar", :_defaults => {:action => "bar"}).name(:gary)
       class ::FooApp
         def self.new_app_instance
           INNER_APP
@@ -93,7 +150,7 @@ describe "stack router" do
         params = Rack::Request.new(e).params
         params[:action].should == "jackson"
       end
-      FooApp.router.mount(app, "/foo/app", :action => "jackson")
+      FooApp.router.mount(app, "/foo/app", :_defaults => {:action => "jackson"})
       @app = FooApp.stackup
       get "/foo/app"
     end

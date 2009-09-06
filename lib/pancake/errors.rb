@@ -9,6 +9,8 @@ module Pancake
       self.code = 404
       self.description = "The requested resource could not be found but may be available again in the future."
     end
+
+    class UnknownRouter < NotFound; end
         
      class Unauthorized < HttpError
        self.name = "Unauthorized"
