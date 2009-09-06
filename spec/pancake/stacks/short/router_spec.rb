@@ -44,7 +44,7 @@ describe Pancake::Stacks::Short, "routes" do
     @app = RoutedShortStack.stackup
   end
   after do
-    clear_constants "RoutedShortStack", "FooApp"
+    clear_constants "RoutedShortStack", "FooApp", "BarApp"
   end
 
   def app
@@ -94,6 +94,39 @@ describe Pancake::Stacks::Short, "routes" do
       FooApp.router.mount(RoutedShortStack.stackup, "/short/stack")
       Pancake.url(RoutedShortStack, :foo).should == "/short/stack/foo"
       Pancake.url(RoutedShortStack, :baz, :var => "var", :date => "today").should == "/short/stack/baz/var/today"
+    end
+  end
+
+  describe "inherited route generation" do
+    before do
+      class ::FooApp < RoutedShortStack; end
+      @app = FooApp.stackup
+    end
+
+    it "should generate an inherited simple url" do
+      Pancake.url(FooApp, :foo).should == "/foo"
+    end
+
+    it "should generate a complex url" do
+      Pancake.url(FooApp, :baz, :var => "the_var", :date => "today").should == "/baz/the_var/today"
+    end
+
+    %w(foo bar).each do |item|
+      %w(get post put delete).each do |method|
+        it "should #{method} /#{item}" do
+          result = self.send(method, "/#{item}")
+          result.status.should == 200
+          result.body.should == "#{method} - #{item}"
+        end
+      end # get post put delete
+    end # foo bar
+
+    it "should match the nested route without affecting the parent" do
+      class ::BarApp < Pancake::Stack; end
+      BarApp.router.mount(FooApp.stackup, "/mount/point")
+
+      Pancake.url(FooApp, :foo).should == "/mount/point/foo"
+      Pancake.url(RoutedShortStack, :foo).should == "/foo"
     end
   end
 end
