@@ -44,7 +44,7 @@ describe Pancake::Stacks::Short, "routes" do
     @app = RoutedShortStack.stackup
   end
   after do
-    clear_constants "RoutedShortStack"
+    clear_constants "RoutedShortStack", "FooApp"
   end
 
   def app
@@ -87,6 +87,13 @@ describe Pancake::Stacks::Short, "routes" do
     it "should generate a complex named  url" do
       Pancake.url(RoutedShortStack, :baz, :var => "bar").should == "/baz/bar"
       Pancake.url(RoutedShortStack, :baz, :var => "bar", :date => "today").should == "/baz/bar/today"
+    end
+
+    it "should generate it's url when it's nested" do
+      class ::FooApp < Pancake::Stack; end
+      FooApp.router.mount(RoutedShortStack.stackup, "/short/stack")
+      Pancake.url(RoutedShortStack, :foo).should == "/short/stack/foo"
+      Pancake.url(RoutedShortStack, :baz, :var => "var", :date => "today").should == "/short/stack/baz/var/today"
     end
   end
 end
