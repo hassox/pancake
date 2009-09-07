@@ -3,11 +3,15 @@ module Pancake
     # Some helpers for requests that come in handy for applications that
     # are part of stacks
     module RequestHelper
-      
+
+      # A setter for the rack environment
+      # @api public
       def env=(env)
         @env = env
       end
-      
+
+      # An accessor for the rack environment variable
+      # @api public
       def env
         @env
       end
