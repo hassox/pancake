@@ -6,15 +6,13 @@ module Pancake
       class Controller
         extend  Mixins::Publish
         include Mixins::Render
+        include Mixins::RequestHelper
 
         # @api private
         def self.call(env)
           app = new(env)
           app.dispatch!
         end
-
-        # @api public
-        attr_reader :env, :request
 
         # @api public
         attr_accessor :status

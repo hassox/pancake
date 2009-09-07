@@ -204,7 +204,7 @@ describe "stack router" do
       
       class ::InnerApp
         attr_reader :env
-        include Pancake::RequestHelper
+        include Pancake::Mixins::RequestHelper
 
         def self.app_block(&block)
           if block_given?
