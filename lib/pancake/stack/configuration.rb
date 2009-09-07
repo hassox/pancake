@@ -33,10 +33,12 @@ class Pancake::Stack::Configuration
     @_router ||= begin
       unless stack.nil?
         r = stack.router.dup
+        r.configuration = self
         r.app = app
         r.configuration = self
         r
       end
+                   
     end
   end
 end

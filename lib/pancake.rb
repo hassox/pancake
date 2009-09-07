@@ -30,6 +30,7 @@ require 'pancake/stack/configuration'
 require 'pancake/stack/router'
 require 'pancake/stack/bootloader'
 require 'pancake/stack/app'
+require 'pancake/mixins/request_helper'
 
 module Pancake
 

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "stack router" do
   before(:all) do
-    clear_constants "FooApp" ,"INNER_APP", "BarApp"
+    clear_constants "FooApp" ,"INNER_APP", "BarApp", "InnerApp", "InnerFoo", "InnerBar"
   end
   before(:each) do
 
@@ -40,8 +40,8 @@ describe "stack router" do
 
       @app = FooApp.stackup
       expected = {
-        "SCRIPT_NAME" => "",
-        "PATH_INFO"   => "/foo",
+        "SCRIPT_NAME" => "/foo",
+        "PATH_INFO"   => "",
         "usher.params" => {"action" => "foo action"}
       }
 
@@ -50,19 +50,19 @@ describe "stack router" do
     end
 
     it "should allow me to stop the route from partially matching" do
-      FooApp.with_router do |r|
-        r.mount(INNER_APP, "/foo/bar", :_defaults => {:action => "foo/bar"}, :_exact => true).name(:foobar)
-      end
-      @app = FooApp.stackup
-      expected = {
-        "SCRIPT_NAME"   => "",
-        "PATH_INFO"     => "/foo/bar",
-        "usher.params"  => {"action" => "foo/bar"}
-      }
-      get "/foo/bar"
-      JSON.parse(last_response.body).should == expected
-      get "/foo"
-      last_response.status.should == 404
+        FooApp.with_router do |r|
+          r.mount(INNER_APP, "/foo/bar", :_defaults => {:action => "foo/bar"}, :_exact => true).name(:foobar)
+        end
+        @app = FooApp.stackup
+        expected = {
+          "SCRIPT_NAME"   => "",
+          "PATH_INFO"     => "/foo/bar",
+          "usher.params"  => {"action" => "foo/bar"}
+        }
+        get "/foo/bar"
+        JSON.parse(last_response.body).should == expected
+        get "/foo"
+        last_response.status.should == 404
     end
 
     it "should make sure that the application is a rack application" do
@@ -189,4 +189,69 @@ describe "stack router" do
     Pancake.url(BarApp, :stuff, :stuff => "that_stuff").should == "/foo/that_stuff"
   end
 
+  it "should put the configuration into the env" do
+    FooApp.router.add("/foo").to do |e|
+      e["pancake.request.configuration"].should == Pancake.configuration.configs[FooApp]
+      Rack::Response.new("OK").finish
+    end
+    @app = FooApp.stackup
+    get "/foo"
+  end
+  
+  describe "generating urls inside an application" do
+    before do
+      class ::BarApp < FooApp;  end
+      
+      class ::InnerApp
+        attr_reader :env
+        include Pancake::RequestHelper
+
+        def self.app_block(&block)
+          if block_given?
+            @app_block = block
+          end
+          @app_block
+        end
+        
+        def call(env)
+          @env = env
+          instance_eval &self.class.app_block
+          Rack::Response.new("OK").finish
+        end
+      end
+
+      class ::FooApp; def self.new_app_instance; InnerApp.new; end; end
+            
+      BarApp.router do |r|
+        r.add("/mounted")
+        r.add("/foo").name(:foo)
+        r.add("/other").name(:other)
+      end
+
+      FooApp.router do |r|
+        r.mount(BarApp.stackup, "/bar")
+        r.add(  "/foo"   ).name(:foo)
+        r.add(  "/simple").name(:simple)
+      end
+
+      @app = FooApp.stackup
+    end
+
+    it "should generate the urls correctly" do
+      InnerApp.app_block do
+        url(:foo).should == "/foo"
+        url(:simple).should == "/simple"
+      end
+      
+      get "/foo"
+    end
+
+    it "should generate urls correctly when nested" do
+      InnerApp.app_block do
+        url(:foo).should == "/bar/foo"
+        url(:other).should == "/bar/other"
+      end
+      get "/bar/mounted"
+    end
+  end
 end

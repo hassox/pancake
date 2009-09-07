@@ -74,5 +74,6 @@ Pancake::Stack::BootLoader.add(:build_stack) do
     app_config = Pancake.configuration.configs(config[:app_name])
     app_config.app   = app
     app_config.stack = stack_class
+    app_config.router.configuration = app_config
   end
 end

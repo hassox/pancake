@@ -23,6 +23,8 @@ module Pancake
   # @since 0.1.2
   # @author Daniel Neighman
   class Router < Usher::Interface::RackInterface
+    CONFIGURATION_KEY = "pancake.request.configuration".freeze
+    
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
     # Mounts an application in the router as a sub application in the
@@ -38,9 +40,13 @@ module Pancake
 
     # Adds a route to the router.
     # @see Usher::Interface::RackInterface#add
-    def add(path, opts = {})
+    def add(path, opts = {}, &block)
       opts = cooerce_options_to_usher(opts)
-      super(path, opts)
+      route = super(path, opts)
+      if block_given?
+        route.to(block)
+      end
+      route
     end
     
     # Generate a url
@@ -53,6 +59,15 @@ module Pancake
       end
       generate(name, options)
     end
+
+    def call(env)
+      orig_config = env[CONFIGURATION_KEY]
+      env[CONFIGURATION_KEY] = configuration
+      super(env)
+    ensure
+      env[CONFIGURATION_KEY] = orig_config
+    end
+    
     
     private
     # Canoodles the options into a format that usher is happy to
