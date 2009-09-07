@@ -10,7 +10,13 @@ module Pancake
       self.description = "The requested resource could not be found but may be available again in the future."
     end
 
-    class UnknownRouter < NotFound; end
+    class UnknownRouter < NotFound
+      self.description = "The router could not be found"
+    end
+    
+    class UnknownConfiguration < NotFound
+      self.description = "The configuration could not be found"
+    end
         
      class Unauthorized < HttpError
        self.name = "Unauthorized"

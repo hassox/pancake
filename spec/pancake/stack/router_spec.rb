@@ -253,5 +253,14 @@ describe "stack router" do
       end
       get "/bar/mounted"
     end
+
+    it "should generate a url for another app" do
+      InnerApp.app_block do
+        url_for(BarApp, :foo).should == "/bar/foo"
+        url_for(FooApp, :foo).should == "/foo"
+      end
+      get "/foo"
+    end
+    
   end
 end
