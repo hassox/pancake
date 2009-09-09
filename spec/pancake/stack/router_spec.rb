@@ -55,8 +55,8 @@ describe "stack router" do
         end
         @app = FooApp.stackup
         expected = {
-          "SCRIPT_NAME"   => "",
-          "PATH_INFO"     => "/foo/bar",
+          "SCRIPT_NAME"   => "/foo/bar",
+          "PATH_INFO"     => "",
           "usher.params"  => {"action" => "foo/bar"}
         }
         get "/foo/bar"

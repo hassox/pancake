@@ -1,4 +1,9 @@
 module Pancake
+  # Get the ability to mark this as a consuming route.
+  class ::Usher::Route
+    attr_accessor :consuming
+  end
+
   # Generate a url for any pancake configuration that has a router
   #
   # @example
@@ -27,6 +32,7 @@ module Pancake
     
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
+    
     # Mounts an application in the router as a sub application in the
     # url space.  This will route directly to the sub application and
     # skip any middlewares etc.
@@ -34,6 +40,7 @@ module Pancake
       raise RackApplicationExpected unless mounted_app.respond_to?(:call)
       exact_match = options.delete(:_exact)
       route = add(path, options)
+      route.consuming = true
       route.match_partially! unless exact_match
       route.to(mounted_app)
     end
@@ -86,6 +93,7 @@ module Pancake
     # @api private
     def after_match(env, response)
       super
+      consume_path!(env, response) if !response.partial_match? && response.path.route.consuming
       r = Rack::Request.new(env)
       r.params.merge!(env['usher.params']) unless env['usher.params'].empty?
     end
