@@ -29,6 +29,7 @@ spec = Gem::Specification.new do |s|
   # s.add_dependency "foo"
   #s.add_dependency "thor", ">=0.10.26"
   s.add_dependency "usher", ">=0.5.5"
+  s.add_dependency "mynyml-rack-accept-media-types"
   s.require_path = 'lib'
   s.autorequire = GEM
   s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")
