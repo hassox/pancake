@@ -35,6 +35,14 @@ module Pancake
        self.code = 500
        self.description = "An internal server error"
      end
+
+     class NotAcceptable < HttpError
+       self.name =  "Not Acceptable"
+       self.code = 406
+       self.description = "The requeseted format could not be provided"
+     end
+     
+       
      
   end
 end

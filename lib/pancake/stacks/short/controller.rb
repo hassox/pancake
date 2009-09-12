@@ -37,8 +37,26 @@ module Pancake
 
           # Check that the action is available
           raise Errors::NotFound, "No Action Found" unless allowed_action?(params["action"])
+          
+          @action_opts  = actions[params["action"]]
+          if params[:format]
+            @content_type = params[:format].to_sym if @action_opts.formats.any?{|f| f.to_s == params[:format].to_s}
+            @mime_type  = Pancake::MimeTypes.group(params[:format]).first
+            ct = @mime_type.type_strings.first
+          else
+            @content_type, ct, @mime_type = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], @action_opts.formats)
+          end
+          
+          raise Errors::NotAcceptable unless @content_type
 
-          Rack::Response.new(self.send(params["action"])).finish
+          # set the response header
+          headers["Content-Type"] = ct
+          
+          Rack::Response.new(self.send(params["action"]), status, headers).finish
+        end
+
+        def content_type
+          @content_type
         end
 
         private

@@ -16,7 +16,18 @@ module Pancake
         @env
       end
       
-   
+      def headers
+        @headers ||= {}
+      end
+
+      def status
+        @status ||= 200
+      end
+
+      def status=(st)
+        @status = st
+      end
+            
       # Generate a url for the current stacks router.
       #
       # @example

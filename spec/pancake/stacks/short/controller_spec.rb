@@ -26,7 +26,7 @@ describe Pancake::Stacks::Short::Controller do
   end
   
   after do 
-    clear_constants "ShortFoo"
+    clear_constants "ShortFoo", :ShortBar
   end
 
   def app
@@ -108,4 +108,61 @@ describe Pancake::Stacks::Short::Controller do
       
     end
   end
+
+  describe "accept type negotiations" do
+    before do
+      class ::ShortBar < Pancake::Stacks::Short
+        roots << Pancake.get_root(__FILE__)
+        # makes the dispatch method public
+        def do_dispatch!
+          dispatch!
+        end
+
+        provides :json, :xml
+
+        get "/foo/bar(.:format)" do
+          "format #{content_type.inspect}"
+        end
+      end # ShortBar
+    end # before
+
+    def app
+      ShortBar.stackup
+    end
+    
+    it "should get json by default" do
+      result = get "/foo/bar", {}, "HTTP_ACCEPT" => "application/json"
+      result.status.should == 200
+      result.headers["Content-Type"].should == "application/json"
+      result.body.to_s.should == "format :json"
+    end
+    
+    it "should get xml when specified" do
+      result = get "/foo/bar.xml"
+      result.status.should == 200
+      result.headers["Content-Type"].should == "application/xml"
+      result.body.to_s.should == "format :xml"
+    end
+
+    it "should get json when specified with */*" do
+      result = get "/foo/bar", {}, "HTTP_ACCEPT" => "*/*"
+      result.status.should == 200
+      result.body.to_s.should == "format :json"
+      result.headers["Content-Type"].should == "application/json"
+    end
+
+    it "should get xml when specified with */* and application/xml" do
+      result = get "/foo/bar", {}, "HTTP_ACCEPT" => "application/xml,*/*"
+      result.status.should == 200
+      result.body.to_s.should == "format :xml"
+      result.headers["Content-Type"].should == "application/xml"
+    end
+
+    it "should use the format in preference to the content type" do
+      result = get "/foo/bar.xml", {}, "HTTP_ACCEPT" => "*/*"
+      result.status.should == 200
+      result.body.to_s.should == "format :xml"
+      result.headers["Content-Type"].should == "application/xml"
+    end
+  end # Accept type negotiations
 end

@@ -56,7 +56,7 @@ describe Pancake::MimeTypes do
     it "should not add duplicate type strings" do
       @type.type_strings.should have(1).item
       @type.type_strings << "text/html"
-      @type.type_strings.should have(1).item
+      @type.type_strings.should have(2).items
       @type.type_strings.should include("text/html")
     end
 
@@ -151,15 +151,17 @@ describe Pancake::MimeTypes do
   describe "format from accept type" do
     it "should return the first matching type" do
       accept_type = "text/plain"
-      group, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text)
+      group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text)
       group.should == :text
+      at.should == accept_type
       r.should_not be_nil
       r.type_strings.should include("text/plain")
     end
     
     it "should return the first type if the matching type is */*" do
       accept_type = "*/*;application/xml"
-      group, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text, :xml, :html)
+      group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text, :xml, :html)
+      at.should == "text/plain"
       group.should == :text
       r.should_not be_nil
       r.type_strings.should include("text/plain")
@@ -174,7 +176,7 @@ describe Pancake::MimeTypes do
     
     it "should return a type when it is not in the first position" do
       accept_type = "text/xml, text/html,text/plain;"
-      group, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :svg, :text)
+      group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :svg, :text)
       group.should == :text
       r.should_not be_nil
       r.type_strings.should include("text/plain")
@@ -183,7 +185,7 @@ describe Pancake::MimeTypes do
 
     it "should recognize the type from a quality value" do
       accept_type = "text/plain;q=0.5,text/html;q=0.8"
-      group, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text, :html)
+      group, at,  r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :text, :html)
       group.should == :html
       r.should_not be_nil
       r.type_strings.should include("text/html")

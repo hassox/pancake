@@ -88,7 +88,7 @@ module Pancake
     # @author Daniel Neighman
     def self.group_as(name, *exts)
       exts.each do |ext|
-        group(name) << type_by_extension(ext)
+        group(name) << type_by_extension(ext) unless group(name).include?(type_by_extension(ext))
       end
       group(name)
     end
@@ -102,7 +102,7 @@ module Pancake
       @negotiated_accept_types = nil
       @groups = Hash.new do |h,k|
         k = k.to_s
-        h[k] = Set.new
+        h[k] = []
         t = Pancake::MimeTypes.type_by_extension(k)
         h[k] << t unless t.nil?
         h[k]
@@ -166,16 +166,17 @@ module Pancake
       
       # Check to see if any accepted types match
       accepted_types.each do |at|
-        provided.each do |name|
+        provided.flatten.each do |name|
           accepted_type = match_content_type(at, name)
           if accepted_type
+            at = accepted_type.type_strings.first if at == "*/*"
             if accepted_types.join.size > 4096
               # Don't save the key if it's larger than 4 k.
               # This could hit a dos attack if it's repeatedly hit
               # with anything large
-              negotiated_accept_types[name] = [name, accepted_type]
+              negotiated_accept_types[name] = [name, at, accepted_type]
             end
-            return [name, accepted_type]
+            return [name, at, accepted_type]
           end
         end
       end
@@ -193,7 +194,7 @@ module Pancake
 
       def initialize(extension, *type_strings)
         @extension = extension
-        @type_strings = Set.new
+        @type_strings = []
         type_strings.flatten.each do |ts|
           @type_strings << ts
         end

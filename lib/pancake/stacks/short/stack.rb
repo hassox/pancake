@@ -23,6 +23,11 @@ module Pancake
           Controller.as(*args)
         end
 
+        # @see Pancake::Mixins::Publish#provides
+        def provides(*formats)
+          Controller.provides(*formats)
+        end
+
         # Gets a resource at a given path
         #
         # The block should finish with the final result of the action
