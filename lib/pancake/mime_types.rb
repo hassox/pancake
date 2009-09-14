@@ -165,6 +165,13 @@ module Pancake
       
       accepted_type = nil
       
+      if accepted_types.include?("*/*")
+        name = provided.first
+        accepted_type = group(name).first
+        negotiated_accept_types[key] = [name, accepted_type.type_strings.first, accepted_type]
+        return negotiated_accept_types[key]
+      end
+      
       # Check to see if any accepted types match
       accepted_types.each do |at|
         provided.flatten.each do |name|

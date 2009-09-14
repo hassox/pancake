@@ -151,11 +151,11 @@ describe Pancake::Stacks::Short::Controller do
       result.headers["Content-Type"].should == "application/json"
     end
 
-    it "should get xml when specified with */* and application/xml" do
+    it "should get the default when specified with */*" do
       result = get "/foo/bar", {}, "HTTP_ACCEPT" => "application/xml,*/*"
       result.status.should == 200
-      result.body.to_s.should == "format :xml"
-      result.headers["Content-Type"].should == "application/xml"
+      result.body.to_s.should == "format :json"
+      result.headers["Content-Type"].should == "application/json"
     end
 
     it "should use the format in preference to the content type" do

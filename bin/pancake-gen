@@ -8,6 +8,8 @@ require 'pancake/generators'
 case ARGV.shift
 when "stack"
   Pancake::Generators::Stack.start
+when "short"
+  Pancake::Generators::Short.start
 else
   puts "Unknown Generator"
 end

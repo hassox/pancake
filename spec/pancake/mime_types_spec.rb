@@ -144,9 +144,7 @@ describe Pancake::MimeTypes do
       t = Pancake::MimeTypes.type_by_extension("xml")
       t.type_strings.should include("text/xml", "application/xml")
     end
-    
   end
-  
   
   describe "format from accept type" do
     it "should return the first matching type" do
@@ -165,6 +163,15 @@ describe Pancake::MimeTypes do
       group.should == :text
       r.should_not be_nil
       r.type_strings.should include("text/plain")
+    end
+
+    it "should use */* if avaiable" do
+      # safari uses application/xml first
+      accept_type = "application/xml,*/*"
+      group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :html, :xml)
+      at.should == "text/html"
+      group.should == :html
+      r.should_not be_nil
     end
     
     it "should return nil if there is no matching class" do

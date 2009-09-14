@@ -1,0 +1,7 @@
+= <%= short_stack %>
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) <%= Date.today.year %> <YOUR NAME HERE>. See LICENSE for details.
