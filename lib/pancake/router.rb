@@ -75,7 +75,6 @@ module Pancake
       env[CONFIGURATION_KEY] = orig_config
     end
     
-    
     private
     # Canoodles the options into a format that usher is happy to
     # accept.  This is so that we can have a different interface from

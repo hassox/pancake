@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "..", "spec_helper")
+require File.join(File.expand_path(File.dirname(__FILE__)), "..", "spec_helper")
 
 describe Pancake::MimeTypes do
   before do
@@ -29,7 +29,7 @@ describe Pancake::MimeTypes do
     t = Pancake::MimeTypes::Type.new("foo", "text/foobar")
     type = Pancake::MimeTypes.type_by_extension("foo")
     type.should_not be_nil
-    type.type_strings.should have(1).item3
+    type.type_strings.should have(1).item
     type.type_strings.should include("text/foobar")
   end
   
@@ -191,10 +191,28 @@ describe Pancake::MimeTypes do
       r.type_strings.should include("text/html")
       r.extension.should == "html"
     end
-    
-    
-    
   end
-  
+
+  describe "mime from extension" do
+    it "should recognize the mime type from the extension" do
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("text", :html, :text)
+      group.should == :text
+      at.should == "text/plain"
+      r.should == Pancake::MimeTypes.type_by_extension("text")
+    end
+
+    it "should recognize grouped mimes by extension" do
+      Pancake::MimeTypes.group_as(:foo, "text", "txt", "html")
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("txt", :foo)
+      group.should == :foo
+      at.should == "text/plain"
+      r.extension.should == "txt"
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("text", :foo)
+      r.extension.should == "text"
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("html", :foo)
+      r.extension.should == "html"
+      at.should == "text/html"
+    end
+  end
 end
 

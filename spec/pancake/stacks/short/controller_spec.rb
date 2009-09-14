@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../spec_helper'
+require File.join(File.expand_path(File.dirname(__FILE__)),'..', '..', '..', 'spec_helper')
 
 describe Pancake::Stacks::Short::Controller do
   
@@ -118,7 +118,7 @@ describe Pancake::Stacks::Short::Controller do
           dispatch!
         end
 
-        provides :json, :xml
+        provides :json, :xml, :text
 
         get "/foo/bar(.:format)" do
           "format #{content_type.inspect}"
@@ -164,5 +164,37 @@ describe Pancake::Stacks::Short::Controller do
       result.body.to_s.should == "format :xml"
       result.headers["Content-Type"].should == "application/xml"
     end
+
+    it "should get json by default" do
+      result = get "/foo/bar"
+      result.status.should == 200
+      result.body.to_s.should == "format :json"
+      result.headers["Content-Type"].should == "application/json"
+    end
+
+    it "should correctly negotiate different scenarios" do
+      r = get "/foo/bar", {}, {}
+      r.body.should == "format :json"
+      r = get "/foo/bar.xml", {}, {}
+      r.body.should == "format :xml"
+      r = get "/foo/bar", {}, {}
+      r.body.should == "format :json"
+      r = get "/foo/bar", {}, "HTTP_ACCEPT" => "application/xml"
+      r.body.should == "format :xml"
+      r = get "/foo/bar.json"
+      r.body.should == "format :json"
+    end
+
+    it "should negotiate based on extension" do
+      r = get "/foo/bar"
+      r.body.should == "format :json"
+      r = get "/foo/bar.text"
+      r.body.should == "format :text"
+      r = get "/foo/bar.xml"
+      r.body.should == "format :xml"
+      r = get "/foo/bar.txt"
+      r.body.should == "format :text"
+    end
+    
   end # Accept type negotiations
 end

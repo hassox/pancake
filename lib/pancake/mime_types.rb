@@ -159,6 +159,7 @@ module Pancake
     # @author Daniel Neighman
     def self.negotiate_accept_type(type, *provided)
       accepted_types = Rack::AcceptMediaTypes.new(type)
+      provided = provided.flatten
       key = [accepted_types, provided]
       return negotiated_accept_types[key] if negotiated_accept_types[key]
       
@@ -174,7 +175,7 @@ module Pancake
               # Don't save the key if it's larger than 4 k.
               # This could hit a dos attack if it's repeatedly hit
               # with anything large
-              negotiated_accept_types[name] = [name, at, accepted_type]
+              negotiated_accept_types[key] = [name, at, accepted_type]
             end
             return [name, at, accepted_type]
           end
@@ -182,6 +183,39 @@ module Pancake
       end
       nil
     end
+    
+    # Negotiates the content type based on the extension and the
+    # provided groups to see if there is a match.
+    #
+    # @param ext [String] The extension to negotiate
+    # @param provided [Symbol] A list of symbols each of which is the
+    # name of a mime group
+    #
+    # @return [Symbol, String, Pancake::MimeTypes::Type] The first
+    # parameter returned is the group name that matched.  The second,
+    # is the Content-Type to respond to the client with, the third,
+    # the raw pancake mime type
+    #
+    # @see Pancake::MimeTypes.group
+    # @see Pancake::MimeTypes::Type
+    # @api public
+    def self.negotiate_by_extension(ext, *provided)
+      provided = provided.flatten
+      key = [ext, provided]
+      return negotiated_accept_types[key] if negotiated_accept_types[key]
+
+      result = nil
+      provided.each do |name|
+        group(name).each do |type|
+          if type.extension == ext
+            result = [name, type.type_strings.first, type]
+            negotiated_accept_types[key] = result
+            return result
+          end
+        end
+      end
+    end # self.negotiate_by_extension
+    
 
     # A basic type for mime types
     # Each type can have an extension and many type strings that

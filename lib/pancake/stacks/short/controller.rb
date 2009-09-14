@@ -20,8 +20,6 @@ module Pancake
         def initialize(env)
           @env, @request = env, Rack::Request.new(env)
           @status = 200
-
-          request.params.merge!(request.env['rack_router.params']) if request.env['rack_router.params']
         end
 
         # Provides access to the request params
@@ -34,15 +32,14 @@ module Pancake
         def dispatch!
           params["action"] ||= params[:action]
           params["action"] ||= "index"
+          params[:format]  ||= params["format"]
 
           # Check that the action is available
           raise Errors::NotFound, "No Action Found" unless allowed_action?(params["action"])
           
           @action_opts  = actions[params["action"]]
           if params[:format]
-            @content_type = params[:format].to_sym if @action_opts.formats.any?{|f| f.to_s == params[:format].to_s}
-            @mime_type  = Pancake::MimeTypes.group(params[:format]).first
-            ct = @mime_type.type_strings.first
+            @content_type, ct, @mime_type = Pancake::MimeTypes.negotiate_by_extension(params[:format].to_s, @action_opts.formats)
           else
             @content_type, ct, @mime_type = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], @action_opts.formats)
           end
