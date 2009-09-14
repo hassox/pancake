@@ -8,3 +8,4 @@ TAGS
 pkg
 .yardoc
 doc
+*.gem
