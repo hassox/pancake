@@ -61,16 +61,5 @@ describe "Pancake::Stack inheritance" do
         BarStack::Configuration.should inherit_from(FooStack::Configuration)
       end
     end
-    
-    describe "router" do
-      it "should not inherit the router" do
-        pending do
-          class ::BarStack < ::FooStack; end
-          BarStack::Router.should_not == FooStack::Router
-        end
-      end
-    end
-    
-    
   end
 end

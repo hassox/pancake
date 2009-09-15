@@ -5,7 +5,7 @@ require 'date'
 require 'spec/rake/spectask'
 
 GEM = "pancake"
-GEM_VERSION = "0.1.3"
+GEM_VERSION = "0.1.4"
 AUTHOR = "Daniel Neighman"
 EMAIL = "has.sox@gmail.com"
 HOMEPAGE = "http://github.com/hassox/pancake"
@@ -40,7 +40,7 @@ task :default => :spec
 desc "Run specs"
 Spec::Rake::SpecTask.new do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts = %w(-fs --color)
+  t.spec_opts = %w(--format progress --color)
 end
 
 

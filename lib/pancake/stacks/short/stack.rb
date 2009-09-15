@@ -28,6 +28,10 @@ module Pancake
           Controller.provides(*formats)
         end
 
+        def handle_exception(*args, &block)
+          Controller.handle_exception(*args, &block)
+        end
+        
         # Gets a resource at a given path
         #
         # The block should finish with the final result of the action

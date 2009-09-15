@@ -2,6 +2,12 @@ module Pancake
   module Errors
     class HttpError < StandardError
       class_inheritable_accessor :name, :code, :description
+
+      def name; self.class.name; end
+
+      def code; self.class.code; end
+
+      def description; self.class.description; end
     end
     
     class NotFound < HttpError
@@ -31,9 +37,16 @@ module Pancake
      end
 
      class Server < HttpError
+       attr_accessor :exceptions
+
        self.name = "Server Error"
        self.code = 500
        self.description = "An internal server error"
+
+       def initialize(*args)
+         super
+         @exceptions = []
+       end
      end
 
      class NotAcceptable < HttpError

@@ -62,23 +62,20 @@ describe Pancake::Stacks::Short::Controller do
 
     it "should raise a Pancake::Response::NotFound exception when an action is now found" do
       @controller.params["action"] = :does_not_exist
-      lambda do
-        @controller.do_dispatch!
-      end.should raise_error(Pancake::Errors::NotFound)
+      result = @controller.do_dispatch!
+      result[0].should == 404
     end
     
     it "should not dispatch to a protected method" do
       @controller.params["action"] = "a_protected_method"
-      lambda do
-        @controller.do_dispatch!
-      end.should raise_error(Pancake::Errors::NotFound)
+      result = @controller.do_dispatch!
+      result[0].should == 404
     end
     
     it "should not dispatch to a private method" do
       @controller.params["action"] = "a_private_method"
-      lambda do
-        @controller.do_dispatch!
-      end.should raise_error(Pancake::Errors::NotFound)
+      result = @controller.do_dispatch!
+      result[0].should == 404
     end
     
     describe "helper in methods" do
@@ -101,9 +98,8 @@ describe Pancake::Stacks::Short::Controller do
       
       it "should not call a helper method" do
         @controller.params["action"] = "some_helper_method"
-        lambda do
-          result = @controller.do_dispatch!
-        end.should raise_error(Pancake::Errors::NotFound)
+        result = @controller.do_dispatch!
+        result[0].should == 404
       end
       
     end
@@ -195,6 +191,97 @@ describe Pancake::Stacks::Short::Controller do
       r = get "/foo/bar.txt"
       r.body.should == "format :text"
     end
-    
+
+    it "should not provide a response to a format that is not provided" do
+      r = get "/foo/bar.svg"
+      r.status.should == 406
+    end
   end # Accept type negotiations
+
+  describe "error handling" do
+    before do
+      class ::ShortFoo
+        provides :html, :xml
+        
+        get "/foo(.:format)" do
+          "HERE"
+        end
+
+        get "/bad" do
+          raise "This is bad"
+        end
+        
+      end
+    end
+
+    it "should handle a non-existant route" do
+      
+    end
+    describe "default error handling" do
+      it "should handle a NotFound  by default" do
+        result = get "/does_not_exist"
+        result.status.should == 404
+        result.body.should include(Pancake::Errors::NotFound.description)
+      end
+      
+      it "should return a 500 status for a Random Error by wrapping it in a Pancake::Errors::Server" do
+        result = get "/bad"
+        result.status.should == 500
+        result.body.should include(Pancake::Errors::Server.description)
+      end
+      
+      it "should handle a NotAcceptable error" do
+        result = get "/foo.no_format_i_know_of"
+        result.status.should == 406
+        result.body.should include(Pancake::Errors::NotAcceptable.description)
+      end
+      
+    end
+
+    describe "custom error handling" do
+      before do
+        ShortFoo.handle_exception do |error|
+          out = ""
+          out << "CUSTOM "
+          out << error.name
+          out << ": "
+          out << error.description
+        end
+
+        ShortFoo.get "/bad" do
+          raise "Really Bad"
+        end
+      end
+
+      after do
+        ShortFoo.handle_exception(&Pancake::Stacks::Short::Controller::DEFAULT_EXCEPTION_HANDLER)
+      end
+                  
+      it "should handle Pancake::Errors::NotFound errors" do
+        r = get "/not_a_thing"
+        r.status.should == 404
+        r.body.should include("CUSTOM")
+        r.body.should include(Pancake::Errors::NotFound.description)
+      end
+
+      it "should handle an unknown server error" do
+        r = get "/bad"
+        r.status.should == 500
+        r.body.should include("CUSTOM")
+        r.body.should include(Pancake::Errors::Server.description)
+      end
+
+      it "should let me do stuff on an instance level inside the handle exception" do
+        ShortFoo.handle_exception do |error|
+          self.status = 123
+          "BOOO!"
+        end
+
+        r = get "/bad"
+        r.status.should == 123
+        r.body.should == "BOOO!"
+      end
+      
+    end
+  end
 end

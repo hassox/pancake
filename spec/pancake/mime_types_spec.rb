@@ -220,6 +220,15 @@ describe Pancake::MimeTypes do
       r.extension.should == "html"
       at.should == "text/html"
     end
+
+    it "should not negotiate by extension when there the extension is not part of the accepted types" do
+      Pancake::MimeTypes.group_as(:bar, "text")
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("svg", :bar)
+      group.should be_nil
+      at.should be_nil
+      r.should be_nil
+    end
+    
   end
 end
 

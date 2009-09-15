@@ -120,22 +120,6 @@ describe "Pancake::Middleware" do
     end
   end
 
-  it "should prepend middlewares" do
-    pending("Have not re-implemented prepend yet") do
-      class ::FooMiddle < GeneralMiddleware; end
-      class ::BarMiddle < GeneralMiddleware; end
-
-      FooApp.class_eval do
-        use GeneralMiddleware
-        use FooMiddle
-        prepend_use BarMiddle
-      end
-      @app = FooApp.stackup
-      get "/"
-      $current_env["p.s.c"].should == [BarMiddle, GeneralMiddleware, FooMiddle]
-    end
-  end
-
   it "should allow you to add middleware from outside the class" do
     FooApp.use GeneralMiddleware
     @app = FooApp.stackup

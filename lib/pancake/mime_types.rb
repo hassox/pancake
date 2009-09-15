@@ -221,6 +221,7 @@ module Pancake
           end
         end
       end
+      result
     end # self.negotiate_by_extension
     
 
