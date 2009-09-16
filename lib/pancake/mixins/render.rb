@@ -47,7 +47,7 @@ module Pancake
           renderer = self.class._find_template(template)
           
           # Render the results
-          renderer.render(self)
+          renderer.render(self, opts)
         end
         
         private

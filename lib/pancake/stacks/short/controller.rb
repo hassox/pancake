@@ -9,15 +9,11 @@ module Pancake
         include Mixins::RequestHelper
 
         class_inheritable_accessor :_handle_exception
+
+        push_paths :views, ["app/views", "views"], "**/*"
         
         DEFAULT_EXCEPTION_HANDLER = lambda do |error|
-          klass = case error
-                  when Class
-                    error
-                  else
-                    error.class
-                  end
-          "#{klass.name}: #{klass.description}"
+          "#{error.name}: #{error.description}"
         end unless defined?(DEFAULT_EXCEPTION_HANDLER)
         
         # @api private
@@ -43,7 +39,6 @@ module Pancake
         # Dispatches to an action based on the params["action"] parameter
         def dispatch!
           params["action"] ||= params[:action]
-          params["action"] ||= "index"
           params[:format]  ||= params["format"]
  
           # Check that the action is available
@@ -60,8 +55,8 @@ module Pancake
  
           # set the response header
           headers["Content-Type"] = ct
-          
           Rack::Response.new(self.send(params["action"]), status, headers).finish
+          
         rescue Errors::HttpError => e
           handle_request_exception(e)
         rescue Exception => e
@@ -93,6 +88,30 @@ module Pancake
           self.class.actions.include?(action.to_s)
         end
 
+        public
+        def self.my_stack
+          return @my_stack if @my_stack
+          namespace = name.split("::")
+          until namespace.empty? || @my_stack
+            r = full_const_get(namespace.join("::"))
+            if r.ancestors.include?(Pancake::Stack)
+              @my_stack = r
+            else
+              namespace.pop
+            end
+          end
+          raise "#{name} is not namespaced to a stack" unless @my_stack
+          @my_stack
+        end
+
+        def self.roots
+          my_stack.roots
+        end
+
+        def _tempate_name_for(name, opts)
+          opts[:format] ||= content_type
+          "#{name}.#{opts[:format]}"
+        end
       end # Controller
 
     end # Short

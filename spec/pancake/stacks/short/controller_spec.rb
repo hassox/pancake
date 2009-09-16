@@ -53,13 +53,6 @@ describe Pancake::Stacks::Short::Controller do
       result[2].body.join.should  == "show"
     end
     
-    it "should dispatch to the index action by default" do
-      @controller.params["action"] = nil
-      result = @controller.do_dispatch!
-      result[0].should == 200
-      result[2].body.join.should == "index"
-    end
-
     it "should raise a Pancake::Response::NotFound exception when an action is now found" do
       @controller.params["action"] = :does_not_exist
       result = @controller.do_dispatch!
@@ -214,10 +207,11 @@ describe Pancake::Stacks::Short::Controller do
       end
     end
 
-    it "should handle a non-existant route" do
-      
-    end
     describe "default error handling" do
+      def app
+        ShortFoo.stackup
+      end
+      
       it "should handle a NotFound  by default" do
         result = get "/does_not_exist"
         result.status.should == 404
@@ -235,6 +229,12 @@ describe Pancake::Stacks::Short::Controller do
         result.status.should == 406
         result.body.should include(Pancake::Errors::NotAcceptable.description)
       end
+
+      it "should return 406 for a format that is in pancake but not in the group" do
+        r = get "/foo.svg"
+        r.status.should == 406
+      end
+      
       
     end
 
