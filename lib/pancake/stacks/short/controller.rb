@@ -7,6 +7,7 @@ module Pancake
         extend  Mixins::Publish
         include Mixins::Render
         include Mixins::RequestHelper
+        include Mixins::StackHelper
 
         class_inheritable_accessor :_handle_exception
 
@@ -89,23 +90,8 @@ module Pancake
         end
 
         public
-        def self.my_stack
-          return @my_stack if @my_stack
-          namespace = name.split("::")
-          until namespace.empty? || @my_stack
-            r = full_const_get(namespace.join("::"))
-            if r.ancestors.include?(Pancake::Stack)
-              @my_stack = r
-            else
-              namespace.pop
-            end
-          end
-          raise "#{name} is not namespaced to a stack" unless @my_stack
-          @my_stack
-        end
-
         def self.roots
-          my_stack.roots
+          stack_class.roots
         end
 
         def _tempate_name_for(name, opts)

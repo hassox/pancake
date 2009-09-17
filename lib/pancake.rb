@@ -40,7 +40,8 @@ module Pancake
   end
 
   module Mixins
-    autoload :Publish,  "pancake/mixins/publish"
-    autoload :Render,   "pancake/mixins/render"
+    autoload :Publish,      "pancake/mixins/publish"
+    autoload :Render,       "pancake/mixins/render"
+    autoload :StackHelper, "pancake/mixins/stack_helper"
   end
 end
