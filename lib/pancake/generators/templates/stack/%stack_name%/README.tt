@@ -1,4 +1,4 @@
-= <%= short_stack %>
+= <%= stack_name %>
 
 Description goes here.
 

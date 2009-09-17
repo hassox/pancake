@@ -1,0 +1,5 @@
+class <%= stack_name.camel_case %> < Pancake::Stacks::Short
+  roots << ::File.expand_path(::File.join(Pancake.get_root(__FILE__), "<%= stack_name %>"))
+end
+
+require ::File.join(::File.expand_path(::File.dirname(__FILE__)), "<%= stack_name %>", "<%= stack_name %>")

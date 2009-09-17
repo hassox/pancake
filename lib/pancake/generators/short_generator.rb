@@ -1,14 +1,14 @@
 module Pancake
   module Generators
     class Short < Base
-      argument :short_stack, :banner => "Name of stack"
+      argument :stack_name, :banner => "Name of stack"
       
       desc "Generates a short stack"
       def stack
-        say "Creating The Short Stack For #{short_stack}"
-        directory "%short_stack%"
-        template  File.join(self.class.source_root, "common/dotgitignore"), "#{short_stack}/.gitignore"
-        template  File.join(self.class.source_root, "common/dothtaccess"),  "#{short_stack}/lib/#{short_stack}/public/.htaccess"
+        say "Creating The Short Stack For #{stack_name}"
+        directory "short/%stack_name%", stack_name
+        template  File.join(self.class.source_root, "common/dotgitignore"), "#{stack_name}/.gitignore"
+        template  File.join(self.class.source_root, "common/dothtaccess"),  "#{stack_name}/lib/#{stack_name}/public/.htaccess"
       end
        
        

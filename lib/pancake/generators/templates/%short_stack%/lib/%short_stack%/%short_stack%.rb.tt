@@ -1,6 +1,0 @@
-class <%= short_stack.camel_case %>
-  get "/" do
-    "I am here!"
-  end
-end
-

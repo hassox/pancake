@@ -10,6 +10,8 @@ when "stack"
   Pancake::Generators::Stack.start
 when "short"
   Pancake::Generators::Short.start
+when "flat"
+  Pancake::Generators::Flat.start
 else
   puts "Unknown Generator"
 end

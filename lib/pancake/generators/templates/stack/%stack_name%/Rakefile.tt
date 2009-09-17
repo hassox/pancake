@@ -4,7 +4,7 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "<%= short_stack %>"
+    gem.name = "<%= stack_name %>"
     gem.summary = %Q{TODO}
     gem.email = "TODO"
     gem.homepage = "TODO"
