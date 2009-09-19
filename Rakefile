@@ -1,61 +1,56 @@
 require 'rubygems'
-require 'rake/gempackagetask'
-require 'rubygems/specification'
-require 'date'
-require 'spec/rake/spectask'
+require 'rake'
 
-GEM = "pancake"
-GEM_VERSION = "0.1.5"
-AUTHOR = "Daniel Neighman"
-EMAIL = "has.sox@gmail.com"
-HOMEPAGE = "http://github.com/hassox/pancake"
-SUMMARY = "Eat Pancake Stacks for Breakfast"
-
-spec = Gem::Specification.new do |s|
-  s.name = GEM
-  s.version = GEM_VERSION
-  s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.textile", "LICENSE", 'TODO']
-  s.summary = SUMMARY
-  s.description = s.summary
-  s.author = AUTHOR
-  s.email = EMAIL
-  s.homepage = HOMEPAGE
-  s.bindir = "bin"
-  s.executables = %w( pancake-gen )
-  
-  # Uncomment this to add a dependency
-  # s.add_dependency "foo"
-  #s.add_dependency "thor", ">=0.10.26"
-  s.add_dependency "usher", ">=0.5.5"
-  s.add_dependency "mynyml-rack-accept-media-types"
-  s.require_path = 'lib'
-  s.autorequire = GEM
-  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "pancake"
+    gem.summary = %Q{Eat Pancake Stacks for Breakfast}
+    gem.description = %Q{Eat Pancake Stacks for Breakfast}
+    gem.email = "has.sox@gmail.com"
+    gem.homepage = "http://github.com/hassox/pancake"
+    gem.authors = ["Daniel Neighman"]
+    gem.add_development_dependency "rspec"
+    gem.add_dependency "usher", ">=0.5.5"
+    gem.add_dependency "mynyml-rack-accept-media-types"
+    gem.require_path = 'lib'
+    gem.autorequire = 'pancake'
+    gem.bindir = "bin"
+    gem.executables = %w( pancake-gen )
+    gem.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
+
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.spec_opts = %w(--format progress --color)
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
+
+task :spec => :check_dependencies
 
 task :default => :spec
 
-desc "Run specs"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts = %w(--format progress --color)
-end
-
-
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
-
-desc "install the gem locally"
-task :install => [:package] do
-  sh %{sudo gem install pkg/#{GEM}-#{GEM_VERSION}}
-end
-
-desc "create a gemspec file"
-task :make_spec do
-  File.open("#{GEM}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  if File.exist?('VERSION')
+    version = File.read('VERSION')
+  else
+    version = ""
   end
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "pancake #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
