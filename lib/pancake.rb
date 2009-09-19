@@ -9,6 +9,7 @@ require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
 require 'usher'
+require 'usher/interface/rack_interface'
 require 'tilt'
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))

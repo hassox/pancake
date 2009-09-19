@@ -90,11 +90,10 @@ module Pancake
     # Overwrites the method in Rack::Interface::RackInterface to mash
     # the usher.params into the rack request.params
     # @api private
-    def after_match(env, response)
+    def after_match(request, response)
       super
-      consume_path!(env, response) if !response.partial_match? && response.path.route.consuming
-      r = Rack::Request.new(env)
-      r.params.merge!(env['usher.params']) unless env['usher.params'].empty?
+      consume_path!(request, response) if !response.partial_match? && response.path.route.consuming
+      request.params.merge!(request.env['usher.params']) unless request.env['usher.params'].empty?
     end
   end
 end
