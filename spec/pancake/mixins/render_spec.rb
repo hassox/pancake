@@ -49,6 +49,7 @@ describe Pancake::Mixins::Render do
   end
   
   it "should render with the rendering controller as the current context" do
+    pending
     @render.render(:context_template).chomp.should == "the current context"
   end
   
