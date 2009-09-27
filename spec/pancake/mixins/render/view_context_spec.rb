@@ -129,6 +129,56 @@ describe Pancake::Mixins::Render::ViewContext do
     end
   end
 
+  describe "content_block" do
+    before do
+      @foo = FooBar.new
+    end
+
+    it "should include the default text" do
+      result = @foo.render(:inherited_haml_level_0)
+      result.should include("inherited haml level 0")
+      result.should include("default content block content")
+    end
+
+    it "should inherit the content block from a parent template" do
+      result = @foo.render(:inherited_haml_level_1)
+      result.should include("inherited haml level 0")
+      result.should include("inherited haml level 1 content")
+    end
+
+    it "should inherit the default text in erb" do
+      result = @foo.render(:inherited_erb_level_0)
+      result.should include("inherited erb level 0")
+      result.should include("default content block content")
+    end
+
+    it "should inherit the content block from a parent template in erb" do
+      result = @foo.render(:inherited_erb_level_1)
+      result.should include("inherited erb level 0")
+      result.should include("inherited erb level 1 content")
+    end
+
+    it "should inherit erb from haml" do
+      result = @foo.render(:inherited_erb_from_haml)
+      result.should include("inherited haml level 0")
+      result.should include("inherited erb content")
+    end
+
+    it "should inherit haml from erb" do
+      result = @foo.render(:inherited_haml_from_erb)
+      result.should include("inherited erb level 0")
+      result.should include("inherited haml content")
+    end
+
+  end
+
+  %w(haml).each do |type|
+    describe "inheritable #{type} views" do
+      it "should inherit #{type} from within #{type}" do
+      end
+    end
+  end
+
 end
 
 

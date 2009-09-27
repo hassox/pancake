@@ -42,9 +42,18 @@ module Pancake
           def render(template, opts = {})
             template = _view_context_for.template(template)
             raise TemplateNotFound unless template
-            _with_renderer template do
+            result = _with_renderer template do
               _current_renderer.render(self, opts)
             end
+
+            if @_inherit_helper.inherits_from
+              next_template = _view_context_for.template(@_inherit_helper.inherits_from)
+              @_inherit_helper.inherits_from = nil
+              result = _with_renderer next_template do
+                _current_renderer.render(self,opts)
+              end
+            end
+            result
           end
 
           def _with_renderer(renderer)
@@ -95,6 +104,52 @@ module Pancake
             @_out_buf << string
           end
         end # Capture
+
+        module ContentInheritance
+          def initialize(*args)
+            super()
+            @_inherit_helper = Helper.new
+          end
+
+          def inherits_from(name_or_template)
+            @_inherit_helper.inherits_from = name_or_template
+          end
+
+          def content_block(label, &block)
+            @_inherit_helper.current_label = label
+            capture_method = ViewContext.capture_method_for(_current_renderer)
+            @_inherit_helper.blocks[label] << [block, capture_method]
+            if @_inherit_helper.inherits_from.nil?
+              result = _capture_content_block(label)
+              send(ViewContext.concat_method_for(_current_renderer), result)
+            end
+          end
+
+          private
+          def _capture_content_block(label)
+            blk, meth = @_inherit_helper.blocks[label][@_inherit_helper.super_index]
+            send(meth, blk)
+          end
+
+          class Helper
+            attr_accessor :inherits_from, :current_label
+            attr_reader   :blocks, :super_index
+
+            def initialize
+              @blocks = Hash.new{|h,k| h[k] = []}
+              @super_index = 0
+            end
+
+
+            def increment_super!
+              @super_index += 1
+            end
+
+            def decrement_super!
+              @super_index -= 1
+            end
+          end
+        end
       end # ViewContext
     end
   end
