@@ -172,13 +172,55 @@ describe Pancake::Mixins::Render::ViewContext do
 
   end
 
-  %w(haml).each do |type|
-    describe "inheritable #{type} views" do
-      it "should inherit #{type} from within #{type}" do
-      end
+  describe "super blocks" do
+    before do
+      @foo = FooBar.new
+    end
+
+    it "should render the super text" do
+      result = @foo.render(:super_haml_from_haml_0)
+      result.should include("default content block content")
+    end
+
+    it "should render the super text and the new text" do
+      result = @foo.render(:super_haml_from_haml_1)
+      result.should include("default content block content")
+      result.should include("new content with super")
+    end
+
+    it "should render the super text in erb templates" do
+      result = @foo.render(:super_erb_from_erb_0)
+      result.should include("default content block content")
+    end
+
+    it "should render the super text and the new text in erb" do
+      result = @foo.render(:super_erb_from_erb_1)
+      result.should include("new content with super")
+      result.should include("default content block content")
+    end
+
+    it "should inherit haml from erb" do
+      result = @foo.render(:super_haml_from_erb_0)
+      result.should include("default content block content")
+    end
+
+    it "should inherit haml from erb with with additional contnet" do
+      result = @foo.render(:super_haml_from_erb_1)
+      result.should include("new content from haml")
+      result.should include("default content block content")
+    end
+
+    it "should inherit erb from haml" do
+      result = @foo.render(:super_erb_from_haml_0)
+      result.should include("default content block content")
+    end
+
+    it "should inherit erb from haml" do
+      result = @foo.render(:super_erb_from_haml_1)
+      result.should include("new content from erb")
+      result.should include("default content block content")
     end
   end
-
 end
 
 

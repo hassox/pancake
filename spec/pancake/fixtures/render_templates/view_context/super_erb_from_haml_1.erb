@@ -1,0 +1,6 @@
+<% inherits_from :inherited_haml_level_0 %>
+
+<% content_block :foo do %>
+  new content from erb
+  <%= content_block.super %>
+<% end %>

@@ -83,7 +83,7 @@ module Pancake
           end
 
           def _haml_capture(block)
-            with_haml_buffer Haml::Buffer.new do
+            with_haml_buffer Haml::Buffer.new(nil, :encoding => "UTF-8") do
               capture_haml(&block)
             end
           end
@@ -115,7 +115,9 @@ module Pancake
             @_inherit_helper.inherits_from = name_or_template
           end
 
-          def content_block(label, &block)
+          def content_block(label = nil, &block)
+            return self if label.nil?
+            current_label = @_inherit_helper.current_label
             @_inherit_helper.current_label = label
             capture_method = ViewContext.capture_method_for(_current_renderer)
             @_inherit_helper.blocks[label] << [block, capture_method]
@@ -123,11 +125,19 @@ module Pancake
               result = _capture_content_block(label)
               send(ViewContext.concat_method_for(_current_renderer), result)
             end
+            @_inherit_helper.current_label = current_label
+          end
+
+          def super
+            @_inherit_helper.increment_super!
+            result = _capture_content_block(@_inherit_helper.current_label)
+            @_inherit_helper.decrement_super!
+            result
           end
 
           private
           def _capture_content_block(label)
-            blk, meth = @_inherit_helper.blocks[label][@_inherit_helper.super_index]
+            blk, meth = @_inherit_helper.block_for(label)
             send(meth, blk)
           end
 
@@ -140,6 +150,9 @@ module Pancake
               @super_index = 0
             end
 
+            def block_for(label)
+              @blocks[label][@super_index]
+            end
 
             def increment_super!
               @super_index += 1
