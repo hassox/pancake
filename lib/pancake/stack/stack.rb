@@ -24,6 +24,15 @@ module Pancake
       @initialized = true
     end # initiailze stack
 
+    # Adds the file to the stack root.
+    #
+    # @param file - The file identifier
+    # @example
+    #   MyStack.add_root(__FILE__) # in a file in the root of the stack
+    def self.add_root(file)
+      roots << Pancake.get_root(file)
+    end
+
     def self.initialized?
       !!@initialized
     end
