@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pancake}
-  s.version = "0.1.6"
+  s.version = "0.1.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-09-19}
+  s.date = %q{2009-10-01}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -87,6 +87,9 @@ Gem::Specification.new do |s|
      "lib/pancake/mixins/publish.rb",
      "lib/pancake/mixins/publish/action_options.rb",
      "lib/pancake/mixins/render.rb",
+     "lib/pancake/mixins/render/render.rb",
+     "lib/pancake/mixins/render/template.rb",
+     "lib/pancake/mixins/render/view_context.rb",
      "lib/pancake/mixins/request_helper.rb",
      "lib/pancake/mixins/stack_helper.rb",
      "lib/pancake/mixins/url.rb",
@@ -125,11 +128,37 @@ Gem::Specification.new do |s|
      "spec/pancake/fixtures/render_templates/erb_template.json.erb",
      "spec/pancake/fixtures/render_templates/haml_template.html.haml",
      "spec/pancake/fixtures/render_templates/haml_template.xml.haml",
+     "spec/pancake/fixtures/render_templates/templates/context.erb",
+     "spec/pancake/fixtures/render_templates/view_context/capture_erb.erb",
+     "spec/pancake/fixtures/render_templates/view_context/capture_haml.haml",
+     "spec/pancake/fixtures/render_templates/view_context/concat_erb.erb",
+     "spec/pancake/fixtures/render_templates/view_context/concat_haml.haml",
+     "spec/pancake/fixtures/render_templates/view_context/context.erb",
+     "spec/pancake/fixtures/render_templates/view_context/context2.erb",
+     "spec/pancake/fixtures/render_templates/view_context/helper_methods.erb",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_erb_from_haml.erb",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_erb_level_0.erb",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_erb_level_1.erb",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_haml_from_erb.haml",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_haml_level_0.haml",
+     "spec/pancake/fixtures/render_templates/view_context/inherited_haml_level_1.haml",
+     "spec/pancake/fixtures/render_templates/view_context/nested_inner.erb",
+     "spec/pancake/fixtures/render_templates/view_context/nested_outer.erb",
+     "spec/pancake/fixtures/render_templates/view_context/super_erb_from_erb_0.erb",
+     "spec/pancake/fixtures/render_templates/view_context/super_erb_from_erb_1.erb",
+     "spec/pancake/fixtures/render_templates/view_context/super_erb_from_haml_0.erb",
+     "spec/pancake/fixtures/render_templates/view_context/super_erb_from_haml_1.erb",
+     "spec/pancake/fixtures/render_templates/view_context/super_haml_from_erb_0.haml",
+     "spec/pancake/fixtures/render_templates/view_context/super_haml_from_erb_1.haml",
+     "spec/pancake/fixtures/render_templates/view_context/super_haml_from_haml_0.haml",
+     "spec/pancake/fixtures/render_templates/view_context/super_haml_from_haml_1.haml",
      "spec/pancake/hooks/on_inherit_spec.rb",
      "spec/pancake/inheritance_spec.rb",
      "spec/pancake/middleware_spec.rb",
      "spec/pancake/mime_types_spec.rb",
      "spec/pancake/mixins/publish_spec.rb",
+     "spec/pancake/mixins/render/template_spec.rb",
+     "spec/pancake/mixins/render/view_context_spec.rb",
      "spec/pancake/mixins/render_spec.rb",
      "spec/pancake/mixins/stack_helper_spec.rb",
      "spec/pancake/pancake_spec.rb",
@@ -169,6 +198,8 @@ Gem::Specification.new do |s|
      "spec/pancake/middleware_spec.rb",
      "spec/pancake/mime_types_spec.rb",
      "spec/pancake/mixins/publish_spec.rb",
+     "spec/pancake/mixins/render/template_spec.rb",
+     "spec/pancake/mixins/render/view_context_spec.rb",
      "spec/pancake/mixins/render_spec.rb",
      "spec/pancake/mixins/stack_helper_spec.rb",
      "spec/pancake/pancake_spec.rb",
