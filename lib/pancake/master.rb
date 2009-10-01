@@ -41,8 +41,8 @@ module Pancake
     # @return [String] an expanded version of file
     # @api public
     # @author Daniel Neighman
-    def get_root(file)
-      File.expand_path(File.dirname(file))
+    def get_root(file, *args)
+      File.expand_path(File.join(File.dirname(file), *args))
     end
 
     # Labels that specify what kind of stack you're intending on loading.

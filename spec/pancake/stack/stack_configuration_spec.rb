@@ -74,7 +74,7 @@ describe "pancake stack configuration" do
     it "should setup access to the configuration object through Pancakes configuration" do
       router = FooStack.stackup
       Pancake.configuration.stacks(FooStack).should be_an_instance_of(FooStack)
-      Pancake.configuration.configs(FooStack).should equal router.configuration
+      Pancake.configuration.configs(FooStack).should equal(router.configuration)
     end
 
     it "should allow me to create a configuration with a label" do
