@@ -30,7 +30,7 @@ module Pancake
       def self.handle_exception(*args, &block)
         self::Controller.handle_exception(*args, &block)
       end
-      
+
       # Gets a resource at a given path
       #
       # The block should finish with the final result of the action

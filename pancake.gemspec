@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-10-03}
+  s.date = %q{2009-10-04}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -85,6 +85,7 @@ Gem::Specification.new do |s|
      "lib/pancake/hooks/on_inherit.rb",
      "lib/pancake/master.rb",
      "lib/pancake/middleware.rb",
+     "lib/pancake/middlewares/static.rb",
      "lib/pancake/mime_types.rb",
      "lib/pancake/mixins/publish.rb",
      "lib/pancake/mixins/publish/action_options.rb",
@@ -106,6 +107,7 @@ Gem::Specification.new do |s|
      "lib/pancake/stack/router.rb",
      "lib/pancake/stack/stack.rb",
      "lib/pancake/stacks/short.rb",
+     "lib/pancake/stacks/short/bootloaders.rb",
      "lib/pancake/stacks/short/controller.rb",
      "lib/pancake/stacks/short/stack.rb",
      "spec/helpers/helpers.rb",
@@ -113,6 +115,8 @@ Gem::Specification.new do |s|
      "spec/pancake/bootloaders_spec.rb",
      "spec/pancake/configuration_spec.rb",
      "spec/pancake/fixtures/foo_stack/pancake.init",
+     "spec/pancake/fixtures/middlewares/other_public/two.html",
+     "spec/pancake/fixtures/middlewares/public/one.html",
      "spec/pancake/fixtures/paths/controllers/controller1.rb",
      "spec/pancake/fixtures/paths/controllers/controller2.rb",
      "spec/pancake/fixtures/paths/controllers/controller3.rb",
@@ -157,6 +161,7 @@ Gem::Specification.new do |s|
      "spec/pancake/hooks/on_inherit_spec.rb",
      "spec/pancake/inheritance_spec.rb",
      "spec/pancake/middleware_spec.rb",
+     "spec/pancake/middlewares/static_spec.rb",
      "spec/pancake/mime_types_spec.rb",
      "spec/pancake/mixins/publish_spec.rb",
      "spec/pancake/mixins/render/template_spec.rb",
@@ -172,6 +177,7 @@ Gem::Specification.new do |s|
      "spec/pancake/stack/stack_configuration_spec.rb",
      "spec/pancake/stack/stack_spec.rb",
      "spec/pancake/stacks/short/controller_spec.rb",
+     "spec/pancake/stacks/short/middlewares_spec.rb",
      "spec/pancake/stacks/short/router_spec.rb",
      "spec/pancake/stacks/short/stack_spec.rb",
      "spec/spec_helper.rb"
@@ -198,6 +204,7 @@ Gem::Specification.new do |s|
      "spec/pancake/hooks/on_inherit_spec.rb",
      "spec/pancake/inheritance_spec.rb",
      "spec/pancake/middleware_spec.rb",
+     "spec/pancake/middlewares/static_spec.rb",
      "spec/pancake/mime_types_spec.rb",
      "spec/pancake/mixins/publish_spec.rb",
      "spec/pancake/mixins/render/template_spec.rb",
@@ -213,6 +220,7 @@ Gem::Specification.new do |s|
      "spec/pancake/stack/stack_configuration_spec.rb",
      "spec/pancake/stack/stack_spec.rb",
      "spec/pancake/stacks/short/controller_spec.rb",
+     "spec/pancake/stacks/short/middlewares_spec.rb",
      "spec/pancake/stacks/short/router_spec.rb",
      "spec/pancake/stacks/short/stack_spec.rb",
      "spec/spec_helper.rb"

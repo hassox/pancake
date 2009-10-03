@@ -45,4 +45,8 @@ module Pancake
     autoload :Render,       "pancake/mixins/render"
     autoload :StackHelper, "pancake/mixins/stack_helper"
   end
+
+  module Middlewares
+    autoload :Static,       "pancake/middlewares/static"
+  end
 end
