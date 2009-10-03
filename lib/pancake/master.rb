@@ -83,5 +83,33 @@ module Pancake
       @stack_labels = labels.flatten.compact
     end
 
+    def handle_errors!(*args)
+      @handle_errors = begin
+                         if args.size > 1
+                           args.flatten
+                         else
+                           args.first
+                         end
+                      end
+    end
+
+    def handle_errors?
+      if @handle_errors.nil?
+        !(Pancake.env == "development")
+      else
+        case @handle_errors
+        when Array
+          @handle_errors.include?(Pancake.env)
+        when TrueClass, FalseClass
+          @handle_errors
+        when String
+          Pancake.env == @handle_errors
+        end
+      end
+    end
+
+    def default_error_handling!
+      @handle_errors = nil
+    end
   end # self
 end # Pancake

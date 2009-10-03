@@ -79,6 +79,7 @@ module Pancake
         end
 
         def handle_request_exception(error)
+          raise error unless Pancake.handle_errors?
           self.status = error.code
           result = instance_exec error, &self.class.handle_exception
           Rack::Response.new(result, status, headers).finish

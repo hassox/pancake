@@ -1,31 +1,31 @@
 require File.join(File.expand_path(File.dirname(__FILE__)),'..', '..', '..', 'spec_helper')
 
 describe Pancake::Stacks::Short::Controller do
-  
+
   before do
     class ::ShortFoo < Pancake::Stacks::Short
       class Controller
         def do_dispatch!
           dispatch!
         end
-        
+
         publish
         def show;   "show";    end
-        
+
         publish
         def index;  "index";   end
-        
+
         protected
         def a_protected_method; "protected"; end
-        
+
         private
         def a_private_method; "private"; end
       end
     end
     ShortFoo.roots << Pancake.get_root(__FILE__)
   end
-  
-  after do 
+
+  after do
     clear_constants "ShortFoo", :ShortBar
   end
 
@@ -33,44 +33,52 @@ describe Pancake::Stacks::Short::Controller do
     ShortFoo.stackup
   end
 
-  it "should have a Controller" do 
+  it "should have a Controller" do
     Pancake::Stacks::Short.constants.map(&:to_s).should include("Controller")
   end
-  
+
   it "should inherit the subclass controller from the parent controller" do
     ShortFoo::Controller.should inherit_from(Pancake::Stacks::Short::Controller)
   end
-  
+
   describe "dispatching an action" do
     before do
       @controller = ShortFoo::Controller.new(env_for)
     end
-    
+
     it "should call the 'show' action" do
       @controller.params["action"] = "show"
       result = @controller.do_dispatch!
       result[0].should == 200
       result[2].body.join.should  == "show"
     end
-    
+
     it "should raise a Pancake::Response::NotFound exception when an action is now found" do
       @controller.params["action"] = :does_not_exist
       result = @controller.do_dispatch!
       result[0].should == 404
     end
-    
+
     it "should not dispatch to a protected method" do
       @controller.params["action"] = "a_protected_method"
       result = @controller.do_dispatch!
       result[0].should == 404
     end
-    
+
     it "should not dispatch to a private method" do
       @controller.params["action"] = "a_private_method"
       result = @controller.do_dispatch!
       result[0].should == 404
     end
-    
+
+    it "should raise an exception if pancake has told it not to handle errors" do
+      Pancake.should_receive(:handle_errors?).and_return(false)
+      @controller.params["action"] = "a_private_method"
+      lambda do
+        @controller.do_dispatch!
+      end.should raise_error
+    end
+
     describe "helper in methods" do
       before do
         module PancakeTestHelper
@@ -78,7 +86,7 @@ describe Pancake::Stacks::Short::Controller do
             "foo"
           end
         end
-        
+
         class ShortFoo
           class Controller
             include PancakeTestHelper
@@ -88,13 +96,13 @@ describe Pancake::Stacks::Short::Controller do
       after do
         clear_constants "PancakeTestHelper"
       end
-      
+
       it "should not call a helper method" do
         @controller.params["action"] = "some_helper_method"
         result = @controller.do_dispatch!
         result[0].should == 404
       end
-      
+
     end
   end
 
@@ -118,14 +126,14 @@ describe Pancake::Stacks::Short::Controller do
     def app
       ShortBar.stackup
     end
-    
+
     it "should get json by default" do
       result = get "/foo/bar", {}, "HTTP_ACCEPT" => "application/json"
       result.status.should == 200
       result.headers["Content-Type"].should == "application/json"
       result.body.to_s.should == "format :json"
     end
-    
+
     it "should get xml when specified" do
       result = get "/foo/bar.xml"
       result.status.should == 200
@@ -195,7 +203,7 @@ describe Pancake::Stacks::Short::Controller do
     before do
       class ::ShortFoo
         provides :html, :xml
-        
+
         get "/foo(.:format)" do
           "HERE"
         end
@@ -203,7 +211,7 @@ describe Pancake::Stacks::Short::Controller do
         get "/bad" do
           raise "This is bad"
         end
-        
+
       end
     end
 
@@ -211,19 +219,19 @@ describe Pancake::Stacks::Short::Controller do
       def app
         ShortFoo.stackup
       end
-      
+
       it "should handle a NotFound  by default" do
         result = get "/does_not_exist"
         result.status.should == 404
         result.body.should include(Pancake::Errors::NotFound.description)
       end
-      
+
       it "should return a 500 status for a Random Error by wrapping it in a Pancake::Errors::Server" do
         result = get "/bad"
         result.status.should == 500
         result.body.should include(Pancake::Errors::Server.description)
       end
-      
+
       it "should handle a NotAcceptable error" do
         result = get "/foo.no_format_i_know_of"
         result.status.should == 406
@@ -234,8 +242,8 @@ describe Pancake::Stacks::Short::Controller do
         r = get "/foo.svg"
         r.status.should == 406
       end
-      
-      
+
+
     end
 
     describe "custom error handling" do
@@ -256,7 +264,7 @@ describe Pancake::Stacks::Short::Controller do
       after do
         ShortFoo.handle_exception(&Pancake::Stacks::Short::Controller::DEFAULT_EXCEPTION_HANDLER)
       end
-                  
+
       it "should handle Pancake::Errors::NotFound errors" do
         r = get "/not_a_thing"
         r.status.should == 404
@@ -281,7 +289,7 @@ describe Pancake::Stacks::Short::Controller do
         r.status.should == 123
         r.body.should == "BOOO!"
       end
-      
+
     end
   end
 end
