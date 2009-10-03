@@ -30,7 +30,6 @@ module Pancake
                   end
             _concat_methods[key]
           end
-
         end
 
         _capture_methods[Tilt::HamlTemplate] = :_haml_capture

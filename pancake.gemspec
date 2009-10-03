@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-10-01}
+  s.date = %q{2009-10-03}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -55,10 +55,12 @@ Gem::Specification.new do |s|
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%.rb.tt",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/%stack_name%.rb.tt",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/config.ru.tt",
-     "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/gems/cache/.empty_directory",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/mounts/.empty_directory",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/public/.empty_directory",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/tmp/.empty_directory",
+     "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/views/base.html.haml",
+     "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/views/root.html.haml",
+     "lib/pancake/generators/templates/short/%stack_name%/pancake.init",
      "lib/pancake/generators/templates/short/%stack_name%/pancake.init.tt",
      "lib/pancake/generators/templates/short/%stack_name%/spec/%stack_name%_spec.rb.tt",
      "lib/pancake/generators/templates/short/%stack_name%/spec/spec_helper.rb.tt",

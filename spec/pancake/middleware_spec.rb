@@ -136,12 +136,12 @@ describe "Pancake::Middleware" do
     it "should replace the middleware with another middleware" do
       orig = FooApp::StackMiddleware[:replaceable]
       orig.middleware.should == GeneralMiddleware
-      orig.config.should == {:some => :option}
+      orig.args.should == [{:some => :option}]
 
       FooApp.stack(:replaceable).use(FooMiddle, :foo => :options)
       replaced = FooApp.stack(:replaceable)
       replaced.middleware.should == FooMiddle
-      replaced.config.should == {:foo => :options}
+      replaced.args.should == [{:foo => :options}]
     end
   end
 
@@ -173,9 +173,9 @@ describe "Pancake::Middleware" do
     end
 
     it "should allow me to update settings for middleware" do
-      FooApp.stack(:editable).config.should == {:some => :config}
-      FooApp.stack(:editable).config = {:foo => :bar}
-      FooApp.stack(:editable).config.should == {:foo => :bar}
+      FooApp.stack(:editable).args.should == [{:some => :config}]
+      FooApp.stack(:editable).args = [{:foo => :bar}]
+      FooApp.stack(:editable).args.should == [{:foo => :bar}]
     end
   end
 
@@ -207,17 +207,17 @@ describe "Pancake::Middleware" do
         FooApp.use GeneralMiddleware, :some => :option
         class BarApp < FooApp; end
         BarApp.stack(GeneralMiddleware).middleware.should == GeneralMiddleware
-        BarApp.stack(GeneralMiddleware).config = {:foo => :bar}
-        BarApp.stack(GeneralMiddleware).config.should == {:foo => :bar}
-        FooApp.stack(GeneralMiddleware).config.should == {:some => :option}
+        BarApp.stack(GeneralMiddleware).args = [{:foo => :bar}]
+        BarApp.stack(GeneralMiddleware).args.should == [{:foo => :bar}]
+        FooApp.stack(GeneralMiddleware).args.should == [{:some => :option}]
       end
 
       it "should not update the parent when updating a childs config" do
         FooApp.use GeneralMiddleware, :some => :option
         class BarApp < FooApp; end
-        BarApp.stack(GeneralMiddleware).config[:another] = :option
-        FooApp.stack(GeneralMiddleware).config.should == {:some => :option}
-        BarApp.stack(GeneralMiddleware).config.should == {:some => :option, :another => :option}
+        BarApp.stack(GeneralMiddleware).args[0][:another] = :option
+        FooApp.stack(GeneralMiddleware).args.should == [{:some => :option}]
+        BarApp.stack(GeneralMiddleware).args.should == [{:some => :option, :another => :option}]
       end
     end
   end

@@ -41,14 +41,7 @@ module Pancake
     # @author Daniel Neighman
     def self.build(app, mwares)
       mwares.reverse.inject(app) do |a, m|
-        case m.middleware.instance_method(:initialize).arity
-        when 1
-          m.middleware.new(a,&m.block)
-        when -2
-          m.middleware.new(a, m.options, &m.block)
-        else
-          raise "Don't know how to initialize #{m.middleware}"
-        end
+        m.middleware.new(a, *m.args, &m.block)
       end
     end
 
@@ -149,8 +142,8 @@ module Pancake
     # @api public
     # @since 0.1.0
     # @author Daniel Neighman
-    def use(middleware, opts = {}, &block)
-      stack(middleware).use(middleware, opts, &block)
+    def use(middleware, *_args, &block)
+      stack(middleware).use(middleware, *_args, &block)
     end # use
 
     # StackMiddleware manages the definition of the middleware stack for a given class.
@@ -178,11 +171,11 @@ module Pancake
       # @api private
       attr_reader :middleware, :name
       # @api private
-      attr_accessor :config, :block, :stack, :options
+      attr_accessor :args, :block, :stack, :options
 
       class << self
-        def use(mware, opts, &block)
-          new(mware).use(mware, opts, &block)
+        def use(mware, *_args, &block)
+          new(mware).use(mware, *_args, &block)
         end
 
         # Resets this stack middlware.  Useful for specs
@@ -311,8 +304,8 @@ module Pancake
       # @api public
       # @since 0.1.0
       # @author Daniel Neighman
-      def use(mware, config = {}, &block)
-        @middleware, @config, @block = mware, config, block
+      def use(mware, *_args, &block)
+        @middleware, @args, @block = mware, _args, block
         @name = @middleware if name.nil?
         if options[:before]
           raise "#{options[:before].inspect} middleware is not defined for this stack" unless self.class._mwares.keys.include?(options[:before])
@@ -345,7 +338,7 @@ module Pancake
       # @api private
       def dup
         result = super
-        result.config = result.config.dup
+        result.args = result.args.map{|element| element.dup}
         result.options = result.options.dup
         result
       end

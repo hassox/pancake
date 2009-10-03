@@ -35,7 +35,7 @@ module Pancake
           return renderer if renderer
 
           renderer_path = unique_paths_for(:views, :invert => true).detect do |path|
-            path.last =~ %r[^(#{name})\.\w+$]
+            path.last =~ %r[^\/?(#{name})\.\w+$]
           end
 
           raise TemplateNotFound unless renderer_path
@@ -82,7 +82,7 @@ module Pancake
         def template(name_or_template)
           case name_or_template
           when String, Symbol
-            self.class._find_template(name_or_template)
+            self.class._find_template(_template_name_for(name_or_template, {}))
           when Template
             name_or_template
           else
