@@ -120,7 +120,7 @@ module Pancake
         self::Controller.publish unless @published
         @published = nil
 
-        action_name = next_action_name(method,path)
+        action_name = controller_method_name(method,path)
         attach_action(action_name, block)
 
         attach_route(method, path, action_name, opts)
@@ -142,7 +142,7 @@ module Pancake
       # @param method [Symbol]
       #
       # @example
-      #   attach_route(:get, "/foo/bar", "get_00001__foo_bar")
+      #   attach_route(:get, "/foo/bar", "get__foo_bar")
       #
       # @api private
       # @author Daniel Neighman
@@ -159,24 +159,17 @@ module Pancake
       end
 
       # provides for methods of the following form on Controller
-      #   :<method>_<number>_<sanitized_path>
-      # where <number> is incremented
+      #   :<method>_<sanitized_path>
       #
       # @param [Symbol] method - the HTTP method to look for
       # @param [String] path - the url path expression to encode into the method name
       #
-      # @return [String] - The next method name to use that won't clash with previously configured actions
+      # @return [String] - The actual controller method name to use for the action
       #
       # @api private
       # @author Daniel Neighman
-      def self.next_action_name(method, path)
-        last = self::Controller.public_instance_methods.grep(%r[#{method}_\d+]).sort.reverse.first
-        next_method = 0
-        unless last.nil?
-          last =~ %r[#{method}_(\d+)]
-          next_method = $1
-        end
-        sprintf("#{method}_%04d_#{sanitize_path(path)}", next_method)
+      def self.controller_method_name(method, path)
+        "#{method}_#{sanitize_path(path)}"
       end
 
       # sanitizes a path so it's able to be used as a method name
