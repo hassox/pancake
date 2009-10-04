@@ -49,7 +49,8 @@ describe Pancake::Mixins::Render do
   end
 
   it "should render with the rendering controller as the current context" do
-    @render.render(:context_template).chomp.should == "the current context"
+    @render.render(:context_template)
+    $captures.first.should be_a_kind_of(Pancake::Mixins::Render::ViewContext)
   end
 
 end
