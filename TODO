@@ -1,18 +1,15 @@
 TODO:
 
-Controller Publish Declaration:
-  Allow requirements to be declared for multiple controllers at once
-  Support syntax for coercing multiple values into a single param entry i.e. two date strings into a range
-  Default values should be generated with a method rather than a static value alone
-  The list of params should be able to be flagged as exclusive i.e. no additional parameters may be passed in
-  Handle nested params
-  Collect options suitable for a OPTIONS request from a client
-  Mechanism to whitelist fields from a model
-  
-Renderable Mixin
-  Design interface for adapters -- adapters allow support for different template libs
-  Compiled templates need to be cached
-  Options used by the mixin need to be configurable
-  Templates should be inheritable
-  The target class should be able to inject arbitrary helpers into the template context
-  Layouts, views and partials should be supported
+* Add default middleware to the short stack
+* Add a global logger
+* Add some view helpers
+** url, link_to, form_for, form_field_helpers (can we use formtastic), v[:data]
+* Add partial support
+* Add sass support so that a stack can compile sass
+* Add a mechanism for a rake task to be called on the parent and all mounted stacks
+* Add a way to cache public files into the pancake roots public directory
+* Add bundler support
+* Do some introductory posts
+* optimise template lookup
+* Add caching / symlinking option for static middlware to prevent lookup
+* Add a rake task to copy / symlink all mounted apps public files into the public Pancake.public directory
