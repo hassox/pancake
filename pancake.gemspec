@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pancake}
-  s.version = "0.1.7"
+  s.version = "0.1.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
@@ -92,8 +92,6 @@ Gem::Specification.new do |s|
      "lib/pancake/mixins/request_helper.rb",
      "lib/pancake/mixins/stack_helper.rb",
      "lib/pancake/mixins/url.rb",
-     "lib/pancake/more/controller.rb",
-     "lib/pancake/more/controller/base.rb",
      "lib/pancake/paths.rb",
      "lib/pancake/router.rb",
      "lib/pancake/stack/app.rb",
