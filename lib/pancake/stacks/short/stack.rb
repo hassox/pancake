@@ -1,6 +1,7 @@
 module Pancake
   module Stacks
     class Short < Pancake::Stack
+      add_root(__FILE__, "default")
 
       def self.new_app_instance
         self::Controller

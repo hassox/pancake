@@ -221,6 +221,26 @@ describe Pancake::Mixins::Render::ViewContext do
       result.should include("default content block content")
     end
   end
+
+  describe "multiple context blocks" do
+    before do
+      @foo = FooBar.new
+    end
+
+    it "should allow nested default captures" do
+      result = @foo.render(:nested_content_level_0)
+      result.should include("level 0 content")
+      result.should include("nested foo content")
+      result.should include("nested bar content")
+    end
+
+    it "should allow inherited nested content to overwrite a given block" do
+      result = @foo.render(:nested_content_level_1)
+      result.should include("level 0 content")
+      result.should include("nested foo content")
+      result.should include("nested new bar content")
+    end
+  end
 end
 
 

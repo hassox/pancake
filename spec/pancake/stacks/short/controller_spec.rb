@@ -4,6 +4,8 @@ describe Pancake::Stacks::Short::Controller do
 
   before do
     class ::ShortFoo < Pancake::Stacks::Short
+      add_root(__FILE__)
+      add_root(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "stacks", "short", "foobar")
       class Controller
         def do_dispatch!
           dispatch!
@@ -22,7 +24,6 @@ describe Pancake::Stacks::Short::Controller do
         def a_private_method; "private"; end
       end
     end
-    ShortFoo.roots << Pancake.get_root(__FILE__)
   end
 
   after do
@@ -212,6 +213,10 @@ describe Pancake::Stacks::Short::Controller do
           raise "This is bad"
         end
 
+        get "/template/:name" do
+          render params[:name]
+        end
+
       end
     end
 
@@ -290,6 +295,28 @@ describe Pancake::Stacks::Short::Controller do
         r.body.should == "BOOO!"
       end
 
+    end
+
+    describe "rendering" do
+
+      it "should render a template" do
+        result = get "/template/basic"
+        result.body.should include("basic template")
+      end
+
+      it "should inherit from a base view provided by short stacks" do
+        File.file?(File.join(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "stacks", "short", "foobar", "views", "base.html.haml")).should be_false
+        result = get "/template/inherited_from_base"
+        result.body.should include("inherited from base")
+        result.body.should include("Pancake")
+      end
+
+      it "should allow me to overwrite the base tempalte in later roots" do
+        ShortFoo.add_root(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "stacks", "short", "foobar", "other_root")
+        result = get "/template/inherited_from_base"
+        result.body.should include("inherited from base")
+        result.body.should_not include("Not the default pancake")
+      end
     end
   end
 end
