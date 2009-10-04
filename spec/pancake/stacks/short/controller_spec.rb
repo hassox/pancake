@@ -315,7 +315,7 @@ describe Pancake::Stacks::Short::Controller do
         ShortFoo.add_root(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "stacks", "short", "foobar", "other_root")
         result = get "/template/inherited_from_base"
         result.body.should include("inherited from base")
-        result.body.should_not include("Not the default pancake")
+        result.body.should include("Not the default pancake")
       end
     end
   end

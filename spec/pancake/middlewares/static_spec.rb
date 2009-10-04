@@ -50,4 +50,14 @@ describe Pancake::Middlewares::Static do
     body = result[2].body.map{|e| e}.join
     body.should == "OK"
   end
+
+  it "should return a 404 if the file requested is outside the root directory" do
+    static = Pancake::Middlewares::Static.new(@app, FooBar)
+    file = "/../../../middlewares/static_spec.rb"
+    File.exists?(File.join(FooBar.dirs_for(:public).first, file)).should be_true
+    env = Rack::MockRequest.env_for(file)
+    result = static.call(env)
+    result[2].body.map{|e| e}.join.should_not == "OK"
+    result[0].should == 404
+  end
 end
