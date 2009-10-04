@@ -1,6 +1,6 @@
 class <%= stack_name.camel_case %>
   get "/" do
-    "Welcome to Pancake!"
+    render :root
   end
 end
 

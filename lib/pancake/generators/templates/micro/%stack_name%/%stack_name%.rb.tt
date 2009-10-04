@@ -1,8 +1,8 @@
 class <%= stack_name.camel_case %> < Pancake::Stacks::Short
-  roots << Pancake.get_root(__FILE__)
+  add_root(__FILE__)
 
   get "/" do
-    "Welcome to Pancake!"
+    render :root
   end
 end
 
