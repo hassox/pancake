@@ -60,4 +60,24 @@ describe Pancake::Middlewares::Static do
     result[2].body.map{|e| e}.join.should_not == "OK"
     result[0].should == 404
   end
+
+  it "should chomp a trailing slash" do
+    static = Pancake::Middlewares::Static.new(@app, FooBar)
+    file = "/two.html/"
+    env = Rack::MockRequest.env_for(file)
+    result = static.call(env)
+    result[0].should == 200
+    body = result[2].body.map{|e| e}.join
+    body.should include("In Two")
+  end
+
+  it "should unescape the file name" do
+    static = Pancake::Middlewares::Static.new(@app, FooBar)
+    file = "/foo%23bar.html"
+    env = Rack::MockRequest.env_for(file)
+    result = static.call(env)
+    result[0].should == 200
+    body = result[2].body.map{|e| e}.join
+    body.should include("escaped text is #")
+  end
 end

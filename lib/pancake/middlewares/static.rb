@@ -13,7 +13,7 @@ module Pancake
         static_file = nil
         root = stack.dirs_for(:public).detect do |root|
           root = File.expand_path(root)
-          file_name = File.expand_path(File.join(root, env['PATH_INFO']))
+          file_name = Rack::Utils.unescape(File.expand_path(File.join(root, env['PATH_INFO'].chomp("/"))))
 
           # If the client is asking for files outside the public directory, return missing
           # i.e. get "/../../foo.secret"
