@@ -137,4 +137,9 @@ module Pancake
     @configuration ||= PancakeConfig.new
   end
 
+  def self.reset_configuration
+    @configuration = nil
+  end
+
 end # Pancake
+

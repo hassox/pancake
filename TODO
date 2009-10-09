@@ -1,6 +1,7 @@
 TODO:
 
 * Add default middleware to the short stack
+* Add a default base template and some default css to the short stack
 * Add a global logger
 * Add some view helpers
 ** url, link_to, form_for, form_field_helpers (can we use formtastic), v[:data]
@@ -13,3 +14,4 @@ TODO:
 * optimise template lookup
 * Add caching / symlinking option for static middlware to prevent lookup
 * Add a rake task to copy / symlink all mounted apps public files into the public Pancake.public directory
+

@@ -111,5 +111,13 @@ module Pancake
     def default_error_handling!
       @handle_errors = nil
     end
+
+    def logger
+      @logger ||= Pancake::Logger.new
+    end
+
+    def logger=(logr)
+      @logger = logr
+    end
   end # self
 end # Pancake

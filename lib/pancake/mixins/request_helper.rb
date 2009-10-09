@@ -15,7 +15,7 @@ module Pancake
       def env
         @env
       end
-      
+
       def headers
         @headers ||= {}
       end
@@ -27,7 +27,7 @@ module Pancake
       def status=(st)
         @status = st
       end
-            
+
       # Generate a url for the current stacks router.
       #
       # @example
@@ -52,7 +52,7 @@ module Pancake
         konfig = request.env[Pancake::Router::CONFIGURATION_KEY]
         konfig.router.generate(name, opts)
       end
-      
+
       # Generate a url for any registered configuration with a router
       #
       # @example
@@ -74,7 +74,7 @@ module Pancake
           raise Pancake::Errors::UnknownConfiguration
         end
       end
-   
+
       # A handy request method that gets hold of the current request
       # object for the current rack request.
       # Any including class _must_ provide an +env+ method that exposes
@@ -86,7 +86,15 @@ module Pancake
       def request
         @request ||= Rack::Request.new(env)
       end
-      
+
+      # Provides access to the logger object in rack.logger
+      #
+      #
+      # @api public
+      # @author Daniel Neighman
+      def logger
+        env[Pancake::Constants::ENV_LOGGER_KEY]
+      end
     end # RequestHelper
   end # Mixins
 end # Pancake
