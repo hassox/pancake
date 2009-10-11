@@ -5,6 +5,10 @@ describe Pancake::Stacks::Short, "routes" do
     class ::RoutedShortStack < Pancake::Stacks::Short
       roots << Pancake.get_root(__FILE__)
 
+      get "/", :_name => :root do
+        "get - /"
+      end
+
       get "/foo", :_name => :foo do
         "get - foo"
       end

@@ -70,6 +70,16 @@ describe "stack router" do
         FooApp.router.mount(:not_an_app, "/foo")
       end.should raise_error(Pancake::Router::RackApplicationExpected)
     end
+
+
+    it "should not match a single segment route when only / is defined" do
+      FooApp.router.add("/", :_defaults => {:root => :var}) do |e|
+        Rack::Response.new("In the Root").finish
+      end
+      @app = FooApp.stackup
+      result = get "/not_a_route"
+      result.status.should == 404
+    end
   end
 
   describe "generating routes" do
@@ -80,6 +90,7 @@ describe "stack router" do
         r.add("/complex/:var"    ).name(:complex)
         r.add("/optional(/:var)" ).name(:optional)
         r.add("/some/:unique_var")
+        r.add("/", :_defaults => {:var => "root var"}).name(:root)
       end
     end
 
@@ -104,6 +115,7 @@ describe "stack router" do
     it "should allow me to generate a route by params" do
       Pancake.url(FooApp, :unique_var => "unique_var").should == "/some/unique_var"
     end
+
 
     describe "mounted route generation" do
       before do
@@ -197,11 +209,11 @@ describe "stack router" do
     @app = FooApp.stackup
     get "/foo"
   end
-  
+
   describe "generating urls inside an application" do
     before do
       class ::BarApp < FooApp;  end
-      
+
       class ::InnerApp
         attr_reader :env
         include Pancake::Mixins::RequestHelper
@@ -212,7 +224,7 @@ describe "stack router" do
           end
           @app_block
         end
-        
+
         def call(env)
           @env = env
           instance_eval &self.class.app_block
@@ -221,7 +233,7 @@ describe "stack router" do
       end
 
       class ::FooApp; def self.new_app_instance; InnerApp.new; end; end
-            
+
       BarApp.router do |r|
         r.add("/mounted")
         r.add("/foo").name(:foo)
@@ -242,7 +254,7 @@ describe "stack router" do
         url(:foo).should == "/foo"
         url(:simple).should == "/simple"
       end
-      
+
       get "/foo"
     end
 
@@ -261,6 +273,5 @@ describe "stack router" do
       end
       get "/foo"
     end
-    
   end
 end

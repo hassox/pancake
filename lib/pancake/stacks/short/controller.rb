@@ -41,6 +41,11 @@ module Pancake
           params["action"] ||= params[:action]
           params[:format]  ||= params["format"]
 
+          if logger
+            logger.info "Request: #{request.path}"
+            logger.info "Params: #{params.inspect}"
+          end
+
           # Check that the action is available
           raise Errors::NotFound, "No Action Found" unless allowed_action?(params["action"])
 
@@ -53,11 +58,17 @@ module Pancake
 
           raise Errors::NotAcceptable unless @content_type
 
+          logger.info "Dispatching to #{params["action"].inspect}" if logger
+
           # set the response header
           headers["Content-Type"] = ct
           Rack::Response.new(self.send(params["action"]), status, headers).finish
 
         rescue Errors::HttpError => e
+          if logger
+            logger.error "Exception: #{e.message}"
+            logger.error e.backtrace.join("\n")
+          end
           handle_request_exception(e)
         rescue Exception => e
           server_error = Errors::Server.new

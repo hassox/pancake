@@ -36,7 +36,7 @@ module Pancake
       #
       # The block should finish with the final result of the action
       #
-      # @param [String] path  - a url path that conforms to Rack::Router match path.
+      # @param [String] path  - a url path that conforms to Usher match path.
       # @param block - the contents of the block are executed when the path is matched.
       #
       # @example
@@ -44,7 +44,7 @@ module Pancake
       #     # do stuff to get posts and render them
       #   end
       #
-      # @see Rack::Router
+      # @see Usher
       # @api public
       # @author Daniel Neighman
       def self.get(path, opts = {}, &block)
@@ -55,7 +55,7 @@ module Pancake
       #
       # The block should finish with the final result of the action
       #
-      # @param [String] path - a url path that conforms to Rack::Router match path.
+      # @param [String] path - a url path that conforms to Usher match path.
       # @param block - the contents of the block are executed when the path is matched.
       #
       # @example
@@ -63,7 +63,7 @@ module Pancake
       #     # do stuff to post  /posts and render them
       #   end
       #
-      # @see Rack::Router
+      # @see Usher
       # @api public
       # @author Daniel Neighman
       def self.post(path, opts = {}, &block)
@@ -74,7 +74,7 @@ module Pancake
       #
       # The block should finish with the final result of the action
       #
-      # @param [String] path - a url path that conforms to Rack::Router match path.
+      # @param [String] path - a url path that conforms to Usher match path.
       # @param block - the contents of the block are executed when the path is matched.
       #
       # @example
@@ -82,7 +82,7 @@ module Pancake
       #     # do stuff to post  /posts and render them
       #   end
       #
-      # @see Rack::Router
+      # @see Usher
       # @api public
       # @author Daniel Neighman
       def self.put(path, opts = {}, &block)
@@ -93,7 +93,7 @@ module Pancake
       #
       # The block should finish with the final result of the action
       #
-      # @param [String] path - a url path that conforms to Rack::Router match path.
+      # @param [String] path - a url path that conforms to Usher match path.
       # @param block - the contents of the block are executed when the path is matched.
       #
       # @example
@@ -101,7 +101,7 @@ module Pancake
       #     # do stuff to post foo-is-post and render the result
       #   end
       #
-      # @see Rack::Router
+      # @see Usher
       # @api public
       # @author Daniel Neighman
       def self.delete(path, opts = {}, &block)
@@ -152,7 +152,6 @@ module Pancake
         options[:conditions][:request_method] = method.to_s.upcase
         options[:default_values] ||= {}
         options[:default_values][:action] = action_name
-        options[:_exact] = true unless options[:_exact] == false
         r = router.add(path, options)
         r.name(name) if name
         r

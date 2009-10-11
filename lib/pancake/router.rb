@@ -20,7 +20,7 @@ module Pancake
     end
     the_router.url(name_or_opts, opts)
   end
-  
+
   # The pancake router is a customized version of the Usher router.
   # Usher is a fast tree based router that can generate routes, have
   # nested routers, and even generate from nested routers.
@@ -29,10 +29,10 @@ module Pancake
   # @author Daniel Neighman
   class Router < Usher::Interface::RackInterface
     CONFIGURATION_KEY = "pancake.request.configuration".freeze
-    
+
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
-    
+
     # Mounts an application in the router as a sub application in the
     # url space.  This will route directly to the sub application and
     # skip any middlewares etc.
@@ -55,7 +55,7 @@ module Pancake
       end
       route
     end
-    
+
     # Generate a url
     def url(name_or_path, options = {})
       if Hash === name_or_path
@@ -74,7 +74,7 @@ module Pancake
     ensure
       env[CONFIGURATION_KEY] = orig_config
     end
-    
+
     private
     # Canoodles the options into a format that usher is happy to
     # accept.  This is so that we can have a different interface from

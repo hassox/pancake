@@ -2,6 +2,7 @@ require 'logger'
 module Pancake
   module Middlewares
     class Logger
+      attr_reader :app
       def initialize(app)
         @app = app
       end
