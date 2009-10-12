@@ -14,6 +14,9 @@ module Pancake
         def stack_class
           return @_stack_class if @_stack_class
           klass = nil
+          if name =~ /^\#<Class/
+            raise "Could not determine the stack.  Make sure you declare global classes with a preceeding ::"
+          end
           ns = name.split("::")
           until ns.empty? || klass
             r = Object.full_const_get(ns.join("::"))
@@ -31,14 +34,13 @@ module Pancake
           _stack_class
         end
       end
-      
 
       module InstanceMethods
         def stack_class
           self.class.stack_class
         end
       end
-      
+
     end # StackHelper
   end # Mixins
 end # Pancake
