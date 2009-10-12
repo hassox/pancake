@@ -210,6 +210,11 @@ describe "stack router" do
     get "/foo"
   end
 
+  it "should inherit the router as an inherited inner class" do
+    class ::BarApp < FooApp; end
+    BarApp::Router.should inherit_from(FooApp::Router)
+  end
+
   describe "generating urls inside an application" do
     before do
       class ::BarApp < FooApp;  end
