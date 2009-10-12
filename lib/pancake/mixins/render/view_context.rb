@@ -8,10 +8,10 @@ module Pancake
         include Renderer
         include ContentInheritance
 
-
         attr_reader :_view_context_for
-        def initialize(renderer_for = nil)
+        def initialize(env, renderer_for = nil )
           super
+          @env = env
           @_view_context_for = renderer_for
         end
 

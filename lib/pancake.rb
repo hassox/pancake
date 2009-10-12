@@ -24,9 +24,11 @@ module Pancake
   end
 
   module Mixins
+    autoload :RequestHelper,"pancake/mixins/request_helper"
     autoload :Publish,      "pancake/mixins/publish"
     autoload :Render,       "pancake/mixins/render"
     autoload :StackHelper, "pancake/mixins/stack_helper"
+    autoload :ResponseHelper,  "pancake/mixins/response_helper"
   end
 
   module Middlewares

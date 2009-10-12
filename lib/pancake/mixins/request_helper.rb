@@ -3,29 +3,17 @@ module Pancake
     # Some helpers for requests that come in handy for applications that
     # are part of stacks
     module RequestHelper
+      VAULT_KEY = 'pancake.request.vault'
 
-      # A setter for the rack environment
-      # @api public
-      def env=(env)
-        @env = env
-      end
-
-      # An accessor for the rack environment variable
-      # @api public
-      def env
-        @env
-      end
-
-      def headers
-        @headers ||= {}
-      end
-
-      def status
-        @status ||= 200
-      end
-
-      def status=(st)
-        @status = st
+      # A data vault that allows you to carry data accross middlewares, controller / views etc.
+      # Stores the data in session for the length of the request.
+      #
+      # @example
+      #   v[:user] = @user
+      #   # This is now stored in the environment and is available later
+      def v
+        env[VAULT_KEY] ||= {}
+        env[VAULT_KEY]
       end
 
       # Generate a url for the current stacks router.
@@ -73,6 +61,18 @@ module Pancake
         else
           raise Pancake::Errors::UnknownConfiguration
         end
+      end
+
+      # A setter for the rack environment
+      # @api public
+      def env=(env)
+        @env = env
+      end
+
+      # An accessor for the rack environment variable
+      # @api public
+      def env
+        @env
       end
 
       # A handy request method that gets hold of the current request

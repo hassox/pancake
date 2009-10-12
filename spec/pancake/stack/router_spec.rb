@@ -215,6 +215,19 @@ describe "stack router" do
     BarApp::Router.should inherit_from(FooApp::Router)
   end
 
+  it "should grab a new copy of the router rather than instantiate an inherited one" do
+    class ::BarApp < FooApp; end
+    FooApp.router.class.should == Pancake::Stack::Router
+    BarApp.router.class.should == Pancake::Stack::Router
+  end
+
+  it "should reset the router to the namespaced router" do
+    class ::BarApp < FooApp; end
+    BarApp.reset_router!
+    BarApp.router.class.should == BarApp::Router
+  end
+
+
   describe "generating urls inside an application" do
     before do
       class ::BarApp < FooApp;  end

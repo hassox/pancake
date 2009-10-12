@@ -10,8 +10,11 @@ module Pancake
         base.class_eval do
           extend  Pancake::Mixins::Render::ClassMethods
           include Pancake::Mixins::Render::InstanceMethods
+          include Pancake::Mixins::RequestHelper
 
-          class self::ViewContext < Pancake::Mixins::Render::ViewContext; end
+          class self::ViewContext < Pancake::Mixins::Render::ViewContext
+            include Pancake::Mixins::RequestHelper
+          end
           inheritable_inner_classes :ViewContext
 
           unless ancestors.include?(Pancake::Paths)
@@ -74,7 +77,7 @@ module Pancake
           # Get the view context for the tempalte
           template, vc_class = self.class._renderer_and_view_context_class_for(template)
 
-          view_context = vc_class.new(self)
+          view_context = vc_class.new(env, self)
           view_context_before_render(view_context)
           view_context.render(template, opts)
         end

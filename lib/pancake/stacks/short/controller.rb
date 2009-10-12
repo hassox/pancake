@@ -7,6 +7,7 @@ module Pancake
         extend  Mixins::Publish
         include Mixins::Render
         include Mixins::RequestHelper
+        include Mixins::ResponseHelper
         include Mixins::StackHelper
 
         class_inheritable_accessor :_handle_exception

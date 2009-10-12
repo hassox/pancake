@@ -24,4 +24,13 @@ describe Pancake::Mixins::RequestHelper do
     end
   end
 
+  describe "v" do
+    it "should store the data put into v into the env" do
+      env = {}
+      foo = FooBar.new
+      foo.env = env
+      foo.v[:data] = :some_data
+      env[Pancake::Mixins::RequestHelper::VAULT_KEY][:data].should == :some_data
+    end
+  end
 end

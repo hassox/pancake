@@ -107,6 +107,57 @@ describe Pancake::Stacks::Short::Controller do
     end
   end
 
+  describe "request helper methods" do
+    before do
+      class ::RequestFoo < Pancake::Stacks::Short
+        add_root(__FILE__, "..", "..", "fixtures", "stacks", "short", "foobar")
+        get "/foobar", :_name => :foobar do
+          url(:foobar)
+        end
+
+        get "/template", :_name => :template do
+          render :template
+        end
+
+        get "/vault" do
+          v[:my_data] = "some data"
+          render :vault
+        end
+      end
+    end
+
+    after do
+      clear_constants :RequestFoo
+    end
+
+    def app
+      RequestFoo.stackup
+    end
+
+    it "should include the request helper methods" do
+      (Pancake::Mixins::RequestHelper > ShortFoo::Controller).should be_true
+    end
+
+    it "should provide access to the request methods in the controller" do
+      result = get "/foobar"
+      result.body.should == "/foobar"
+    end
+
+    it "should provide access to the helper methods in the views" do
+      result = get "/template"
+      result.status.should == 200
+      result.body.should include("/foobar")
+      result.body.should include("In Template")
+    end
+
+    it "should allow me to get information between the view and the controller" do
+      result = get "/vault"
+      result.status.should == 200
+      result.body.should include("some data")
+      result.body.should include("In Vault")
+    end
+  end
+
   describe "accept type negotiations" do
     before do
       class ::ShortBar < Pancake::Stacks::Short
@@ -247,8 +298,6 @@ describe Pancake::Stacks::Short::Controller do
         r = get "/foo.svg"
         r.status.should == 406
       end
-
-
     end
 
     describe "custom error handling" do
