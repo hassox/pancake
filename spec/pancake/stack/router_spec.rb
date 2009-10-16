@@ -65,13 +65,6 @@ describe "stack router" do
         last_response.status.should == 404
     end
 
-    it "should make sure that the application is a rack application" do
-      lambda do
-        FooApp.router.mount(:not_an_app, "/foo")
-      end.should raise_error(Pancake::Router::RackApplicationExpected)
-    end
-
-
     it "should not match a single segment route when only / is defined" do
       FooApp.router.add("/", :_defaults => {:root => :var}) do |e|
         Rack::Response.new("In the Root").finish
@@ -79,6 +72,36 @@ describe "stack router" do
       @app = FooApp.stackup
       result = get "/not_a_route"
       result.status.should == 404
+    end
+
+    describe "mounting stacks" do
+      before do
+        @stack_app = lambda{|e| Rack::Response.new("stacked up").finish}
+      end
+
+      it "should not imediately stackup the passed in resource" do
+        stack = mock("stack")
+        stack.should_not_receive(:stackup)
+        FooApp.router.mount(stack, "/stackup")
+      end
+
+      it "should stackup a class if it responds to stackup" do
+        stack = mock("stack")
+        stack.should_receive(:stackup).and_return(@stack_app)
+        FooApp.router.mount(stack, "/stackup")
+
+        @app = FooApp.stackup
+        result = get "/stackup"
+        result.body.should include("stacked up")
+      end
+
+      it "should activate the class with the activate option" do
+
+      end
+
+      it "should pass the given args to the class to create it" do
+
+      end
     end
   end
 
@@ -125,7 +148,8 @@ describe "stack router" do
           r.add("/simple").name(:simple)
           r.add("/some/:var", :_defaults => {:var => "foo"}).name(:foo)
         end
-        FooApp.router.mount(BarApp.stackup, "/bar")
+        FooApp.router.mount(BarApp, "/bar")
+        FooApp.router.mount_applications!
       end
 
       it "should allow me to generate a simple nested named route" do
@@ -133,7 +157,8 @@ describe "stack router" do
       end
 
       it "should allow me to generate a simple nested named route for a named app" do
-        FooApp.router.mount(BarApp.stackup(:app_name => :bar_app), "/different")
+        FooApp.router.mount(BarApp, "/different", :_args => [{:app_name => :bar_app}])
+        FooApp.router.mount_applications!
         Pancake.url(:bar_app, :simple).should == "/different/simple"
         Pancake.url(BarApp,   :simple).should == "/bar/simple"
       end
@@ -149,6 +174,7 @@ describe "stack router" do
           INNER_APP
         end
       end
+      FooApp.router.mount(INNER_APP, "/some_mount")
 
       @app = FooApp.stackup
       get "/bar"
@@ -195,6 +221,7 @@ describe "stack router" do
     end
 
     class ::BarApp < FooApp; end
+    FooApp.router.mount_applications!
 
     Pancake.url(BarApp, :simple).should == "/simple"
     Pancake.url(BarApp, :stuff => "this_stuff").should == "/foo/this_stuff"
@@ -215,10 +242,10 @@ describe "stack router" do
     BarApp::Router.should inherit_from(FooApp::Router)
   end
 
-  it "should grab a new copy of the router rather than instantiate an inherited one" do
+  it "should inherit the router class as an inner class" do
     class ::BarApp < FooApp; end
-    FooApp.router.class.should == Pancake::Stack::Router
-    BarApp.router.class.should == Pancake::Stack::Router
+    FooApp.router.class.should == FooApp::Router
+    BarApp.router.class.should == BarApp::Router
   end
 
   it "should reset the router to the namespaced router" do
@@ -259,7 +286,7 @@ describe "stack router" do
       end
 
       FooApp.router do |r|
-        r.mount(BarApp.stackup, "/bar")
+        r.mount(BarApp, "/bar")
         r.add(  "/foo"   ).name(:foo)
         r.add(  "/simple").name(:simple)
       end

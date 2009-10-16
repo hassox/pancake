@@ -2,11 +2,19 @@ module Pancake
   class Stack
     class Router < Pancake::Router; end
     inheritable_inner_classes :Router
-
-    class_inheritable_accessor :_router
+    cattr_writer :_router
 
     @_router = self::Router.new
 
+    def self._router
+      @_router ||= begin
+        r = self::Router.new
+        unless self == Pancake::Stack
+          r.router = superclass._router.router.dup
+        end
+        r
+      end
+    end
     # Resets the router to use the stacks namespaced router.
     # This allows a router to mixin a module, and have that module
     # mixed in to child stacks/routers.  Effectively, this will reset the scope of inheritance so that a stack type can have particular route helpers

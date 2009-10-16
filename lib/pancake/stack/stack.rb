@@ -43,7 +43,7 @@ module Pancake
       Pancake.configuration.stacks[@app_name] = self
 
       # setup the configuration for this stack
-      Pancake.configuration.configs[@app_name] = opts[:config] if opts [:config]
+      Pancake.configuration.configs[@app_name] = opts[:config] if opts[:config]
       self.configuration(@app_name)
       yield self.configuration(@app_name) if block_given?
 

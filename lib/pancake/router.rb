@@ -28,21 +28,78 @@ module Pancake
   # @since 0.1.2
   # @author Daniel Neighman
   class Router < Usher::Interface::RackInterface
+    attr_writer :router
+
     CONFIGURATION_KEY = "pancake.request.configuration".freeze
+    ROUTE_KEY         = "pancake.request.matching_route".freeze
 
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
+    class_inheritable_accessor :mounted_applications
+    self.mounted_applications = []
+
+    class MountedApplication
+      attr_accessor :mounted_app, :mount_path, :args, :stackup_with, :options,:mounted
+      def initialize(mounted_app, mount_path, opts = {})
+        @mounted_app, @mount_path = mounted_app, mount_path
+        @stackup_with = opts.delete(:_stackup)      || :stackup
+        @args         = opts.delete(:_args)         || []
+        @exact_match  = opts.delete(:_exact_match)  || false
+        @options      = opts
+      end
+
+      def name(name = nil)
+        unless name.nil?
+          @name = name
+        end
+        @name
+      end
+
+      def mounted?
+        !!@mounted
+      end
+
+      def exact_match?
+        !!@exact_match
+      end
+
+      def mount!(route)
+        app = nil
+        route.consuming = true
+        route.match_partially! unless exact_match?
+        if mounted_app.respond_to?(stackup_with)
+          app = mounted_app.send(stackup_with, *args)
+        else
+          app = mounted_app
+        end
+        route.to(app)
+        route.name(@name) if @name
+        route
+      end
+    end
+
 
     # Mounts an application in the router as a sub application in the
     # url space.  This will route directly to the sub application and
-    # skip any middlewares etc.
+    # skip any middlewares etc defined on a stack
     def mount(mounted_app, path, options = {})
-      raise RackApplicationExpected unless mounted_app.respond_to?(:call)
-      exact_match = options.delete(:_exact)
-      route = add(path, options)
-      route.consuming = true
-      route.match_partially! unless exact_match
-      route.to(mounted_app)
+      mounted_app = MountedApplication.new(mounted_app, path, options)
+      self.class.mounted_applications << mounted_app
+      mounted_app
+    end
+
+    def mount_applications!
+      # need to set them as mounted here before we actually to mount them.
+      # if we just mounted them, the inheritance of the routes would mean that only the first would be mounted on this class
+      # and the rest would be mounted on the child class
+      apps = self.class.mounted_applications.select do |a|
+        a.mounted? ? false : (a.mounted = true)
+      end
+
+      apps.each do |app|
+        route = add(app.mount_path, app.options)
+        app.mount!(route)
+      end
     end
 
     # Adds a route to the router.
@@ -69,10 +126,12 @@ module Pancake
 
     def call(env)
       orig_config = env[CONFIGURATION_KEY]
+      orig_route  = env[ROUTE_KEY]
       env[CONFIGURATION_KEY] = configuration
       super(env)
     ensure
       env[CONFIGURATION_KEY] = orig_config
+      env[ROUTE_KEY]         = orig_route
     end
 
     private
@@ -94,6 +153,7 @@ module Pancake
       super
       consume_path!(request, response) if !response.partial_match? && response.path.route.consuming
       request.params.merge!(request.env['usher.params']) unless request.env['usher.params'].empty?
+      request.env[ROUTE_KEY] = response.path.route
     end
   end
 end

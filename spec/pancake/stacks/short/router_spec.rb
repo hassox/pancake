@@ -95,7 +95,8 @@ describe Pancake::Stacks::Short, "routes" do
 
     it "should generate it's url when it's nested" do
       class ::FooApp < Pancake::Stack; end
-      FooApp.router.mount(RoutedShortStack.stackup, "/short/stack")
+      FooApp.router.mount(RoutedShortStack, "/short/stack")
+      FooApp.router.mount_applications!
       Pancake.url(RoutedShortStack, :foo).should == "/short/stack/foo"
       Pancake.url(RoutedShortStack, :baz, :var => "var", :date => "today").should == "/short/stack/baz/var/today"
     end
@@ -127,7 +128,8 @@ describe Pancake::Stacks::Short, "routes" do
 
     it "should match the nested route without affecting the parent" do
       class ::BarApp < Pancake::Stack; end
-      BarApp.router.mount(FooApp.stackup, "/mount/point")
+      BarApp.router.mount(FooApp, "/mount/point")
+      BarApp.router.mount_applications!
 
       Pancake.url(FooApp, :foo).should == "/mount/point/foo"
       Pancake.url(RoutedShortStack, :foo).should == "/foo"

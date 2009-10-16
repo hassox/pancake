@@ -5,6 +5,7 @@ describe Pancake::Stacks::Short do
   before do
     $captures = []
     class ::ShortMiddle
+      attr_accessor :app
       def initialize(app)
         @app = app
       end
@@ -34,7 +35,7 @@ describe Pancake::Stacks::Short do
   end
 
   after do
-    clear_constants :ShortFoo, :ShortMiddle, :OtherFoo
+    clear_constants :ShortFoo, :ShortMiddle, :OtherFoo, "ShortFoo::Router"
   end
 
   def app
@@ -49,14 +50,14 @@ describe Pancake::Stacks::Short do
   describe "inheritance" do
     before do
       class ::OtherFoo < ShortFoo; end
-      ShortFoo.router.mount(OtherFoo.stackup, "/other")
+      ShortFoo.router.mount(OtherFoo, "/other")
     end
 
     it "should render the same template in the child as it does in the parent" do
       get "/"
       $captures.pop.should == ShortFoo::Controller
       last_response.should match(/inherited from base/)
-      get "/other/"
+      result = get "/other/"
       $captures.pop.should == OtherFoo::Controller
       last_response.should match(/inherited from base/)
     end

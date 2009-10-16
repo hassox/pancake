@@ -42,15 +42,6 @@ Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
   end
 end
 
-Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
-  def run!
-    stack_class.roots.each do |root|
-      stack_class.paths_for(:router).each{|f| require f.join}
-    end
-  end
-end
-
-###### -================== Stack Building BootLoaders
 # Pancake stacks need to be built with the following options
 # MyApp::BootLoader.run!({
 #   :stack_class  => self.class,
@@ -61,11 +52,27 @@ end
 #
 #
 
+
+Pancake::Stack::BootLoader.add(:load_routes) do
+  def run!
+    stack_class.roots.each do |root|
+      stack_class.paths_for(:router).each{|f| require f.join}
+    end
+  end
+end
+
+Pancake::Stack::BootLoader.add(:mount_applications) do
+  def run!
+    stack_class.router.mount_applications!
+  end
+end
+
 Pancake::Stack::BootLoader.add(:initialize_application) do
   def run!
     config[:app] ||= stack_class.new_app_instance
   end
 end
+
 
 Pancake::Stack::BootLoader.add(:build_stack) do
   def run!

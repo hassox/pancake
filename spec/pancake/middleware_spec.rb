@@ -85,15 +85,15 @@ describe "Pancake::Middleware" do
       BazApp.use FooMiddle
       Pancake.use GeneralMiddleware
 
-      FooApp.with_router do |r|
-        r.mount(BarApp.stackup, "/bar")
-        r.mount(BazApp.stackup, "/baz")
+      FooApp.router do |r|
+        r.mount(BarApp, "/bar")
+        r.mount(BazApp, "/baz")
       end
 
       @app = Pancake.start(:root => @root){ FooApp.stackup }
-      get "/baz"
+      result = get "/baz"
       $current_env["p.s.c"].should == [GeneralMiddleware, FooMiddle]
-      get "/bar"
+      reult = get "/bar"
       $current_env["p.s.c"].should == [GeneralMiddleware, BarMiddle]
     end
   end
