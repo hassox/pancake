@@ -62,5 +62,38 @@ module Pancake
       app = new(nil, opts, &block)
       Pancake.configuration.configs[app.app_name].router
     end # stackup
+
+    # Creates a bootloader hook(s) of the given name. That are inheritable
+    # This will create hooks for use in a bootloader (but will not create the bootloader itself!)
+    #
+    # @example
+    #   MyStack.create_bootloader_hook(:before_stuff, :after_stuff)
+    #
+    #   MyStack.before_stuff do
+    #     # stuff to do before stuff
+    #   end
+    #
+    #   MyStack.after_stuff do
+    #     # stuff to do after stuff
+    #   enc
+    #
+    #   MyStack.before_stuff.each{|blk| blk.call}
+    #
+    # @api public
+    def self.create_bootloader_hook(*hooks)
+      hooks.each do |hook|
+        class_inheritable_reader "_#{hook}"
+        instance_variable_set("@_#{hook}", [])
+
+        class_eval <<-RUBY
+          def self.#{hook}(&blk)
+            _#{hook} << blk if blk
+            _#{hook}
+          end
+        RUBY
+      end
+    end
+
+    create_bootloader_hook :before_build_stack, :before_mount_applications, :after_initialize_application, :after_build_stack
   end # Stack
 end # Pancake

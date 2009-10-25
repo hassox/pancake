@@ -61,6 +61,12 @@ Pancake::Stack::BootLoader.add(:load_routes) do
   end
 end
 
+Pancake::Stack::BootLoader.add(:before_mount_applicaions) do
+  def run!
+    stack_class.before_mount_applications.each{|blk| blk.call}
+  end
+end
+
 Pancake::Stack::BootLoader.add(:mount_applications) do
   def run!
     stack_class.router.mount_applications!
@@ -73,6 +79,17 @@ Pancake::Stack::BootLoader.add(:initialize_application) do
   end
 end
 
+Pancake::Stack::BootLoader.add(:after_initialize_application) do
+  def run!
+    stack_class.after_initialize_application.each{|blk| blk.call}
+  end
+end
+
+Pancake::Stack::BootLoader.add(:before_build_stack) do
+  def run!
+    stack_class.before_build_stack.each{|blk| blk.call}
+  end
+end
 
 Pancake::Stack::BootLoader.add(:build_stack) do
   def run!
@@ -82,5 +99,11 @@ Pancake::Stack::BootLoader.add(:build_stack) do
     app_config.app   = app
     app_config.stack = stack_class
     app_config.router.configuration = app_config
+  end
+end
+
+Pancake::Stack::BootLoader.add(:after_build_stack) do
+  def run!
+    stack_class.after_build_stack.each{|blk| blk.call}
   end
 end
