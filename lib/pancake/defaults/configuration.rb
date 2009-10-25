@@ -10,7 +10,8 @@ class Pancake::PancakeConfig
     if Pancake.configuration.log_to_file
       log_dir = File.expand_path(File.join(Pancake.root, File.dirname(log_path)))
       FileUtils.mkdir_p(log_dir)
-      File.join(log_dir, File.basename(log_path))
+      log = File.join(log_dir, File.basename(log_path))
+      File.open(log, (File::WRONLY | File::APPEND | File::CREAT))
     else
       STDOUT
     end
