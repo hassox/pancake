@@ -6,10 +6,11 @@ module Pancake
       def name; self.class.name; end
 
       def code; self.class.code; end
+      alias_method :status, :code
 
       def description; self.class.description; end
     end
-    
+
     class NotFound < HttpError
       self.name = "Not Found"
       self.code = 404
@@ -19,17 +20,17 @@ module Pancake
     class UnknownRouter < NotFound
       self.description = "The router could not be found"
     end
-    
+
     class UnknownConfiguration < NotFound
       self.description = "The configuration could not be found"
     end
-        
+
      class Unauthorized < HttpError
        self.name = "Unauthorized"
        self.code = 401
        self.description = "Authentication is required to access this resource."
      end
-     
+
      class Forbidden < HttpError
        self.name = "Forbidden"
        self.code = 403
@@ -54,8 +55,8 @@ module Pancake
        self.code = 406
        self.description = "The requeseted format could not be provided"
      end
-     
-       
-     
+
+
+
   end
 end

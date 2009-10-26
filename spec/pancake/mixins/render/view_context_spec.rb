@@ -249,6 +249,66 @@ describe Pancake::Mixins::Render::ViewContext do
       result.should include("nested new bar content")
     end
   end
+
+  describe "partials" do
+    before do
+      @foo = FooBar.new({})
+      @collection = %w(one two three four)
+      $captures = []
+    end
+
+    it "should use the _partial_template_name_for method to find a partial" do
+      @foo.should_receive(:_partial_template_name_for).with(:basic, {}).and_return("_basic")
+      result = @foo.partial(:basic)
+    end
+
+    it "should render a partial with the partial call" do
+      result = @foo.partial(:basic)
+      result.should include("In Partial Basic")
+    end
+
+    it "should render from within a template" do
+      result = @foo.render(:contains_partial)
+      result.should include("In Partial Basic")
+    end
+
+    it "should use a different view context instance for the partial" do
+      result = @foo.render(:contains_partial)
+      $captures.should have(2).items
+      $captures.first.should_not == $captures.last
+    end
+
+    it "should allow me to specify locals for use in the partial" do
+      result = @foo.partial(:with_locals, :foo => "this is foo", :bar => "and this is bar")
+      result.should include("foo == this is foo")
+      result.should include("bar == and this is bar")
+    end
+
+    it "should render a partial with an object as the local name" do
+      result = @foo.partial(:local_as_name, :with => "value of local as name")
+      result.should include("local_as_name == value of local as name")
+    end
+
+    it "should render a partial with many objects with the obj as a local with the partial name" do
+      result = @foo.partial(:local_as_name, :with => @collection)
+      @collection.each do |val|
+        result.should include("local_as_name == #{val}")
+      end
+    end
+
+    it "should render a partial with an object with a specified name" do
+      result = @foo.partial(:foo_as_name, :with => "jimmy", :as => :foo)
+      result.should include("foo == jimmy")
+    end
+
+    it "should render a partial with many objects as a local with a specified name" do
+      result = @foo.partial(:foo_as_name, :with => @collection, :as => :foo)
+      @collection.each do |val|
+        result.should include("foo == #{val}")
+      end
+    end
+
+  end
 end
 
 

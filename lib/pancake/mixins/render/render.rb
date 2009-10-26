@@ -55,6 +55,10 @@ module Pancake
             result
           end
 
+          def partial(*args)
+            _view_context_for.partial(*args)
+          end
+
           def _with_renderer(renderer)
             orig_renderer = @_current_renderer
             @_current_renderer = renderer

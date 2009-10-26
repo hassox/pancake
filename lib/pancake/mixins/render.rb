@@ -66,20 +66,45 @@ module Pancake
 
       module InstanceMethods
         def render(*args)
-          opts = Hash === args.last ? args.pop : {}
-          name = args.shift
-
+          opts          = Hash === args.last ? args.pop : {}
+          name          = args.shift
+          template_name = _template_name_for(name, opts)
           return opts[:text] if opts[:text]
 
-          # Get the template name to use
-          template = _template_name_for(name, opts)
-
           # Get the view context for the tempalte
-          template, vc_class = self.class._renderer_and_view_context_class_for(template)
+          template, vc_class = self.class._renderer_and_view_context_class_for(template_name)
 
           view_context = vc_class.new(env, self)
           view_context_before_render(view_context)
           view_context.render(template, opts)
+        end
+
+        def partial(*args)
+          opts  = Hash === args.last ? args.pop : {}
+          opts  = opts.dup
+          name  = args.shift
+          with  = opts.delete(:with)
+          as    = opts.delete(:as)
+
+          partial_name = _partial_template_name_for(name, opts)
+          # Get the view context for the tempalte
+          template, vc_class = self.class._renderer_and_view_context_class_for(partial_name)
+
+          view_context = vc_class.new(env, self)
+          view_context_before_render(view_context)
+
+          out = ""
+          case with
+          when Array
+            with.each do |item|
+              as.nil? ? (opts[name] = item) : (opts[as] = item)
+              out << view_context.render(template, opts)
+            end
+          else
+            as.nil? ? (opts[name] = with) : (opts[as] = with)
+            out << view_context.render(template, opts)
+          end
+          out
         end
 
         def template(name_or_template)
@@ -93,6 +118,7 @@ module Pancake
           end
         end
 
+
         # A place holder method for any implementor that wants
         # to configure the view context prior to rendering occuring
         # any time this method is overwritten, it should call super!
@@ -105,6 +131,10 @@ module Pancake
         def _template_name_for(name, opts)
           opts[:format] ||= params[:format] || :html
           "#{name}.#{opts[:format]}"
+        end
+
+        def _partial_template_name_for(name, opts)
+          "_#{_template_name_for(name, opts)}"
         end
       end # InstanceMethods
     end # Render

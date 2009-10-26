@@ -43,7 +43,7 @@ describe "Pancake configuration defaults" do
 
     it "should set the log stream to a file path when told to log to file" do
       Pancake.configuration.log_to_file = true
-      result = Pancake.configuration.log_stream
+      result = Pancake.configuration.log_path
       result.should match(/\log\/pancake_#{Pancake.env}\.log$/)
     end
 
