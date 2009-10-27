@@ -12,6 +12,12 @@ module Pancake
       def status=(st)
         @status = st
       end
+
+      def redirect(location, status = 302)
+        r = Rack::Response.new
+        r.redirect(location, status)
+        r
+      end
     end
   end
 end

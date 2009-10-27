@@ -148,6 +148,10 @@ describe Pancake::Stacks::Short::Controller do
           v[:my_data] = "some data"
           render :vault
         end
+
+        get "/redirect" do
+          redirect "/some_other_place"
+        end
       end
     end
 
@@ -180,6 +184,12 @@ describe Pancake::Stacks::Short::Controller do
       result.status.should == 200
       result.body.should include("some data")
       result.body.should include("In Vault")
+    end
+
+    it "should redirect" do
+      result = get "/redirect"
+      result.status.should == 302
+      result.headers["Location"].should == "/some_other_place"
     end
   end
 
