@@ -63,7 +63,16 @@ module Pancake
 
           # set the response header
           headers["Content-Type"] = ct
-          Rack::Response.new(self.send(params["action"]), status, headers).finish
+
+          result = self.send(params['action'])
+          case result
+          when Array
+            result
+          when Rack::Response
+            result.finish
+          else
+            Rack::Response.new(self.send(params["action"]), status, headers).finish
+          end
 
         rescue Errors::HttpError => e
           if logger
@@ -72,8 +81,12 @@ module Pancake
           end
           handle_request_exception(e)
         rescue Exception => e
-          server_error = Errors::Server.new
-          server_error.exceptions << e
+          if Pancake.handle_errors?
+            server_error = Errors::Server.new
+            server_error.exceptions << e
+          else
+            server_error = e
+          end
           handle_request_exception(server_error)
         end
 

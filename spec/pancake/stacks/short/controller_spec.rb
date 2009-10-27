@@ -17,6 +17,18 @@ describe Pancake::Stacks::Short::Controller do
         publish
         def index;  "index";   end
 
+        publish
+        def a_rack_response
+          r = Rack::Response.new
+          r.redirect("/foo")
+          r
+        end
+
+        publish
+        def an_array_response
+          [200, {"Content-Type" => "text/plain"}, ["Custom Array Response"]]
+        end
+
         protected
         def a_protected_method; "protected"; end
 
@@ -78,6 +90,19 @@ describe Pancake::Stacks::Short::Controller do
       lambda do
         @controller.do_dispatch!
       end.should raise_error
+    end
+
+    it "should let me return an array as a rack response" do
+      @controller.params["action"] = "an_array_response"
+      result = @controller.do_dispatch!
+      result.should == [200, {"Content-Type" => "text/plain"}, ["Custom Array Response"]]
+    end
+
+    it "should allow me to return a Rack::Response" do
+      @controller.params["action"] = "a_rack_response"
+      result = @controller.do_dispatch!
+      result[0].should == 302
+      result[1]["Location"].should == "/foo"
     end
 
     describe "helper in methods" do
