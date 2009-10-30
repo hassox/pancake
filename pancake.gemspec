@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pancake}
-  s.version = "0.1.11"
+  s.version = "0.1.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-10-25}
+  s.date = %q{2009-10-30}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -139,10 +139,17 @@ Gem::Specification.new do |s|
      "spec/pancake/fixtures/render_templates/haml_template.html.haml",
      "spec/pancake/fixtures/render_templates/haml_template.xml.haml",
      "spec/pancake/fixtures/render_templates/templates/context.erb",
+     "spec/pancake/fixtures/render_templates/view_context/_basic.haml",
+     "spec/pancake/fixtures/render_templates/view_context/_basic.html.haml",
+     "spec/pancake/fixtures/render_templates/view_context/_foo_as_name.haml",
+     "spec/pancake/fixtures/render_templates/view_context/_local_as_name.haml",
+     "spec/pancake/fixtures/render_templates/view_context/_with_locals.haml",
      "spec/pancake/fixtures/render_templates/view_context/capture_erb.erb",
      "spec/pancake/fixtures/render_templates/view_context/capture_haml.haml",
+     "spec/pancake/fixtures/render_templates/view_context/collection_with_partial_name.haml",
      "spec/pancake/fixtures/render_templates/view_context/concat_erb.erb",
      "spec/pancake/fixtures/render_templates/view_context/concat_haml.haml",
+     "spec/pancake/fixtures/render_templates/view_context/contains_partial.haml",
      "spec/pancake/fixtures/render_templates/view_context/context.erb",
      "spec/pancake/fixtures/render_templates/view_context/context2.erb",
      "spec/pancake/fixtures/render_templates/view_context/helper_methods.erb",
@@ -249,16 +256,16 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 0"])
-      s.add_runtime_dependency(%q<usher>, [">= 0.5.5"])
+      s.add_runtime_dependency(%q<usher>, [">= 0.5.10"])
       s.add_runtime_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 0"])
-      s.add_dependency(%q<usher>, [">= 0.5.5"])
+      s.add_dependency(%q<usher>, [">= 0.5.10"])
       s.add_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 0"])
-    s.add_dependency(%q<usher>, [">= 0.5.5"])
+    s.add_dependency(%q<usher>, [">= 0.5.10"])
     s.add_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
   end
 end
