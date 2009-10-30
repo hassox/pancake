@@ -41,6 +41,31 @@ module Pancake
         konfig.router.generate(name, opts)
       end
 
+      # Generate the base url for the router that got you to this point.
+      #
+      # @example
+      #   class MyApp
+      #     router do |r|
+      #       r.mount(SomeApp, "/some_app/:version")
+      #     end
+      #
+      #   include Pancake::RequestHelper
+      #   def call(env)
+      #     @env = env
+      #     base_url(:version => "1.0" #=> "/some_app/1.0
+      #   end
+      #  end
+      #
+      #  @see Usher
+      #  @see Pancake::Router.base_url_for
+      #  @see Pancake::Router#base_url
+      #  @api public
+      #  @author Daniel Neighman
+      def base_url(opts={})
+        konfig = request.env[Pancake::Router::CONFIGURATION_KEY]
+        konfig.router.base_url(opts)
+      end
+
       # Generate a url for any registered configuration with a router
       #
       # @example

@@ -1,4 +1,4 @@
-Pancake::Stacks::Short::BootLoader.add(:paths, ) do
+Pancake::Stacks::Short::BootLoader.add(:paths, :before => :load_mounted_inits  ) do
   def run!
     stack_class.push_paths :public, "public"
 

@@ -32,10 +32,12 @@ module Pancake
           end
         end
 
-        _capture_methods[Tilt::HamlTemplate] = :_haml_capture
-        _capture_methods[Tilt::ERBTemplate ] = :_erb_capture
-        _concat_methods[ Tilt::HamlTemplate] = :_haml_concat
-        _concat_methods[ Tilt::ERBTemplate ] = :_erb_concat
+        _capture_methods[Tilt::HamlTemplate   ] = :_haml_capture
+        _capture_methods[Tilt::ERBTemplate    ] = :_erb_capture
+        _capture_methods[Tilt::ErubisTemplate ] = :_erb_capture
+        _concat_methods[ Tilt::HamlTemplate   ] = :_haml_concat
+        _concat_methods[ Tilt::ERBTemplate    ] = :_erb_concat
+        _concat_methods[ Tilt::ErubisTemplate ] = :_erb_concat
 
         module Renderer
           def render(template, opts = {})

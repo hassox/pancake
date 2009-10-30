@@ -21,6 +21,16 @@ module Pancake
     the_router.url(name_or_opts, opts)
   end
 
+  def self.base_url_for(app_name, opts={})
+    config = Pancake.configuration.configs(app_name)
+    the_router = if config && config.router
+      config.router
+    elsif app_name.respond_to?(:router)
+      raise Pancake::Errors::UnknownRouter
+    end
+    the_router.base_url(opts)
+  end
+
   # The pancake router is a customized version of the Usher router.
   # Usher is a fast tree based router that can generate routes, have
   # nested routers, and even generate from nested routers.
@@ -122,6 +132,10 @@ module Pancake
         name = name_or_path
       end
       generate(name, options)
+    end
+
+    def base_url(opts = {})
+      router.generator.generate_base_url(opts)
     end
 
     def call(env)

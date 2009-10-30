@@ -139,6 +139,9 @@ describe "stack router" do
       Pancake.url(FooApp, :unique_var => "unique_var").should == "/some/unique_var"
     end
 
+    it "should generate a base url of '/' for the top level router" do
+      FooApp.router.base_url.should == "/"
+    end
 
     describe "mounted route generation" do
       before do
@@ -150,6 +153,7 @@ describe "stack router" do
         end
         FooApp.router.mount(BarApp, "/bar")
         FooApp.router.mount_applications!
+        FooApp.stackup
       end
 
       it "should allow me to generate a simple nested named route" do
@@ -161,6 +165,14 @@ describe "stack router" do
         FooApp.router.mount_applications!
         Pancake.url(:bar_app, :simple).should == "/different/simple"
         Pancake.url(BarApp,   :simple).should == "/bar/simple"
+      end
+
+      it "should generate the base url for a mounted application" do
+        BarApp.configuration.router.base_url.should == "/bar"
+      end
+
+      it "should generate a base url for a named application" do
+        Pancake.base_url_for(BarApp)
       end
     end
 
