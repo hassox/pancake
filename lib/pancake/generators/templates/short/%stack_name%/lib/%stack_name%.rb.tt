@@ -1,5 +1,6 @@
 class <%= stack_name.camel_case %> < Pancake::Stacks::Short
   add_root(__FILE__, "<%= stack_name %>")
+  initialize_stack
 end
 
 require ::File.join(Pancake.get_root(__FILE__, "<%= stack_name %>"), "<%= stack_name %>")
