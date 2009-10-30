@@ -35,6 +35,11 @@ module Pancake
     autoload :Static,       "pancake/middlewares/static"
     autoload :Logger,     "pancake/middlewares/logger"
   end
+
+  module Test
+    autoload :Matchers,    "pancake/test/matchers"
+  end
+
 end
 
 require 'pancake/paths'

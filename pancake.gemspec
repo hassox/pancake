@@ -111,6 +111,7 @@ Gem::Specification.new do |s|
      "lib/pancake/stacks/short/controller.rb",
      "lib/pancake/stacks/short/default/views/base.html.haml",
      "lib/pancake/stacks/short/stack.rb",
+     "lib/pancake/test/matchers.rb",
      "spec/helpers/helpers.rb",
      "spec/helpers/matchers.rb",
      "spec/pancake/bootloaders_spec.rb",
