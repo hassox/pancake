@@ -16,7 +16,7 @@ module Pancake
 
     #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack
-      raise "Application root not set" if roots.empty?
+      raise "Stack root not set" if roots.empty?
 
       # Run any :init level bootloaders for this stack
       self::BootLoader.run!(:stack_class => self, :only => {:level => :init})

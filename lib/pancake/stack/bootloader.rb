@@ -24,7 +24,17 @@ Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   end
 end
 
-Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
+Pancake::Stack::BootLoader.add(:set_as_master) do
+  def run!
+    return unless config[:master]
+    roots = stack_class.roots.dup
+    roots.each do |root|
+      stack_class.roots << File.join(root, "master")
+    end
+  end
+end
+
+Pancake::Stack::BootLoader.add(:load_configuration) do
   def run!
     stack_class.roots.each do |root|
       stack_class.paths_for(:config).each{|f| require f.join}
@@ -32,7 +42,7 @@ Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
   end
 end
 
-Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
+Pancake::Stack::BootLoader.add(:load_application) do
   def run!
     stack_class.roots.each do |root|
       [:models, :controllers].each do |type|

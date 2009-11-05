@@ -57,4 +57,14 @@ describe "Pancake::Stack" do
       StackSpecStack.should_not be_initialized
     end
   # end
+    describe "master stack" do
+      it "should set the stack to be master, and include the master dir in each root" do
+        StackSpecStack.add_root(__FILE__)
+        before_roots = StackSpecStack.roots.dup
+        s = StackSpecStack.stackup(:master => true)
+        before_roots.each do |r|
+          StackSpecStack.roots.should include(File.join(r, "master"))
+        end
+      end
+    end
 end
