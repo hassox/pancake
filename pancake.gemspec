@@ -103,6 +103,7 @@ Gem::Specification.new do |s|
      "lib/pancake/stack/app.rb",
      "lib/pancake/stack/bootloader.rb",
      "lib/pancake/stack/configuration.rb",
+     "lib/pancake/stack/defaults/tasks/pancake.rake",
      "lib/pancake/stack/middleware.rb",
      "lib/pancake/stack/router.rb",
      "lib/pancake/stack/stack.rb",

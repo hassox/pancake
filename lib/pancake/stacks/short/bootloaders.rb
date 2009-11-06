@@ -1,6 +1,5 @@
 Pancake::Stacks::Short::BootLoader.add(:paths, :before => :load_mounted_inits  ) do
   def run!
-    stack_class.push_paths :public, "public"
     stack_class::Controller.push_paths :views, ["app/views", "views"], "**/*"
   end
 end

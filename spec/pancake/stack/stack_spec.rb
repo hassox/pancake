@@ -4,6 +4,7 @@ describe "Pancake::Stack" do
   before(:each) do
     class ::StackSpecStack < Pancake::Stack
     end
+    StackSpecStack.roots.clear
   end
 
   after(:each) do
@@ -95,8 +96,14 @@ describe "Pancake::Stack" do
           add_root(__FILE__, "..", "fixtures", "tasks", "root2")
         end
         StackSpecStack.router.mount(FooSpecStack, "/foo")
-        FooSpecStack.should_receive(:load_rake_tasks!)
         StackSpecStack.load_rake_tasks!
+        # Mounted stacks should have their rake tasks loaded first so they can be overwritten
+        $captures.should == [
+          "root2/tasks/task1.rake",
+          "root2/tasks/task2.rake",
+          "root1/tasks/task1.rake",
+          "root1/tasks/task2.rake"
+        ]
       end
 
       it "should not try to load rake tasks of a mounted app that does not respond to load_rake_tasks!" do
