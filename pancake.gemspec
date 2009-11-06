@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-10-30}
+  s.date = %q{2009-11-06}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -109,6 +109,7 @@ Gem::Specification.new do |s|
      "lib/pancake/stacks/short.rb",
      "lib/pancake/stacks/short/bootloaders.rb",
      "lib/pancake/stacks/short/controller.rb",
+     "lib/pancake/stacks/short/default/public/favicon.ico",
      "lib/pancake/stacks/short/default/views/base.html.haml",
      "lib/pancake/stacks/short/stack.rb",
      "lib/pancake/test/matchers.rb",
@@ -177,6 +178,10 @@ Gem::Specification.new do |s|
      "spec/pancake/fixtures/stacks/short/foobar/views/inherited_from_base.html.haml",
      "spec/pancake/fixtures/stacks/short/foobar/views/template.html.haml",
      "spec/pancake/fixtures/stacks/short/foobar/views/vault.html.haml",
+     "spec/pancake/fixtures/tasks/root1/tasks/task1.rake",
+     "spec/pancake/fixtures/tasks/root1/tasks/task2.rake",
+     "spec/pancake/fixtures/tasks/root2/tasks/task1.rake",
+     "spec/pancake/fixtures/tasks/root2/tasks/task2.rake",
      "spec/pancake/hooks/on_inherit_spec.rb",
      "spec/pancake/inheritance_spec.rb",
      "spec/pancake/middleware_spec.rb",

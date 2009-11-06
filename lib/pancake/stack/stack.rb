@@ -13,6 +13,7 @@ module Pancake
     push_paths(:models,       "app/models",           "**/*.rb")
     push_paths(:controllers,  "app/controllers",      "**/*.rb")
     push_paths(:router,       "config",               "router.rb")
+    push_paths(:rake_tasks,   "tasks",                "**/*.rake")
 
     #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack
@@ -57,12 +58,30 @@ module Pancake
     end
 
     # Construct a stack using the application, wrapped in the middlewares
-    # :api: public
+    # @api public
     def self.stackup(opts = {}, &block)
       app = new(nil, opts, &block)
       Pancake.configuration.configs[app.app_name].router
     end # stackup
 
+    # Loads the rake task for this stack, and all mounted stacks
+    #
+    # To have your rake task loaded include a "tasks" director in the stack root
+    #
+    # Tasks found in all stack roots are loaded in the order of the stack roots declearations
+    #
+    # @api public
+    def self.load_rake_tasks!(opts={})
+      stackup(opts) # load the application
+
+      # For each mounted application, load the rake tasks
+      self::Router.mounted_applications.each do |app|
+        if app.mounted_app.respond_to?(:load_rake_tasks!)
+          app.mounted_app.load_rake_tasks!
+        end
+      end
+      paths_for(:rake_tasks).each{|f| load File.join(*f)}
+    end
     # Creates a bootloader hook(s) of the given name. That are inheritable
     # This will create hooks for use in a bootloader (but will not create the bootloader itself!)
     #

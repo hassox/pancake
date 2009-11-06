@@ -23,8 +23,8 @@ module Pancake
   #
   #   Foo.dirs_and_glob_for(:model) == [
   #     ["#{root}/relative/path/to/models",         "**/*.rb"],
-  #     ["#{root}//another/path/to/models",         "**/*.rb"],
-  #     ["#{root}//yet/another",                    nil]
+  #     ["#{root}/another/path/to/models",         "**/*.rb"],
+  #     ["#{root}/yet/another",                    nil]
   #   ]
   #
   #   Foo.paths_for(:model) == [

@@ -7,7 +7,7 @@ describe "Pancake::Stack" do
   end
 
   after(:each) do
-    clear_constants(:StackSpecStack)
+    clear_constants(:StackSpecStack, :FooSpecStack)
   end
 
   describe "roots" do
@@ -65,6 +65,48 @@ describe "Pancake::Stack" do
         before_roots.each do |r|
           StackSpecStack.roots.should include(File.join(r, "master"))
         end
+      end
+    end
+
+    describe "loading rake tasks" do
+      before do
+        $captures = []
+        StackSpecStack.add_root(__FILE__, "..", "fixtures", "tasks", "root1")
+      end
+
+      it "should load the rake tasks in the stacks root" do
+        StackSpecStack.load_rake_tasks!
+        $captures.should == ["root1/tasks/task1.rake", "root1/tasks/task2.rake"]
+      end
+
+      it "should load the rake tasks in order of the roots" do
+        StackSpecStack.add_root(__FILE__, "..", "fixtures", "tasks", "root2")
+        StackSpecStack.load_rake_tasks!
+        $captures.should == [
+          "root1/tasks/task1.rake",
+          "root1/tasks/task2.rake",
+          "root2/tasks/task1.rake",
+          "root2/tasks/task2.rake"
+        ]
+      end
+
+      it "should load rake tasks for mounted applications" do
+        class ::FooSpecStack < Pancake::Stacks::Short
+          add_root(__FILE__, "..", "fixtures", "tasks", "root2")
+        end
+        StackSpecStack.router.mount(FooSpecStack, "/foo")
+        FooSpecStack.should_receive(:load_rake_tasks!)
+        StackSpecStack.load_rake_tasks!
+      end
+
+      it "should not try to load rake tasks of a mounted app that does not respond to load_rake_tasks!" do
+        class ::FooSpecStack < Object
+          def self.call(env); Rack::Response.new("OK").finish; end
+        end
+        StackSpecStack.router.mount(FooSpecStack, "/foo/spec")
+        lambda do
+          StackSpecStack.load_rake_tasks!
+        end.should_not raise_error
       end
     end
 end
