@@ -9,12 +9,14 @@ module Pancake
       # Stores the data in session for the length of the request.
       #
       # @example
-      #   v[:user] = @user
+      #   vault[:user] = @user
+      #   v[:user] == vault[:user]
       #   # This is now stored in the environment and is available later
-      def v
+      def vault
         env[VAULT_KEY] ||= {}
         env[VAULT_KEY]
       end
+      alias_method :v, :vault
 
       # Generate a url for the current stacks router.
       #

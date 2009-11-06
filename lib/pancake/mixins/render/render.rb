@@ -40,11 +40,11 @@ module Pancake
         _concat_methods[ Tilt::ErubisTemplate ] = :_erb_concat
 
         module Renderer
-          def render(template, opts = {})
+          def render(template, opts = {}, &blk)
             template = _view_context_for.template(template)
             raise TemplateNotFound unless template
             result = _with_renderer template do
-              _current_renderer.render(self, opts)
+              _current_renderer.render(self, opts, &blk) # only include the block once
             end
 
             if @_inherit_helper.inherits_from

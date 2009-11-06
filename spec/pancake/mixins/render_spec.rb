@@ -53,4 +53,13 @@ describe Pancake::Mixins::Render do
     $captures.first.should be_a_kind_of(Pancake::Mixins::Render::ViewContext)
   end
 
+  it "should yield v when rendering" do
+    mock_v = {}
+    mock_v.should_receive(:in_the_block)
+    @render.should_receive(:v).and_return(mock_v)
+    @render.render(:haml_template) do |v|
+      v.should be_a_kind_of(Hash)
+      v.in_the_block
+    end
+  end
 end

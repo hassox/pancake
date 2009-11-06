@@ -74,6 +74,8 @@ module Pancake
           # Get the view context for the tempalte
           template, vc_class = self.class._renderer_and_view_context_class_for(template_name)
 
+          yield v if block_given?
+
           view_context = vc_class.new(env, self)
           view_context_before_render(view_context)
           view_context.render(template, opts)
