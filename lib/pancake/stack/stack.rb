@@ -94,6 +94,40 @@ module Pancake
       end
     end
 
+    # Symlinks files in the public roots of this stack and all mounted stacks.
+    # Provided a mounted application responds to the +symlink_public_files!+ method then it will be called.
+    # symlinks public files from all roots of the stacks to Pancake.root/public
+    #
+    # @api public
+    # @author Daniel Neighman
+    def self.symlink_public_files!
+      raise "Pancake root not set" unless Pancake.root
+
+      public_root = File.join(Pancake.root, "public")
+      mount_point = configuration.router.base_url
+
+      unique_paths_for(:public).sort_by{|(r,p)| p}.each do |(r,p)|
+        # don't try to symlink the symlinks
+        origin_path = File.join(r, p)
+        next if r == public_root || FileTest.directory?(origin_path)
+
+        output_path = File.join(public_root, mount_point, p)
+
+        unless File.exists?(File.dirname(output_path))
+          FileUtils.mkdir_p(File.dirname(output_path))
+        end
+        # unless the dir exists... create it
+        puts "Linking #{output_path}"
+        FileUtils.ln_s(origin_path, output_path, :force => true)
+      end
+
+      router.mounted_applications.each do |s|
+        if s.mounted_app.respond_to?(:symlink_public_files!)
+          s.mounted_app.symlink_public_files!
+        end
+      end
+    end
+
     # Creates a bootloader hook(s) of the given name. That are inheritable
     # This will create hooks for use in a bootloader (but will not create the bootloader itself!)
     #

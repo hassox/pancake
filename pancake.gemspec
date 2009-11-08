@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pancake}
-  s.version = "0.1.12"
+  s.version = "0.1.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-11-06}
+  s.date = %q{2009-11-08}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -103,6 +103,7 @@ Gem::Specification.new do |s|
      "lib/pancake/stack/app.rb",
      "lib/pancake/stack/bootloader.rb",
      "lib/pancake/stack/configuration.rb",
+     "lib/pancake/stack/defaults/public/favicon.ico",
      "lib/pancake/stack/defaults/tasks/pancake.rake",
      "lib/pancake/stack/middleware.rb",
      "lib/pancake/stack/router.rb",
@@ -110,7 +111,6 @@ Gem::Specification.new do |s|
      "lib/pancake/stacks/short.rb",
      "lib/pancake/stacks/short/bootloaders.rb",
      "lib/pancake/stacks/short/controller.rb",
-     "lib/pancake/stacks/short/default/public/favicon.ico",
      "lib/pancake/stacks/short/default/views/base.html.haml",
      "lib/pancake/stacks/short/stack.rb",
      "lib/pancake/test/matchers.rb",
