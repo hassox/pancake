@@ -1,95 +1,283 @@
-__This read me is getting thrown to get there in little bits of time snatched between other bits of snatched time... it will be magnificient, eventually... please bare with it...__
+h1. Pancake
 
-h3. Whats this then
+Pancake is primarily a tool for making rack applictions.  "Rack":http://rack.github.com has come up in the Ruby web world as _the framework that matters_ when developing web applications.  All the major frameworks use it, although so many application frameworks and middlewares are not really re-usable yet away from their specefic implementations.
 
-A tool for making pancake stacks. Where, as you know, pancake == ruby web thing.
+Pancake addresses this by making Rack the fundamental building block of an applicaiton.  It provides very useful helpers on top of rack that assist in constructing rack stacks as mixins.  Almost all aspects of web frameworks are covered as Pancake mixins to help you create your own re-usable Rack Stacks without worrying about the really low level plumbing.
 
-It essentially takes the awesome "rack":rack.github.com and "rack router":http://github.com/carllerche/rack-router/ and mixes it with flour and water and eggs to bind it together into a pancake thin layer of goodness providing a structured way of orgnaising (stacking) your assortment of ruby web things. In doing so, it  allows you to provide each of your ruby web things (lets call them "middlewares") with some underlying contextual functionality.
+h2. Stacks
 
-h3. Why stack pancakes?
+While Rack provides the framework for building web applications on.  Pancake provides a stack as a place to start your application.  A stack provides a whole bunch of behavior for you including a router and middleware stack.  The stack will accept any valid rack application as the endpoint.
 
-Well, simply put, reuse! I'm building something... and what do you know i need another forum/asset manager/bla thing etc. Typically I can:
-
-  * Write/include the functionality directly in to my current app.
-  * Add a second app, theme it up similarly and use apache/nginx/other configs to glue it up, and perhaps come up with a devious approach for auth with some cunning SSO... or not
-
-What we'd like to facilitate with pancake is you take your existing much loved forum/asset manager/bla thing etc and mount it into pancake, sharing auth and other contextual information between apps.
-
-Insert helpful diagram here...
-
-h3. Getting Started
-
-h4. You'll need to have installed (as well as your usual ruby stuffs)...
-
-* wycats-thor 
-* Carllerches rack router
-
-h4. Installing
+The general form of a stack is as follows:
 
 <pre>
-  $sudo gem install hassox-pancake
+-----------------------------------
+|                                 |
+|           Router                |
+|                                 |
+-----------------------------------
+|           Middleware            |
+-----------------------------------
+|           Middleware            |
+-----------------------------------
+|           Middleware            |
+-----------------------------------
+|                                 |
+|           Application           |
+|            Endpoint             |
+|                                 |
+-----------------------------------
 </pre>
 
-h4. Create your own stack
+Stacks are designed to work together.  It's trivially easy to mount one stack inside another, or just mount any valid rack application inside your stack.  They're also designed to be gemed and used as libraries as full applications.
 
-<pre>
-  $pancake-gen stack yummy-app
-</pre>
+<pre><code>MyStack.router do |r|
+  r.mount(OtherStack, "/stack/mount/point")
+end</code></pre>
 
-h4. Does it work?
+A stack doesn't have to mount other stacks.  Pancake stacks are full applications in their own right and can be used standalone as Rack endpoints, or as middleware.
 
-(I've used curl here, feel free to use your point your browser to http://localhost:9292/ instead)
-<pre>
-  $cd yummy-app/lib/yummy-app
-  $rackup config.ru
-  Loading Development Environment
-</pre>
+Rails 3 is shipping with a pluggable router which can be the awesome "Usher":http://github.com/joshbuddy/usher router.  If you use Usher in your Rails app, you'll be able to mount Pancake stacks directly.  For now, you can mount them as Metals.
 
-Now in your browser, visit http://localhost:9292/
-Or, with curl like here:
-<pre>
-  $curl -I localhost:9292
-  127.0.0.1 - - [26/Jul/2009 15:42:55] "HEAD / HTTP/1.1" 404 9 0.0011
-  HTTP/1.1 404 Not Found
-  Connection: close
-  Date: Sun, 26 Jul 2009 05:42:55 GMT
-  Content-Type: text/plain
-  Content-Length: 9
-</pre>
+All stacks are namespaced.  Pancake makes heavy use of namespacing to help construct applications concisely.
 
-You should see 'NOT FOUND' in your browser window and something like this appear in your rackup console window.
+h2. Middleware Stacks
 
-<pre>
-  127.0.0.1 - - [26/Jul/2009 15:42:55] "GET / HTTP/1.1" 404 9 0.0011
-</pre>
+When you use Pancake middleware management, you can name middleware, set middleware to come before or after other middleware, or be included or not based on a stack type label.  Lets have a look at that.
 
-That 404 is good news! The stack is running.. we just haven't cooked any pancakes yet, theres nothing to find. Next step add something...
+<pre><code>class MyStack < Pancake::Stack
+  stack(:session).use(Rack::Sessions::Cookie)
+  stack(:auth, :after => :session).use(Warden::Manager, #...)
 
-h4. Routing
+  stack(:bugz, :labels => [:development]).use(Rack::Bug)
 
-Edit config/router.rb with:
-<pre>
-  home = lambda {|e| [200,{"Content-Type" => "text/plain", "Content-Length" => "12"}, "Welcome home" ]}
-  
-  YummyApp.add_routes do |r|
-    r.map "/", :to => home
+  use(AlwaysUse)
+end
+</code></pre>
+
+h2. What can a stack do
+
+Pancake provides a whole bunch of functionality as mixins.
+
+* BootLoaders
+* Router ("Usher":http://github.com/joshbuddy/usher Based.  Please read.)
+* Sophisticated Middlware Configuration
+* Stack/Custom Configuration
+* Path Management with multiple roots (makes working with gem stacks transparent)
+* Content Type negotiation
+* Inheritable Templating System
+* Action Publish Control
+
+Stacks bundle these behaviors together into a cohesive unit.
+
+The true power of a Pancake stack is that it is fully inheritable.
+
+h2. Stack Inheritance
+
+When you inherit a stack, you're really inheriting a full applictation.  All the features above are inherited along with the stack class.
+
+The easiest way to explain stack inheritance is perhaps with an example.
+
+Lets take the example of a basic application skeleton.  Many times I've seen github repos with pre-generated applications with some basic functionality.  This is then cloned as a start point for further app development.  It's basically the same as a generator but a little more flexible.  What if rather than generate an application skeleton with the basic functionality, you could construct a stack complete with router, default configuration, base templates, css and javascript, even mounted applications, and gem it up.  Then when you want to start an application you just require the gem and inherit the stack class.  This is what Pancake stacks provide.
+
+<pre><code>class MyStack < SomeOtherStack; end # A full application </code></pre>
+
+h3. Namespacing
+
+Pancake makes heavy use of namespacing.  Namespacing is a good idea to begin with, but inside mounted applications it's a must.  By embracing the constraint of namespacing, there are many benefits.  Unexpected name clashes of course being the big one.
+
+h3. Inheritable Inner Classes
+
+There a fairly unique issue with inheriting a full application.  Model data clashes.
+
+Normally when you inherit a class in Ruby, when you reference an inner class in the child, it's actually a reference to the inner class in the parent.  Lets see why this is a problem.
+
+<pre><code>class AStack < Pancake::Stack
+  class Post < ActiveRecord::Base
+    # post code
   end
-</pre>
-Now, restart the server (^C) and try again:
-<pre>
-  $rackup config.ru
-  Loading Development Environment
-</pre>
-Reload you page and you should see "Welcome home".
-And, in your console window, rack should log the request like so:
-<pre>
-  127.0.0.1 - - [26/Jul/2009 16:16:23] "GET / HTTP/1.1" 200 12 0.0012
-  127.0.0.1 - - [26/Jul/2009 16:16:23] "GET /favicon.ico HTTP/1.1" 200 12 0.0012
-</pre>
+end
 
-h4. Whats next:
+class AnotherStack  < AStack; end
+class ADifferentOne < AStack; end
 
-Well we don't want to be writing our apps as lambdas jemmied into the router, instead next we start to build stacks, out of other middlewares... merbs, other pancake stacks, some sinatra, more rack ups or what ever.
+AnotherStack::Post == ADifferentOne::Post == AStack::Post
+</code></pre>
 
-To be continued...
+When we create posts in all 3 stacks, and then select the posts in AStack::Post.all we'll actually get the posts from all of the stacks.  This referencing of inner classes is great for ruby efficiency, but not so good when we want to keep data seperate.
+
+Awesomely some of the ORM's include STI (Single Table Inheritance) that we can make use of.  When using Pancake, we can set an inner class to inherit along with the parent.  Lets have another look at that example:
+
+<pre><code>class AStack < Pancake::Stack
+  inheritable_inner_classes :Post
+
+  class Post < ActiveRecord::Base
+    # post code
+  end
+end
+
+class AnotherStack  < AStack; end
+class ADifferentOne < AStack; end
+
+class FurtherDown   < AnotherStack; end
+
+# Results in
+
+class AnotherStack::Post  < AStack::Post;       end
+class ADifferentOne::Post < AStack::Post;       end
+class FurtherDown::Post   < AnotherStack::Post; end
+</code></pre>
+
+In this case STI will be activated and each stack will use it's own sti version of the Post model, segregating the data between the stacks.
+
+If your Data layer doesn't support STI there are on_inherit hooks for all classes provided by Pancake to make any changes you need to.
+
+h2. Mounting Applications
+
+You can mount any valid rack application inside pancake.
+
+Stacks look inside their root(s) for a "mounts" directory.  Where they in-turn look for a sub-directory containing the file "pancake.init".  When you want to mount an application you just include that file (and any support files) and the pancake stack will load it.
+
+<pre><code>my_stack
+-- mounts
+  -- another_app
+    -- pancake.init # Called to initialize the mounted app
+</code></pre>
+
+h2. Inheritable Templates
+
+Templates in Pancake are similar to Django templates.  They define named content_blocks that can supply a default, but that can also be inherited from, and have their content either combined with some other content, or replaced.  Unlike Django, templates are built on known templating languages like ERB and Haml.  The templating system in Pancake is built on top of the great "Tilt":http://github.com/rtomayko/tilt project.
+
+Really this is best demonstrated with an example:
+
+<pre><code># base.html.erb
+<html>
+  <head><title>Hey There</title></head>
+  <body>
+  <h1>My Page</h1>
+
+  <ul class='nav'>
+    <% content_block :navigation do -%>
+      <li><a href="/">Home</a></li>
+    <% end -%>
+  </ul>
+
+  <hr/>
+
+  <% content_block :content do- %>
+    <div class='emtpy'>Nothing Found</div>
+  <% end -%>
+
+  <% content_block :footer do -%>
+    Footer Text
+  <% end -%>
+</html>
+
+# index.html.erb
+
+<% inherits_from :base %>
+
+<% content_block :navigation do -%>
+  <%= content_block.super %>
+  <li><a href="/index">Home</a></li>
+<% end -%>
+
+<% content_block :content do -%>
+  # Stuff for the content
+<% end -%>
+</code></pre>
+
+When you @render :index@ in your stack, the index template will be activated, rendering the :base template but replacing the content_block, :content, with new data.  And appending to the :navigation block.
+
+Templates can be inherited as many times as required, so you could inherit from the :index template to build on it's content.
+
+When specifying which template to inherit from, you can dynamically specify which template you'd like to use if it makes sense to do so.
+
+At the moment only ERB, Erubis and Haml are supported with inheritable templates.  Other tilt templates are able to be rendered, but not inherited.
+
+h2. Short Stack
+
+As part of the development of Pancake, the initial milestone was to develop a stack based on the awesome "Sinatra":http://sinatrarb.com framework.  This was done as a way to develop Pancake to a simple level, not as a way to replace Sinatra.  Pancake is very happy to mount Sinatra applications inside and make use of them.
+
+A short stack is a resource focused.  It uses the HTTP verbs and routes to access the code that defines a "resource"
+
+Short stacks make use of content negotiation and views in addition to the normal stack behavior.
+
+h3. Get Started
+
+h4. Install
+
+@$ gem install pancake@
+
+h4. Generate your stack
+
+To start with a short stack use pancakes built in generator:
+
+@$ pancake-gen short my_stack@
+
+This will generate the basic stack for you.  It's generated as a gem and based on Jeweler so you can gem it up super easy.
+
+<pre><code>class MyStack < Pancake::Stacks::Short
+  add_root(__FILE__)
+
+  router.mount(UserStack, "/users")
+
+  provides :html, :xml, :json
+
+  get "(/)",  :_name => :home do
+    v[:some_models] = SomeModel.all
+    render :welcome
+  end
+
+  get "/new", :_name => :new do
+    v[:some_model] = SomeModel.new(params[:some_model])
+    render :new
+  end
+
+  post "(/)" do
+    v[:some_model] = SomeModel.new(params[:some_model])
+    if v[:some_model].save
+      redirect url(:home)
+    else
+      render :new
+    end
+  end
+end
+</code></pre>
+
+h4. The Vault
+
+In the example above you can see the "v" method.  This method accesses the vault.  The vault is where per-request data may be stored for later use.  In this case, the data is stored so that we can access it in the views.
+
+This is a way to seperate the concerns of Controller and View.  These contexts are supposed to be seperate.  Breaking the encapsulation of instance variables does not need to be done in a short stack.
+
+h4. Templates
+
+Templates are searched for in (stack root)/views/<name>.<format>.<template_engine> and rendered.
+
+h2. URL generation
+
+When you're in a stack, you can call @url(named_url) to generate a url.  This will generate the url, taking into account the mount path for the stack.
+
+You can generate urls for other stacks also by using the global Pancake.url helper.
+
+<pre><code>Pancake.url(SomeStack, :named_url)</code></pre>
+
+There's a whole bunch more to Pancake than what I can go over here.  But hopefully I've been able to provide a taste of what it is and why I think it's pretty awesome in the up-coming Rack landscape.
+
+h4. Note on Patches/Pull Requests
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but
+   bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+h4. Copyright
+
+Copyright (c) 2009 Daniel Neighman. See LICENSE for details.
+
 
