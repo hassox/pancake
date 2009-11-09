@@ -11,24 +11,61 @@ h2. Stacks
 While Rack provides the low level framework for building web applications on.  Pancake provides a stack as a place to start your application.  A stack provides a whole bunch of behavior for you including a router and middleware stack.  The stack will accept any valid rack application as the endpoint.  If you're not familiar with what makes a "valid rack application":http://rack.rubyforge.org/doc/SPEC.html it basically comes down to an object that receives the "call" method with exactly one argument, the environment hash, and returns an array with exactly 3 elements.  The status, headers and body.
 
 The general form of a stack is as follows:
-
-<pre>
+<pre><code>
 -----------------------------------
 |                                 |
 |           Router                |
 |                                 |
------------------------------------
+|---------------------------------|
 |           Middleware            |
------------------------------------
+|---------------------------------|
 |           Middleware            |
------------------------------------
+|---------------------------------|
 |           Middleware            |
------------------------------------
+|---------------------------------|
 |                                 |
 |           Application           |
 |            Endpoint             |
 |                                 |
 -----------------------------------
+
+</code></pre>
+
+Each stack has it's own router, middleware stack and application endpoint.  Stacks can be combined combined and also put inside Pancake.
+
+Combined into a Pancake application it may look like this:
+
+<pre>
+
+-------------------------------------------------------------------------------
+|                                 Pancake Middleware                          |
+|-----------------------------------------------------------------------------|
+|                                 Pancake Middleware                          |
+|-----------------------------------------------------------------------------|
+|                                 Pancake Middleware                          |
+|-----------------------------------------------------------------------------|
+|                                                                             |
+|  -----------------------------------   -----------------------------------  |
+|  |                                 |   |                                 |  |
+|  |           Router                |   |           Router                |  |
+|  |                                 |   |                                 |  |
+|  |---------------------------------|   |---------------------------------|  |
+|  |           Middleware            |   |           Middleware            |  |
+|  |---------------------------------|   |---------------------------------|  |
+|  |           Middleware            |   |           Middleware            |  |
+|  |---------------------------------|   |---------------------------------|  |
+|  |           Middleware            |   |           Middleware            |  |
+|  |---------------------------------|   |---------------------------------|  |
+|  |                                 |   |                                 |  |
+|  |           Application           |   |           Application           |  |
+|  |            Endpoint             |   |            Endpoint             |  |
+|  |                                 |   |                                 |  |
+|  -----------------------------------   -----------------------------------  |
+|                                                                             |
+-------------------------------------------------------------------------------
+
+
+
 </pre>
 
 Stacks are designed to work together.  It's trivially easy to mount one stack inside another, or just mount any valid rack application inside your stack.  They're also designed to be gemed and used as libraries as full applications.
@@ -49,6 +86,8 @@ h2. Middleware In Stacks
 
 Middleware is a specialised kind of rack application that can either respond to a request, or pass it on to another application.
 
+There's two main places for middleware in Pancake. Pancake level, and stack level.  If you attach middleware to Pancake itself, all requests will pass through those middlewares.  If you attach it at the stack level, only that stack will have that middleware active for it's requests.
+
 When you use Pancake middleware management, you can name middleware, set middleware to come before or after other middleware, or be included or not based on a stack type label(s).  Lets have a look at that.
 
 <pre><code>class MyStack < Pancake::Stack
@@ -65,13 +104,16 @@ h2. What can a stack do
 
 Pancake provides a whole bunch of functionality as mixins.
 
-* BootLoaders
-* Router ("Usher":http://github.com/joshbuddy/usher Based.  Please read.)
-* Sophisticated Middlware Configuration
-* Stack/Custom Configuration
-* Path Management with multiple roots (makes working with gem stacks transparent)
-* Content Type negotiation
+* "BootLoaders":http://gist.github.com/229784
+* "Router":http://gist.github.com/229785 ("Usher":http://github.com/joshbuddy/usher Based.  Please read.)
+* "Sophisticated Middlware Configuration":http://gist.github.com/229787
+* "Stack/Custom Configuration":http://gist.github.com/229788
+* "Path Management with multiple roots":http://gist.github.com/229789 (makes working with gem stacks transparent)
+* "Content Type negotiation":http://gist.github.com/229790
+* "Inheritable Stacks":http://gist.github.com/229792
 * Inheritable Templating System (see below)
+
+("See here for examples":https://gist.github.com/542e8b01412fe4a682bc )
 
 Stacks bundle these behaviors together into a cohesive unit.
 
@@ -93,7 +135,7 @@ Pancake makes heavy use of namespacing.  Namespacing is a good idea to begin wit
 
 h3. Inheritable Inner Classes
 
-There a fairly unique issue with inheriting a full application.  Model data clashes.
+There a fairly unique issue with inheriting a full application.  Model data may clash.
 
 Normally when you inherit a class in Ruby, when you reference an inner class in the child, it's actually a reference to the inner class in the parent.  Lets see why this is a problem.
 
