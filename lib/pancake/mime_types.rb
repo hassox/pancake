@@ -15,7 +15,7 @@ module Pancake
     def self.types
       @types || reset! && @types
     end
-    
+
     # Finds a Pancake::MimeTypes::Type object by the provided
     # extension
     #
@@ -35,9 +35,9 @@ module Pancake
       ext = ext.to_s
       types.detect{|t| t.extension == ext}
     end
-    
+
     # Pancake manages mime types by grouping them together.
-    # 
+    #
     # @return [Set<Pancake::MimeTypes::Type>] - A enumerable of Type
     # objects associated with this group
     #
@@ -47,11 +47,11 @@ module Pancake
     def self.groups
       @groups || reset! && @groups
     end
-    
+
     # Pancake::MimeTypes are managed by grouping them together.
     # Each group may consist of many mime types by extension
     # By Accessing a group that doesn't yet exist, the group is
-    # created and initialized with the matching type wwith extension
+    # created and initialized with the matching type with extension
     # A group may have many mime type / accept types associated with
     # it
     #
@@ -71,7 +71,7 @@ module Pancake
     def self.group(name)
       groups[name.to_s]
     end
-    
+
     # Creates a group of mime types.  Any group of mimes can be
     # arbitrarily grouped under the specified name.  The group is
     # initilized with the mime type whose extension matches the name,
@@ -92,7 +92,7 @@ module Pancake
       end
       group(name)
     end
-    
+
     # Resets the Pancake::MimeType cache and re-creates the
     # Pancake::MimeTypes default types and groups
     # Good for use in specs
@@ -121,13 +121,13 @@ module Pancake
         e = $1
         t = type_by_extension(ext)
         if t
-          t.type_strings << type 
+          t.type_strings << type
        else
-          t = Type.new(e, type) 
+          t = Type.new(e, type)
         end
       end
     end
-    
+
     # Used in specs to reset the default mime groups of
     # pancake::MimeTypes
     # @api private
@@ -139,7 +139,7 @@ module Pancake
 
       group_as(:svg, "svgz")
     end
-    
+
     # Negotiates the type and group that the accept_type string
     # matches
     # @param type [String] the accept_type header string from the
@@ -162,16 +162,16 @@ module Pancake
       provided = provided.flatten
       key = [accepted_types, provided]
       return negotiated_accept_types[key] if negotiated_accept_types[key]
-      
+
       accepted_type = nil
-      
+
       if accepted_types.include?("*/*")
         name = provided.first
         accepted_type = group(name).first
         negotiated_accept_types[key] = [name, accepted_type.type_strings.first, accepted_type]
         return negotiated_accept_types[key]
       end
-      
+
       # Check to see if any accepted types match
       accepted_types.each do |at|
         provided.flatten.each do |name|
@@ -190,7 +190,7 @@ module Pancake
       end
       nil
     end
-    
+
     # Negotiates the content type based on the extension and the
     # provided groups to see if there is a match.
     #
@@ -223,7 +223,7 @@ module Pancake
       end
       result
     end # self.negotiate_by_extension
-    
+
 
     # A basic type for mime types
     # Each type can have an extension and many type strings that
@@ -243,7 +243,7 @@ module Pancake
         MimeTypes.types << self
       end
     end
-    
+
     private
     # Checks to see if a group matches an accept type string
     # @api private
@@ -252,13 +252,13 @@ module Pancake
         t.type_strings.include?(accept_type) || accept_type == "*/*"
       end
     end
-    
+
     # Provides a cache for already negotiated types
     # @api private
     def self.negotiated_accept_types
       @negotiated_accept_types ||= {}
     end
-        
+
   end # MimeTypes
 end # Pancake
 

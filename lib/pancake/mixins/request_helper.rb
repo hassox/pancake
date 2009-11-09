@@ -3,20 +3,20 @@ module Pancake
     # Some helpers for requests that come in handy for applications that
     # are part of stacks
     module RequestHelper
-      VAULT_KEY = 'pancake.request.vault'
+      VARS_KEY = 'pancake.request.vars'
 
-      # A data vault that allows you to carry data accross middlewares, controller / views etc.
+      # A data area that allows you to carry data accross middlewares, controller / views etc.
       # Stores the data in session for the length of the request.
       #
       # @example
-      #   vault[:user] = @user
+      #   vars[:user] = @user
       #   v[:user] == vault[:user]
       #   # This is now stored in the environment and is available later
-      def vault
-        env[VAULT_KEY] ||= {}
-        env[VAULT_KEY]
+      def vars
+        env[VARS_KEY] ||= {}
+        env[VARS_KEY]
       end
-      alias_method :v, :vault
+      alias_method :v, :vars
 
       # Generate a url for the current stacks router.
       #
