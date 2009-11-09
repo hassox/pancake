@@ -6,6 +6,8 @@ Pancake is primarily a tool for making rack applictions.  "Rack":http://rack.git
 
 Pancake addresses this by making Rack the fundamental building block of an applicaiton.  It provides very useful helpers on top of rack that assist in constructing rack stacks as mixins.  Almost all key aspects of web frameworks are covered in Pancake as mixins to help you create your own re-usable Rack Stacks without worrying about the really low level plumbing.
 
+This README is a very high level overview only and doesn't really cover a great deal of Pancake unfortunately.`
+
 h2. Stacks
 
 While Rack provides the low level framework for building web applications on.  Pancake provides a stack as a place to start your application.  A stack provides a whole bunch of behavior for you including a router and middleware stack.  The stack will accept any valid rack application as the endpoint.  If you're not familiar with what makes a "valid rack application":http://rack.rubyforge.org/doc/SPEC.html it basically comes down to an object that receives the "call" method with exactly one argument, the environment hash, and returns an array with exactly 3 elements.  The status, headers and body.
@@ -332,7 +334,7 @@ There's a whole bunch more to Pancake than what I can go over here.  But hopeful
 h2. Community
 
 IRC:          #pancake
-Google Group:
+"Google Group":http://groups.google.com.au/group/pancake-stacks
 Twitter:      #pancake (hashtag)
 
 h2. Bugs
