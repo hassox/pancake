@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pancake}
-  s.version = "0.1.13"
+  s.version = "0.1.14"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
@@ -46,7 +46,7 @@ Gem::Specification.new do |s|
      "lib/pancake/generators/templates/common/dothtaccess",
      "lib/pancake/generators/templates/micro/%stack_name%/%stack_name%.rb.tt",
      "lib/pancake/generators/templates/micro/%stack_name%/config.ru.tt",
-     "lib/pancake/generators/templates/micro/%stack_name%/pancake.init.tt",
+     "lib/pancake/generators/templates/micro/%stack_name%/pancake_init.rb.tt",
      "lib/pancake/generators/templates/micro/%stack_name%/public/.empty_directory",
      "lib/pancake/generators/templates/micro/%stack_name%/tmp/.empty_directory",
      "lib/pancake/generators/templates/micro/%stack_name%/views/root.html.haml",
@@ -61,7 +61,7 @@ Gem::Specification.new do |s|
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/public/.empty_directory",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/tmp/.empty_directory",
      "lib/pancake/generators/templates/short/%stack_name%/lib/%stack_name%/views/root.html.haml",
-     "lib/pancake/generators/templates/short/%stack_name%/pancake.init.tt",
+     "lib/pancake/generators/templates/short/%stack_name%/pancake_init.rb.tt",
      "lib/pancake/generators/templates/short/%stack_name%/spec/%stack_name%_spec.rb.tt",
      "lib/pancake/generators/templates/short/%stack_name%/spec/spec_helper.rb.tt",
      "lib/pancake/generators/templates/stack/%stack_name%/LICENSE.tt",
@@ -77,7 +77,7 @@ Gem::Specification.new do |s|
      "lib/pancake/generators/templates/stack/%stack_name%/lib/%stack_name%/mounts/.empty_directory",
      "lib/pancake/generators/templates/stack/%stack_name%/lib/%stack_name%/public/.empty_directory",
      "lib/pancake/generators/templates/stack/%stack_name%/lib/%stack_name%/tmp/.empty_directory",
-     "lib/pancake/generators/templates/stack/%stack_name%/pancake.init.tt",
+     "lib/pancake/generators/templates/stack/%stack_name%/pancake_init.rb.tt",
      "lib/pancake/generators/templates/stack/%stack_name%/spec/%stack_name%_spec.rb.tt",
      "lib/pancake/generators/templates/stack/%stack_name%/spec/spec_helper.rb.tt",
      "lib/pancake/hooks/inheritable_inner_classes.rb",

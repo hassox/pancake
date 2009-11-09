@@ -2,16 +2,7 @@ TODO:
 
 * Add default middleware to the short stack
 * Add a default base template and some default css to the short stack
-* Add a global logger
-* Add some view helpers
-** url, link_to, form_for, form_field_helpers (can we use formtastic), v[:data]
-* Add partial support
-* Add sass support so that a stack can compile sass
-* Add a mechanism for a rake task to be called on the parent and all mounted stacks
-* Add a way to cache public files into the pancake roots public directory
 * Add bundler support
 * Do some introductory posts
 * optimise template lookup
-* Add caching / symlinking option for static middlware to prevent lookup
-* Add a rake task to copy / symlink all mounted apps public files into the public Pancake.public directory
 
