@@ -402,5 +402,40 @@ describe Pancake::Stacks::Short::Controller do
         result.body.should include("Not the default pancake")
       end
     end
+
+    describe "throwing" do
+      before do
+        ShortFoo.get("/plain_throw"){    throw :halt }
+        ShortFoo.get("/string_throw"){   throw :halt, "output string" }
+        ShortFoo.get("/status_n_throw"){ self.status = 204; throw :halt }
+        ShortFoo.get("/headers_n_throw") do
+          headers["some-header"] = Time.now.to_s
+          throw :halt
+        end
+      end
+
+      it "should handle a plain throw" do
+        result = get "/plain_throw"
+        result.should be_successful
+        result.body.should == ""
+      end
+
+      it "should handle a string throw" do
+        result = get "/string_throw"
+        result.should be_successful
+        result.body.should == "output string"
+      end
+
+      it "should handle a change in the status" do
+        result = get "/status_n_throw"
+        result.status.should == 204
+        result.body.should == ""
+      end
+
+      it "should handle a change in the headers" do
+        result = get "/headers_n_throw"
+        result.headers["some-header"].should_not be_blank
+      end
+    end
   end
 end

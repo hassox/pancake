@@ -64,14 +64,14 @@ module Pancake
           # set the response header
           headers["Content-Type"] = ct
 
-          result = self.send(params['action'])
+          result = catch(:halt){ self.send(params['action']) }
           case result
           when Array
             result
           when Rack::Response
             result.finish
           else
-            Rack::Response.new(result, status, headers).finish
+            Rack::Response.new((result || ""), status, headers).finish
           end
 
         rescue Errors::HttpError => e
