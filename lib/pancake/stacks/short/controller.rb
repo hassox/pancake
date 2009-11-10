@@ -71,7 +71,7 @@ module Pancake
           when Rack::Response
             result.finish
           else
-            Rack::Response.new(self.send(params["action"]), status, headers).finish
+            Rack::Response.new(result, status, headers).finish
           end
 
         rescue Errors::HttpError => e
