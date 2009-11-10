@@ -32,6 +32,11 @@ module Pancake
         self::Controller.handle_exception(*args, &block)
       end
 
+      def self.helpers(&blk)
+        m = Module.new(&blk)
+        self::Controller.class_eval{ include m }
+      end
+
       # Gets a resource at a given path
       #
       # The block should finish with the final result of the action

@@ -32,6 +32,8 @@ describe Pancake::Stacks::Short do
         render :inherited_from_base
       end
     end
+
+    @app = ShortFoo
   end
 
   after do
@@ -39,7 +41,7 @@ describe Pancake::Stacks::Short do
   end
 
   def app
-    ShortFoo.stackup
+    @app.stackup
   end
 
   it "should go through the middleware to get to the actions" do
@@ -60,6 +62,48 @@ describe Pancake::Stacks::Short do
       result = get "/other/"
       $captures.pop.should == OtherFoo::Controller
       last_response.should match(/inherited from base/)
+    end
+  end
+
+  describe "helpers" do
+    before do
+      $captures = []
+      class ::ShortFoo
+        helpers do
+          def in_helper?
+            $captures << :in_helper?
+          end
+        end
+      end
+    end
+
+    it "should allow me to setup a helper method in the stack" do
+      ShortFoo.get("/with_helper"){ in_helper?; "OK" }
+      result = get "/with_helper"
+      result.should be_successful
+      $captures.should include(:in_helper?)
+    end
+
+    it "should provide the helpers in child stacks" do
+      class ::OtherFoo < ShortFoo; end
+      OtherFoo.get("/helper_action"){ in_helper?; "OK" }
+      @app = OtherFoo
+      result = get "/helper_action"
+      result.should be_successful
+      $captures.should include(:in_helper?)
+    end
+
+    it "should let me mixin modules to the helpers" do
+      module ::OtherFoo
+        def other_helper
+          $captures << :other_helper
+        end
+      end
+      ShortFoo.helpers{ include OtherFoo }
+      ShortFoo.get("/foo"){ other_helper; "OK" }
+      result = get "/foo"
+      result.should be_successful
+      $captures.should include(:other_helper)
     end
   end
 end
