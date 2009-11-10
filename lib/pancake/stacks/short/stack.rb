@@ -3,6 +3,8 @@ module Pancake
     class Short < Pancake::Stack
       add_root(__FILE__, "default")
 
+      push_paths(:models,"models", "**/*.rb")
+
       def self.new_app_instance
         self::Controller
       end

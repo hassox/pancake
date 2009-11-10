@@ -12,6 +12,7 @@ module Pancake
 
         class_inheritable_accessor :_handle_exception
 
+        push_paths(:views, ["app/views", "views"], "**/*")
 
         DEFAULT_EXCEPTION_HANDLER = lambda do |error|
           "#{error.name}: #{error.description}"
