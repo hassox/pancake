@@ -336,6 +336,7 @@ h2. Community
 IRC:          #pancake
 "Google Group":http://groups.google.com.au/group/pancake-stacks
 Twitter:      #pancakestacks (hashtag)
+"Blog / News":http://pancakestacks.wordpress.com
 
 h2. Bugs
 
