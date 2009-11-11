@@ -161,7 +161,7 @@ Now, let's mount those inside some master stack:
 end
 </code></pre>
 
-Now, Bob creates a post at his blog.  It goes away and creates the model (BlogStack::Post).
+Now, Bob creates a post at his blog.  Then goes away and creates the model (BlogStack::Post).
 
 Now someone visits Rose's blog.  Because both Bob's and Rose's blogs _reference_ the same BlogStack::User model, Bob's post is fetched when we do a RosesBlog::Post.all
 
@@ -319,7 +319,7 @@ h4. Templates
 
 Templates are searched for in (stack root)/views/<name>.<format>.<template_engine> and rendered.
 
-Templates are separate in each sub-application and will not clash.  They're able to be looked up in parent stacks, however.  Meaning, if you inherit from AStack, all of AStack's views will be used unless you replace them in the child stack's views directory.
+Templates are separate in each sub-application and will not clash.  They're able to be looked up in parent stacks, however.  Meaning, if you inherit from AStack, all of AStacks views will be used unless you replace them in the child stacks views directory.
 
 h2. URL generation
 
