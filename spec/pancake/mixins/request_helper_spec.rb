@@ -30,7 +30,7 @@ describe Pancake::Mixins::RequestHelper do
       foo = FooBar.new
       foo.env = env
       foo.v[:data] = :some_data
-      env[Pancake::Mixins::RequestHelper::VAULT_KEY][:data].should == :some_data
+      env[Pancake::Mixins::RequestHelper::VARS_KEY][:data].should == :some_data
     end
   end
 end

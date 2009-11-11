@@ -8,6 +8,7 @@ require 'extlib/object'
 require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
+require 'extlib/mash'
 require 'extlib/logger'
 require 'usher'
 require 'usher/interface/rack_interface'
