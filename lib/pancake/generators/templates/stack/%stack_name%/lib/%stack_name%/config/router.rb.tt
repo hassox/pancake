@@ -1,6 +1,0 @@
-<%= stack_name.camel_case %>.router do |r|
-  # Add your routes here
-  r.add("/") do |e|
-    Rack::Response.new("Hi From <%= stack_name.camel_case %>").finish
-  end
-end

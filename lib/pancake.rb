@@ -19,6 +19,7 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 module Pancake
   autoload    :Logger,    "pancake/logger"
   autoload    :Constants, "pancake/constants"
+  autoload    :Console,   "pancake/console"
 
   module Stacks
     autoload :Short,      "pancake/stacks/short"

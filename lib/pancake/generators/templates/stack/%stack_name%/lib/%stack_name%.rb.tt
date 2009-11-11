@@ -1,4 +1,0 @@
-class <%= stack_name.camel_case %> < Pancake::Stack
-  add_root __FILE__, "<%= stack_name %>"
-  initialize_stack
-end

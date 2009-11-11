@@ -6,8 +6,6 @@ require 'pancake/generators'
 
 # TODO update for pancake to have a version
 case ARGV.shift
-when "stack"
-  Pancake::Generators::Stack.start
 when "short"
   Pancake::Generators::Short.start
 when "micro"
