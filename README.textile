@@ -1,16 +1,16 @@
 h1. Pancake
 
-Modern web applications often need to be constructed by interacting with numerous independant service/applications, each optimised for a specific task. However, making each of these components interact and work cohesively is difficult and time consuming.  Pancake helps you construct clean, modular, re-usable code to create your web masterpieces.
+Modern web applications often need to be constructed by interacting with numerous independent service/applications, each optimised for a specific task. However, making each of these components interact and work cohesively is difficult and time consuming.  Pancake helps you construct clean, modular, re-usable code to create your web masterpieces.
 
-Pancake is primarily a tool for making rack applictions.  "Rack":http://rack.github.com has come up in the Ruby web world as _the framework that matters_ when developing web applications.  All the major frameworks use it, although many of the application frameworks and their middlewares are not really re-usable yet away from their specific implementations.
+Pancake is primarily a tool for making rack applications.  "Rack":http://rack.github.com has come up in the Ruby web world as _the framework that matters_ when developing web applications.  All the major frameworks use it, although many of the application frameworks and their middlewares are not really re-usable away from their specific implementations yet.
 
-Pancake addresses this by making Rack the fundamental building block of an applicaiton.  It provides very useful helpers on top of rack that assist in constructing rack stacks as mixins.  Almost all key aspects of web frameworks are covered in Pancake as mixins to help you create your own re-usable Rack Stacks without worrying about the really low level plumbing.
+Pancake addresses this by making Rack the fundamental building block of an application.  It provides very useful helpers on top of Rack that assist in constructing Rack stacks as mixins.  Almost all key aspects of web frameworks are covered in Pancake as mixins to help you create your own re-usable Rack Stacks without worrying about the really low level plumbing.
 
-This README is a very high level overview only and doesn't really cover a great deal of Pancake unfortunately.`
+This README is a very high level overview only and doesn't really cover a great deal of Pancake unfortunately.
 
 h2. Stacks
 
-While Rack provides the low level framework for building web applications on.  Pancake provides a stack as a place to start your application.  A stack provides a whole bunch of behavior for you including a router and middleware stack.  The stack will accept any valid rack application as the endpoint.  If you're not familiar with what makes a "valid rack application":http://rack.rubyforge.org/doc/SPEC.html it basically comes down to an object that receives the "call" method with exactly one argument, the environment hash, and returns an array with exactly 3 elements.  The status, headers and body.
+While Rack provides the low level framework for building web applications on, Pancake provides a stack as a place to start your application.  A stack provides a whole bunch of behavior for you including a router and middleware stack.  The stack will accept any valid Rack application as the endpoint.  If you're not familiar with what makes a "valid Rack application":http://rack.rubyforge.org/doc/SPEC.html it basically comes down to an object that receives the "call" method with exactly one argument, the environment hash, and returns an array with exactly 3 elements.  The status, headers and body.
 
 The general form of a stack is as follows:
 <pre><code>
@@ -33,7 +33,7 @@ The general form of a stack is as follows:
 
 </code></pre>
 
-Each stack has it's own router, middleware stack and application endpoint.  Stacks can be combined combined and also put inside Pancake.
+Each stack has its own router, middleware stack and application endpoint.  Stacks can be combined and also put inside Pancake.
 
 Combined into a Pancake application it may look like this:
 
@@ -70,7 +70,7 @@ Combined into a Pancake application it may look like this:
 
 </pre>
 
-Stacks are designed to work together.  It's trivially easy to mount one stack inside another, or just mount any valid rack application inside your stack.  They're also designed to be gemed and used as libraries as full applications.
+Stacks are designed to work together.  It's trivially easy to mount one stack inside another, or just mount any valid rack application inside your stack.  They're also designed to be gemmed and used as libraries or full applications.
 
 <pre><code>MyStack.router do |r|
   r.mount(OtherStack, "/stack/mount/point")
@@ -88,7 +88,7 @@ h2. Middleware In Stacks
 
 Middleware is a specialised kind of rack application that can either respond to a request, or pass it on to another application.
 
-There's two main places for middleware in Pancake. Pancake level, and stack level.  If you attach middleware to Pancake itself, all requests will pass through those middlewares.  If you attach it at the stack level, only that stack will have that middleware active for it's requests.
+There's two main places for middleware in Pancake. Pancake level, and stack level.  If you attach middleware to Pancake itself, all requests will pass through those middlewares.  If you attach it at the stack level, only that stack will have that middleware active for its requests.
 
 When you use Pancake middleware management, you can name middleware, set middleware to come before or after other middleware, or be included or not based on a stack type label(s).  Lets have a look at that.
 
@@ -123,23 +123,23 @@ The true power of a Pancake stack is that it is fully inheritable.
 
 h2. Stack Inheritance
 
-When you inherit a stack, you're really inheriting a full applictation.  All the features above are inherited along with the stack class.
+When you inherit a stack, you're really inheriting a full application.  All the features above are inherited along with the stack class.
 
 The easiest way to explain stack inheritance is perhaps with an example.
 
-Lets take the example of a basic application skeleton.  Many times I've seen github repos with pre-generated applications with some basic functionality.  This is then cloned as a start point for further app development.  It's basically the same as a generator but a little more flexible.  What if rather than generate an application skeleton with the basic functionality, you could construct a stack complete with router, default configuration, base templates, css and javascript, even mounted applications, and gem it up.  Then when you want to start an application you just require the gem and inherit the stack class.  This is what Pancake stacks provide.
+Let's take the example of a basic application skeleton.  Many times I've seen GitHub repos with pre-generated applications with some basic functionality.  This is then cloned as a start point for further app development.  It's basically the same as a generator but a little more flexible.  What if rather than generate an application skeleton with the basic functionality, you could construct a stack complete with router, default configuration, base templates, css and javascript, even mounted applications, and gem it up?  Then when you want to start an application you just require the gem and inherit the stack class.  This is what Pancake stacks provide.
 
 <pre><code>class MyStack < SomeOtherStack; end # A full application </code></pre>
 
 h3. Namespacing
 
-Pancake makes heavy use of namespacing.  Namespacing is a good idea to begin with, but inside mounted applications it's a must.  By embracing the constraint of namespacing, there are many benefits.  Unexpected name clashes of course being the big one.
+Pancake makes heavy use of namespacing.  Namespacing is a good idea to begin with, but inside mounted applications it's a must.  Embracing the constraint of namespacing provides many benefits.  Avoiding unexpected name clashes, of course, is the big one.
 
 h3. Inheritable Inner Classes
 
-There a fairly unique issue with inheriting a full application.  Model data may clash.
+There is a fairly unique issue when inheriting a full application.  Model data may clash.
 
-Normally when you inherit a class in Ruby, when you reference an inner class in the child, it's actually a reference to the inner class in the parent.  Lets see why this is a problem.
+Normally when you inherit a class in Ruby, when you reference an inner class in the child, it's actually a reference to the inner class in the parent.  Let's see why this is a problem:
 
 <pre><code>class BlogStack < Pancake::Stack
   class Post < ActiveRecord::Base
@@ -153,7 +153,7 @@ class RosesBlog < BlogStack; end
 BobsBlog::Post == RosesBlog::Post == BlogStack::Post
 </code></pre>
 
-Now, lets mount those inside some master stack:
+Now, let's mount those inside some master stack:
 
 <pre><code>class MyMasterStack < Pancake::Stack
   router.mount(RobsBlog,      "/rob")
@@ -163,11 +163,11 @@ end
 
 Now, Bob creates a post at his blog.  It goes away and creates the model (BlogStack::Post).
 
-Now someone visits Roses blog.  Because both Bobs and Roses blogs _reference_ the same BlogStack::User model, Bobs post is fetched when we do a RosesBlog::Post.all
+Now someone visits Rose's blog.  Because both Bob's and Rose's blogs _reference_ the same BlogStack::User model, Bob's post is fetched when we do a RosesBlog::Post.all
 
-It's efficient for ruby to reference the parent classes inner class like this, but it's not always what we want.
+It's efficient for Ruby to reference the parent class's inner class like this, but it's not always what we want.
 
-Awesomely some of the ORM's include STI (Single Table Inheritance) that we can make use of.  When using Pancake, we can set an inner class to inherit along with the parent.  Lets have another look at that example:
+Awesomely, some of the ORM's include STI (Single Table Inheritance) that we can make use of.  When using Pancake, we can set an inner class to inherit along with the parent.  Lets have another look at that example:
 
 <pre><code>class BlogStack < Pancake::Stack
   inheritable_inner_classes :Post
@@ -189,15 +189,15 @@ class RosesBlog::Post       < BlogStack::Post; end
 class RosesOtherBlog::Post  < RosesBlog::Post; end
 </code></pre>
 
-In this case STI will be activated and each stack will use it's own STI version of the Post model, segregating the data between the stacks.
+In this case STI will be activated and each stack will use its own STI version of the Post model, segregating the data between the stacks.
 
-If your Data layer doesn't support STI there are on_inherit hooks for all classes provided by Pancake to make any changes you need to.
+If your Data layer doesn't support STI, there are on_inherit hooks for all classes provided by Pancake to make any changes you need to.
 
 h2. Mounting Applications
 
-You can mount any valid rack application inside pancake. See "Rack Spec":http://rack.rubyforge.org/SPEC.html for guidance on what a valid rack application is.
+You can mount any valid Rack application inside Pancake. See "Rack Spec":http://rack.rubyforge.org/SPEC.html for guidance on what a valid Rack application is.
 
-Stacks look inside their root(s) for a "mounts" directory.  Where they in-turn look for a sub-directory containing the file "pancake_init.rb".  When you want to mount an application you just include that file (and any support files) and the pancake stack will load it.
+Stacks look inside their root(s) for a "mounts" directory.  Where they in-turn look for a sub-directory containing the file "pancake_init.rb".  When you want to mount an application you just include that file (and any support files) and the Pancake stack will load it.
 
 <pre><code>my_stack
 -- mounts
@@ -205,13 +205,13 @@ Stacks look inside their root(s) for a "mounts" directory.  Where they in-turn l
     -- pancake_init.rb # Called to initialize the mounted app
 </code></pre>
 
-Usually pancake_init.rb would just require the files for your application.  But there's nothing stopping you from defining the entire applciation in there if you wanted.
+Usually pancake_init.rb would just require the files for your application.  But there's nothing stopping you from defining the entire application in there if you wanted.
 
 h2. Inheritable Templates
 
-Templates in Pancake are similar to Django templates.  They define named content_blocks that can supply a default, but that can also be inherited from, and have their content either combined with some other content, or replaced.  Unlike Django, templates are built on known templating languages like ERB and Haml.  The templating system in Pancake is built on top of the great "Tilt":http://github.com/rtomayko/tilt project.
+Templates in Pancake are similar to Django templates.  They define named content_blocks that can supply a default, but that can also be inherited from, and have their content combined with some other content or replaced.  Unlike Django, templates are built on known Ruby templating languages like ERB and Haml.  The templating system in Pancake is built on top of the great "Tilt":http://github.com/rtomayko/tilt project.
 
-Really this is best demonstrated with an example:
+This is best demonstrated with an example:
 
 <pre><code># base.html.erb
 <html>
@@ -253,11 +253,11 @@ Really this is best demonstrated with an example:
 
 When you <code>render :index</code> in your stack, the index template will be activated, rendering the :base template but replacing the content_block, :content, with new data.  And appending to the :navigation block.
 
-Templates can be inherited as many times as required, so you could inherit from the :index template to build on it's content.
+Templates can be inherited as many times as required, so you could inherit from the :index template to build on its content.
 
 When specifying which template to inherit from, you can dynamically specify which template you'd like to use if it makes sense to do so.
 
-At the moment only ERB, Erubis and Haml are supported with inheritable templates.  Other tilt templates are able to be rendered, but the inheritance features are not supported.
+At the moment only ERB, Erubis and Haml are supported with inheritable templates.  Other Tilt templates are able to be rendered, but the inheritance features are not supported.
 
 h2. Short Stack
 
@@ -313,13 +313,13 @@ h4. The Vars
 
 In the example above you can see the "vars" method.  This method provides a place for variables on a per-request basis for later use.  In this case, the data is stored so that we can access it in the views.  It could just as easily be used to share information between middlewares.
 
-This is a way to seperate the concerns of Controller and View.  These contexts are supposed to be seperate.  Breaking the encapsulation of instance variables does not need to be done in a short stack.
+This is a way to separate the concerns of Controller and View.  These contexts are supposed to be separate.  Breaking the encapsulation of instance variables does not need to be done in a short stack.
 
 h4. Templates
 
 Templates are searched for in (stack root)/views/<name>.<format>.<template_engine> and rendered.
 
-Tempaltes are seperate in each sub application and will not clash.  They're able to be looked up in parent stacks however.  Meaning, if you inherit from AStack, all of AStacks views will be used unless you replace them in the child stacks views directory.
+Templates are separate in each sub-application and will not clash.  They're able to be looked up in parent stacks, however.  Meaning, if you inherit from AStack, all of AStack's views will be used unless you replace them in the child stack's views directory.
 
 h2. URL generation
 
@@ -329,7 +329,7 @@ You can generate urls for other stacks also by using the global Pancake.url help
 
 <pre><code>Pancake.url(SomeStack, :named_url)</code></pre>
 
-There's a whole bunch more to Pancake than what I can go over here.  But hopefully I've been able to provide a taste of what it is and why I think it's pretty awesome in the up-coming Rack landscape.
+There's a whole bunch more to Pancake than I can go over here.  But hopefully I've been able to provide a taste of what it is and why I think it's pretty awesome in the upcoming Rack landscape.
 
 h2. Community
 
@@ -340,7 +340,7 @@ Twitter:      #pancakestacks (hashtag)
 
 h2. Bugs
 
-If you find a bug please report it at "our tails account":http://www.bugtails.com/projects/259/show.html create a for and publish your fix in a topic branch
+If you find a bug please report it at "our tails account":http://www.bugtails.com/projects/259/show.html, create a fork, and publish your fix in a topic branch.
 
 h3. Note on Patches/Pull Requests
 
