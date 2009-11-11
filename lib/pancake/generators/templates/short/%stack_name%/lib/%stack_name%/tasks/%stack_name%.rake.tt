@@ -1,0 +1,4 @@
+namespace :<%= stack_name %> do
+  # Create your tasks here
+end
+

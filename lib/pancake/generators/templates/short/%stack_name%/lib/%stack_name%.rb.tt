@@ -1,5 +1,10 @@
 class <%= stack_name.camel_case %> < Pancake::Stacks::Short
   add_root(__FILE__, "<%= stack_name %>")
+
+  # Hook to use before we mount any applications
+  # before_mount_applications do
+  # end
+
   initialize_stack
 end
 
