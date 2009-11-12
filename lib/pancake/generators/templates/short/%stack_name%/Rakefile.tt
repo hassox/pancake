@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require 'pancake'
 
 begin
   require 'jeweler'
@@ -18,7 +19,12 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
+Foo.load_rake_tasks!
+
+
 require File.join(File.dirname(__FILE__), "lib", "<%= stack_name %>")
+Pancake.root = Pancake.get_root(__FILE__, "lib", "<%= stack_name %>")
+THIS_STACK = <%= stack_name.camel_case %>
 <%= stack_name.camel_case %>.load_rake_tasks!
 
 require 'spec/rake/spectask'

@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+ENV['RACK_ENV'] ||= ARGV[0] || "development"
+
+ARGV.clear # Don't pass args to irb
+
+require 'rubygems'
+require 'pancake'
+
+Pancake.root = Pancake.get_root(__FILE__, "..")
+
+# Load the <%= stack_name.camel_case %> stack
+require File.join(Pancake.root, "..", "<%= stack_name %>")
+Pancake::Console.new(<%= stack_name.camel_case %>)
+
+
