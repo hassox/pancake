@@ -13,7 +13,7 @@ module Pancake
       #   v[:user] == vault[:user]
       #   # This is now stored in the environment and is available later
       def vars
-        env[VARS_KEY] ||= {}
+        env[VARS_KEY] ||= Hashie::Mash.new
         env[VARS_KEY]
       end
       alias_method :v, :vars

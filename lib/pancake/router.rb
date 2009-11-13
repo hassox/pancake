@@ -168,7 +168,7 @@ module Pancake
       consume_path!(request, response) if !response.partial_match? && response.path.route.consuming
       request.params.merge!(request.env['usher.params']) unless request.env['usher.params'].empty?
       request.env[ROUTE_KEY] = response.path.route
-      request.env['rack.request.query_hash'] = Hashie::Mash.new(request.params)
+      request.env['rack.request.query_hash'] = Hashie::Mash.new(request.params) unless request.params.kind_of?(Hashie::Mash)
     end
   end
 end

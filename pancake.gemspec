@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-11-12}
+  s.date = %q{2009-11-13}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -259,6 +259,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<thor>, [">= 0"])
       s.add_runtime_dependency(%q<rack>, [">= 0"])
       s.add_runtime_dependency(%q<tilt>, [">= 0.3"])
+      s.add_runtime_dependency(%q<hashie>, [">= 0.1.3"])
       s.add_runtime_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 0"])
@@ -267,6 +268,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<thor>, [">= 0"])
       s.add_dependency(%q<rack>, [">= 0"])
       s.add_dependency(%q<tilt>, [">= 0.3"])
+      s.add_dependency(%q<hashie>, [">= 0.1.3"])
       s.add_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
     end
   else
@@ -276,6 +278,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<thor>, [">= 0"])
     s.add_dependency(%q<rack>, [">= 0"])
     s.add_dependency(%q<tilt>, [">= 0.3"])
+    s.add_dependency(%q<hashie>, [">= 0.1.3"])
     s.add_dependency(%q<mynyml-rack-accept-media-types>, [">= 0"])
   end
 end

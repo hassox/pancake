@@ -289,18 +289,18 @@ This will generate the basic stack for you.  It's generated as a gem and based o
   provides :html, :xml, :json
 
   get "(/)",  :_name => :home do
-    vars[:some_models] = SomeModel.all
+    vars.some_models = SomeModel.all
     render :welcome
   end
 
   get "/new", :_name => :new do
-    vars[:some_model] = SomeModel.new(params[:some_model])
+    vars.some_model = SomeModel.new(params.some_model)
     render :new
   end
 
   post "(/)" do
-    vars[:some_model] = SomeModel.new(params[:some_model])
-    if vars[:some_model].save
+    vars.some_model = SomeModel.new(params.some_model)
+    if vars.some_model.save
       redirect url(:home)
     else
       render :new
@@ -311,7 +311,7 @@ end
 
 h4. The Vars
 
-In the example above you can see the "vars" method.  This method provides a place for variables on a per-request basis for later use.  In this case, the data is stored so that we can access it in the views.  It could just as easily be used to share information between middlewares.
+In the example above you can see the "vars" method.  This method provides a place for variables on a per-request basis for later use.  In this case, the data is stored so that we can access it in the views.  It could just as easily be used to share information between middlewares.  This is a "Hashie::Mash" which is like a Hash with indifferent access, that can access keys via method calls.  The vars method is also aliased as "v".
 
 This is a way to separate the concerns of Controller and View.  These contexts are supposed to be separate.  Breaking the encapsulation of instance variables does not need to be done in a short stack.
 

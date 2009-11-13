@@ -32,5 +32,14 @@ describe Pancake::Mixins::RequestHelper do
       foo.v[:data] = :some_data
       env[Pancake::Mixins::RequestHelper::VARS_KEY][:data].should == :some_data
     end
+
+    it "should store v as a Hashie" do
+      env = {}
+      foo = FooBar.new
+      foo.env = env
+      foo.v.should be_a_kind_of(Hashie::Mash)
+      foo.v.data = :some_data
+      foo.v.data.should == :some_data
+    end
   end
 end
