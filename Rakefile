@@ -12,10 +12,11 @@ begin
     gem.authors = ["Daniel Neighman"]
     gem.add_development_dependency "rspec"
     gem.add_dependency "usher", ">=0.5.10"
-    gem.add_dependency "extlib"
+    gem.add_development_dependency "extlib"
     gem.add_dependency "thor"
     gem.add_dependency "rack"
     gem.add_dependency "tilt", ">=0.3"
+    gem.add_dependency "hashie", ">=0.1.3"
     gem.add_dependency "mynyml-rack-accept-media-types"
     gem.require_path = 'lib'
     gem.autorequire = 'pancake'

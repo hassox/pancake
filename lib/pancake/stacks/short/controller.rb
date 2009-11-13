@@ -83,8 +83,9 @@ module Pancake
           handle_request_exception(e)
         rescue Exception => e
           if Pancake.handle_errors?
-            server_error = Errors::Server.new
+            server_error = Errors::Server.new(e.message)
             server_error.exceptions << e
+            server_error.set_backtrace e.backtrace
           else
             server_error = e
           end

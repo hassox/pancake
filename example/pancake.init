@@ -1,5 +1,0 @@
-# This file initializes this application and any mounts it may have
-class MyApp < Pancake::Stack; end
-
-MyApp.roots << Pancake.get_root(__FILE__)
-MyApp.initialize_stack

@@ -95,12 +95,14 @@ describe "stack router" do
         result.body.should include("stacked up")
       end
 
-      it "should activate the class with the activate option" do
-
-      end
-
-      it "should pass the given args to the class to create it" do
-
+      it "should provide the rack params as a Hashie" do
+        FooApp.router.add("/hashie") do |e|
+          r = Rack::Request.new(e)
+          r.params.should be_a_kind_of(Hashie::Mash)
+          Rack::Response.new("OK").finish
+        end
+        @app = FooApp.stackup
+        get "/hashie"
       end
     end
   end

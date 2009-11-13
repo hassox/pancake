@@ -255,7 +255,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_runtime_dependency(%q<usher>, [">= 0.5.10"])
-      s.add_runtime_dependency(%q<extlib>, [">= 0"])
+      s.add_development_dependency(%q<extlib>, [">= 0"])
       s.add_runtime_dependency(%q<thor>, [">= 0"])
       s.add_runtime_dependency(%q<rack>, [">= 0"])
       s.add_runtime_dependency(%q<tilt>, [">= 0.3"])

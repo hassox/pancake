@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'hashie'
 require 'extlib/class'
 require 'extlib/boolean'
 require 'extlib/module'
@@ -8,13 +9,12 @@ require 'extlib/object'
 require 'extlib/symbol'
 require 'extlib/blank'
 require "extlib/dictionary"
-require 'extlib/mash'
 require 'extlib/logger'
+require 'extlib/mash'
+require 'extlib/hash'
 require 'usher'
 require 'usher/interface/rack_interface'
 require 'tilt'
-
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 
 module Pancake
   autoload    :Logger,    "pancake/logger"

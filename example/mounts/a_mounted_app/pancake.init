@@ -1,8 +1,0 @@
-# Doesn't load the mounts here.  This is just a simple little app
-module MyMountedApp
-  class Foo
-    def self.call(env)
-      [200, {"Content-Type" => "text/html"}, "In MyMountedApp::Foo"]
-    end
-  end
-end
