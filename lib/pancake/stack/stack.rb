@@ -77,8 +77,8 @@ module Pancake
     # @api public
     def self.load_rake_tasks!(opts={})
       stackup(opts) # load the application
+      master = opts.delete(:master) # Don't get the other stacks to boot as master
       opts[:_rake_files_loaded] ||= []
-
       # For each mounted application, load the rake tasks
       self::Router.mounted_applications.each do |app|
         if app.mounted_app.respond_to?(:load_rake_tasks!)

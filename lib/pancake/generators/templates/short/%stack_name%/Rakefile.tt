@@ -22,7 +22,7 @@ end
 require File.join(File.dirname(__FILE__), "lib", "<%= stack_name %>")
 Pancake.root = Pancake.get_root(__FILE__, "lib", "<%= stack_name %>")
 THIS_STACK = <%= stack_name.camel_case %>
-<%= stack_name.camel_case %>.load_rake_tasks!
+<%= stack_name.camel_case %>.load_rake_tasks!(:master => true)
 
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
