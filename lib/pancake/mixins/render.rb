@@ -96,8 +96,8 @@ module Pancake
           view_context_before_render(view_context)
 
           out = ""
-          case with
-          when Array
+
+          if with.kind_of?(Array)
             with.each do |item|
               as.nil? ? (opts[name] = item) : (opts[as] = item)
               out << view_context.render(template, opts)
