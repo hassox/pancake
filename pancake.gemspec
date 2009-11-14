@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
      "lib/pancake/generators/templates/common/dotgitignore",
      "lib/pancake/generators/templates/common/dothtaccess",
      "lib/pancake/generators/templates/micro/%stack_name%/%stack_name%.rb.tt",
+     "lib/pancake/generators/templates/micro/%stack_name%/Rakefile.tt",
      "lib/pancake/generators/templates/micro/%stack_name%/config.ru.tt",
      "lib/pancake/generators/templates/micro/%stack_name%/pancake_init.rb.tt",
      "lib/pancake/generators/templates/micro/%stack_name%/public/.empty_directory",
