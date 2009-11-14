@@ -42,4 +42,13 @@ describe Pancake::Mixins::RequestHelper do
       foo.v.data.should == :some_data
     end
   end
+
+  describe "configuration" do
+    it "should get the configuraiton from the env" do
+      env = { Pancake::Router::CONFIGURATION_KEY => "konfig"}
+      foo = FooBar.new
+      foo.env = env
+      foo.configuration.should == "konfig"
+    end
+  end
 end

@@ -1,5 +1,6 @@
 module Pancake
   class Stack
+    inheritable_inner_classes :Configuration
 
     class Configuration < Pancake::Configuration::Base
     end
@@ -28,7 +29,7 @@ end # Pancake
 # Setup the default configuration for each stack
 class Pancake::Stack::Configuration
   default :router, lambda{ _router }, "The router for this stack"
-  
+
   def _router
     @_router ||= begin
       unless stack.nil?
@@ -38,7 +39,7 @@ class Pancake::Stack::Configuration
         r.configuration = self
         r
       end
-                   
+
     end
   end
 end

@@ -18,6 +18,11 @@ module Pancake
       end
       alias_method :v, :vars
 
+      # Get the configuration for this request.  This will be updated as the request makes its way through the stacks
+      def configuration
+        request.env[Pancake::Router::CONFIGURATION_KEY]
+      end
+
       # Generate a url for the current stacks router.
       #
       # @example
@@ -39,8 +44,7 @@ module Pancake
       # @api public
       # @author Daniel Neighman
       def url(name, opts = {})
-        konfig = request.env[Pancake::Router::CONFIGURATION_KEY]
-        konfig.router.generate(name, opts)
+        configuration.router.generate(name, opts)
       end
 
       # Generate the base url for the router that got you to this point.
@@ -64,8 +68,7 @@ module Pancake
       #  @api public
       #  @author Daniel Neighman
       def base_url(opts={})
-        konfig = request.env[Pancake::Router::CONFIGURATION_KEY]
-        konfig.router.base_url(opts)
+        configuration.router.base_url(opts)
       end
 
       # Generate a url for any registered configuration with a router
