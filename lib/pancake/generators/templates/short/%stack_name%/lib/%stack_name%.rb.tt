@@ -1,3 +1,4 @@
+require 'pancake'
 class <%= stack_name.camel_case %> < Pancake::Stacks::Short
   add_root(__FILE__, "<%= stack_name %>")
 
