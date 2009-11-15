@@ -18,11 +18,14 @@ module Pancake
 
 
     #Iterates the list of roots in the stack, and initializes the app found their
-    def self.initialize_stack
+    def self.initialize_stack(opts = {})
       raise "Stack root not set" if roots.empty?
-
+      master = opts.delete(:master)
+      set_as_master! if master
       # Run any :init level bootloaders for this stack
       self::BootLoader.run!(:stack_class => self, :only => {:level => :init})
+      # Pick up any new stacks added during the boot process.
+      set_as_master! if master
 
       @initialized = true
     end # initiailze stack
@@ -44,7 +47,10 @@ module Pancake
 
     def initialize(app = nil, opts = {})
       @app_name = opts.delete(:app_name) || self.class
-      self.class.initialize_stack unless self.class.initialized?
+
+      master = opts.delete(:master)
+      self.class.initialize_stack(:master => master) unless self.class.initialized?
+      self.class.set_as_master! if master
       Pancake.configuration.stacks[@app_name] = self
 
       # setup the configuration for this stack
@@ -124,6 +130,16 @@ module Pancake
       router.mounted_applications.each do |s|
         if s.mounted_app.respond_to?(:symlink_public_files!)
           s.mounted_app.symlink_public_files!
+        end
+      end
+    end
+
+    # Sets this as a master stack.  This means that the "master" directory will be added to all existing stack roots
+    def self.set_as_master!
+      # Want to add master to the roots for this stack only
+      roots.dup.each do |root|
+        unless root =~ /master\/?$/
+          roots << File.join(root, 'master')
         end
       end
     end
