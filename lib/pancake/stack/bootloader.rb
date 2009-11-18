@@ -15,6 +15,15 @@ end # Pancake
 # :level => :init bootloaders only have the stack class available
 # They do not have :stack available
 # These are not run directly, but are run from inherited stacks
+
+Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
+  def run!
+    stack_class.roots.each do |root|
+      stack_class.paths_for(:config).each{|f| require f.join}
+    end
+  end
+end
+
 Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   def run!
     # Mount any stacks this stack may have in it.
@@ -24,13 +33,6 @@ Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   end
 end
 
-Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
-  def run!
-    stack_class.roots.each do |root|
-      stack_class.paths_for(:config).each{|f| require f.join}
-    end
-  end
-end
 
 Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
   def run!
