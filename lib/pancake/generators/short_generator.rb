@@ -10,9 +10,6 @@ module Pancake
         template  File.join(self.class.source_root, "common/dotgitignore"), "#{stack_name}/.gitignore"
         template  File.join(self.class.source_root, "common/dothtaccess"),  "#{stack_name}/lib/#{stack_name}/public/.htaccess"
 
-        inside("#{stack_name}/lib/#{stack_name}/script") do
-          run 'chmod +x console'
-        end
       end
 
 
