@@ -123,6 +123,11 @@ describe "stack router" do
       Pancake.url(FooApp, :simple).should == "/simple/route"
     end
 
+    it "should generate a / when / is optional" do
+      FooApp.router.add("(/)").name(:foo)
+      Pancake.url(FooApp, :foo).should == "/"
+    end
+
     it "should allow me to generate a non-named route for a stack" do
       Pancake.url(FooApp, :complex, :var => "a_variable").should == "/complex/a_variable"
     end

@@ -131,7 +131,9 @@ module Pancake
       else
         name = name_or_path
       end
-      generate(name, options)
+      u = generate(name, options)
+      return u if u.nil?
+      u.empty? ? "/" : u
     end
 
     def base_url(opts = {})
