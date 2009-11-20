@@ -44,7 +44,7 @@ module Pancake
       # @api public
       # @author Daniel Neighman
       def url(name, opts = {})
-        configuration.router.generate(name, opts)
+        configuration.router.url(name, opts)
       end
 
       # Generate the base url for the router that got you to this point.
