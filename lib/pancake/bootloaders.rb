@@ -71,6 +71,12 @@ module Pancake
       _bootloaders[name]
     end
 
+    # Provides removal of a bootloader, by replacing it as an empty lambda
+    # :api: public
+    def delete(name)
+      !!self[name] && _bootloaders[name] = lambda{}
+    end
+
     # Add a bootloader.  Inside the block we're inside a class definition.
     # Requirements: define a +run!+ method
     #

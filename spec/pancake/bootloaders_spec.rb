@@ -30,6 +30,14 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader[:my_initializer].should inherit_from(Pancake::BootLoaderMixin::Base)
   end
 
+  it "should allow me to remove a bootloader from another bootloader" do
+    FooStack::BootLoader.add(:foo){ def run!; $captures << :foo; end}
+    FooStack::BootLoader.add(:bar){ def run!; FooStack::BootLoader.delete(:removed); end }
+    FooStack::BootLoader.add(:removed){ def run!; $captures << :removed; end}
+    FooStack.new
+    $captures.should == [:foo]
+  end
+  
   it "should allow me to add multiple boot loaders" do
     FooStack::BootLoader.add(:foo){ def run!; :foo; end}
     FooStack::BootLoader.add(:bar){ def run!; :bar; end}
