@@ -115,6 +115,12 @@ module Pancake
         define_published_action(:delete, path, opts, block)
       end
 
+      # Matches any method to the route
+      # @api public
+      def self.any(path, opts={}, &block)
+        define_published_action(:any, path, opts, block)
+      end
+
       private
       # Defines an action on the inner Controller class of this stack.
       # Also sets it as published if it's not already published.
@@ -129,7 +135,6 @@ module Pancake
 
         action_name = controller_method_name(method,path)
         attach_action(action_name, block)
-
         attach_route(method, path, action_name, opts)
       end
 
@@ -156,7 +161,7 @@ module Pancake
       def self.attach_route(method, path, action_name, options)
         name = options.delete(:_name)
         options[:conditions] ||= {}
-        options[:conditions][:request_method] = method.to_s.upcase
+        options[:conditions][:request_method] = method.to_s.upcase unless method == :any
         options[:default_values] ||= {}
         options[:default_values][:action] = action_name
         r = router.add(path, options)

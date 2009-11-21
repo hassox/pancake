@@ -41,6 +41,10 @@ describe Pancake::Stacks::Short, "routes" do
         "delete - bar"
       end
 
+      any "/any/foo" do
+        "any - foo"
+      end
+
       get "/baz/:var(/:date)" do
         "done: var == #{params[:var]} : date == #{params[:date]}"
       end.name(:baz)
@@ -81,6 +85,14 @@ describe Pancake::Stacks::Short, "routes" do
     result = get "/baz/hassox/2009-08-21"
     result.status.should == 200
     result.body.should == "done: var == hassox : date == 2009-08-21"
+  end
+
+  it "should handle the any request method" do
+    [:get, :post, :put, :delete].each do |meth|
+      result = self.send(meth, "/any/foo")
+      result.status.should == 200
+      result.body.should == "any - foo"
+    end
   end
 
   describe "url generation" do
