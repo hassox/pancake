@@ -116,6 +116,7 @@ module Pancake
     # @api private
     def self.reset_mime_types!
       # Setup the mime types based on the rack mime types
+      Type.new("any")
       Rack::Mime::MIME_TYPES.each do |ext, type|
         ext =~ /\.(.*)$/
         e = $1
@@ -166,9 +167,22 @@ module Pancake
       accepted_type = nil
 
       if accepted_types.include?("*/*")
-        name = provided.first
+        if provided.include?(:any)
+          name = :any
+          if at = accepted_types.detect{|t| t != "*/*"}
+            at
+          elsif t = provided.detect{|a| a != :any}
+            at = group(t).first.type_strings.first
+          else
+            at = "text/html"
+          end
+        else
+          name = provided.first
+          accepted_type = group(name).first
+          at = accepted_type.type_strings.first
+        end
         accepted_type = group(name).first
-        negotiated_accept_types[key] = [name, accepted_type.type_strings.first, accepted_type]
+        negotiated_accept_types[key] = [name, at, accepted_type]
         return negotiated_accept_types[key]
       end
 
@@ -177,14 +191,23 @@ module Pancake
         provided.flatten.each do |name|
           accepted_type = match_content_type(at, name)
           if accepted_type
+            if name == :any
+              if at = accepted_types.detect{|a| a != "*/*"}
+                return [name, at, accepted_type]
+              elsif at = provided.flatten.detect{|p| p != :any}
+                return [name, at.type_strings.first, accepted_type]
+              else
+                return [name, "text/html", accept_type]
+              end
+            end
             at = accepted_type.type_strings.first if at == "*/*"
             if accepted_types.join.size > 4096
-              # Don't save the key if it's larger than 4 k.
-              # This could hit a dos attack if it's repeatedly hit
-              # with anything large
-              negotiated_accept_types[key] = [name, at, accepted_type]
-            end
-            return [name, at, accepted_type]
+            # Don't save the key if it's larger than 4 k.
+            # This could hit a dos attack if it's repeatedly hit
+            # with anything large
+            negotiated_accept_types[key] = [name, at, accepted_type]
+          end
+          return [name, at, accepted_type]
           end
         end
       end
@@ -213,6 +236,13 @@ module Pancake
 
       result = nil
       provided.each do |name|
+        if name == :any
+          at = group(ext.to_sym).first
+          return nil if at.nil?
+          result = [name, at.type_strings.first, at]
+          negotiated_accept_types[key] = result
+          return result
+        end
         group(name).each do |type|
           if type.extension == ext
             result = [name, type.type_strings.first, type]
@@ -249,7 +279,11 @@ module Pancake
     # @api private
     def self.match_content_type(accept_type, key)
       group(key).detect do |t|
-        t.type_strings.include?(accept_type) || accept_type == "*/*"
+        if key == :any
+          true
+        else
+          t.type_strings.include?(accept_type) || accept_type == "*/*"
+        end
       end
     end
 

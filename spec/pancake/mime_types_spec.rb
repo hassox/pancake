@@ -166,12 +166,44 @@ describe Pancake::MimeTypes do
     end
 
     it "should use */* if avaiable" do
-      # safari uses application/xml first
       accept_type = "application/xml,*/*"
       group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :html, :xml)
       at.should == "text/html"
       group.should == :html
       r.should_not be_nil
+    end
+
+    describe "matching on :any" do
+      it "should use match :any for a request" do
+        accept_type = "text/xml,*/*"
+        group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_type, :any)
+        group.should == :any
+        at.should == "text/xml"
+        r.should_not be_nil
+      end
+
+      it "should match :any for a request with a defualt given" do
+        accept_types = "*/*"
+        group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_types, :any, :json)
+        group.should == :any
+        at.should == "application/json"
+        r.should_not be_nil
+      end
+
+      it "should allow a specified mime type when a default is set" do
+        accept_types = "text/plain"
+        group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_types, :any, :json)
+        group.should == :any
+        at.should == "text/plain"
+        r.should_not be_nil
+      end
+
+      it "should match text/html for a request with only */* with no default" do
+        accept_types = "*/*"
+        group, at, r = Pancake::MimeTypes.negotiate_accept_type(accept_types, :any)
+        at.should == "text/html"
+        group.should == :any
+      end
     end
 
     it "should return nil if there is no matching class" do
@@ -227,6 +259,13 @@ describe Pancake::MimeTypes do
       group.should be_nil
       at.should be_nil
       r.should be_nil
+    end
+
+    it "should negotiate when any by extension" do
+      group, at, r = Pancake::MimeTypes.negotiate_by_extension("xml", :any)
+      group.should == :any
+      at.should == "application/xml"
+      r.should_not be_nil
     end
 
   end
