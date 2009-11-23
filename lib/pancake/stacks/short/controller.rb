@@ -96,7 +96,7 @@ module Pancake
           @content_type
         end
 
-        def log_http_errors?(error)
+        def log_http_error?(error)
           true
         end
 
