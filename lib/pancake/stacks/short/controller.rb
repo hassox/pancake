@@ -76,7 +76,7 @@ module Pancake
           end
 
         rescue Errors::HttpError => e
-          if logger
+          if logger && log_http_error?(e)
             logger.error "Exception: #{e.message}"
             logger.error e.backtrace.join("\n")
           end
@@ -94,6 +94,10 @@ module Pancake
 
         def content_type
           @content_type
+        end
+
+        def log_http_errors?(error)
+          true
         end
 
         def self.handle_exception(&block)
