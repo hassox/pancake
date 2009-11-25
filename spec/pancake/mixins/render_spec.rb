@@ -36,6 +36,17 @@ describe Pancake::Mixins::Render do
     @render.render(:haml_template).chomp.should == "IN HAML"
   end
 
+  it "should provide me with a template from the class" do
+    template = RenderSpecClass.template(:haml_template)
+    template.should be_a_kind_of(Pancake::Mixins::Render::Template)
+  end
+
+  it "should allow me to set the format for a given template" do
+    template = RenderSpecClass.template(:erb_template, :format => :json)
+    template.should be_a_kind_of(Pancake::Mixins::Render::Template)
+    template.name.should == "erb_template.json"
+  end
+
   it "should render erb" do
     @render.render(:erb_template).should == "IN ERB"
   end

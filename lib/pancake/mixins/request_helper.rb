@@ -102,7 +102,7 @@ module Pancake
       # An accessor for the rack environment variable
       # @api public
       def env
-        @env
+        @env ||= {}
       end
 
       # A handy request method that gets hold of the current request

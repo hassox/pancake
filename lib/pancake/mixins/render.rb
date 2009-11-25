@@ -61,6 +61,21 @@ module Pancake
           [_find_template(template), _find_view_context_class_for(template)]
         end
 
+        def _template_name_for(name, opts = {})
+          opts[:format] ||= :html
+          "#{name}.#{opts[:format]}"
+        end
+
+        def template(name_or_template, opts = {})
+          case name_or_template
+          when String, Symbol
+            _find_template(_template_name_for(name_or_template, opts))
+          when Template
+            name_or_template
+          else
+            nil
+          end
+        end
 
       end # ClassMethods
 
@@ -109,16 +124,48 @@ module Pancake
           out
         end
 
-        def template(name_or_template)
-          case name_or_template
-          when String, Symbol
-            self.class._find_template(_template_name_for(name_or_template, {}))
-          when Template
-            name_or_template
-          else
-            nil
-          end
+        def template(name_or_template, opts = {})
+          opts[:format] ||= content_type
+          self.class.template(name_or_template, opts)
         end
+
+
+        def negotiate_content_type!(*allowed_types)
+          return content_type if content_type
+
+          allowed_types = allowed_types.flatten
+          opts = allowed_types.pop if allowed_types.last.kind_of?(Hash)
+          if opts[:format]
+            cont, ct, mt = Pancake::MimeTypes.negotiate_by_extension(opts[:format].to_s, allowed_types)
+          else
+            env["HTTP_ACCEPT"] ||= "*/*"
+            cont, ct, mt = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], allowed_types)
+          end
+
+          raise Errors::NotAcceptable unless cont
+
+          headers["Content-Type"] = ct
+          self.mime_type    = mt
+          self.content_type = cont
+          cont
+        end
+
+        def content_type
+          env['pancake.request.format']
+        end
+
+        def content_type=(format)
+          env['pancake.request.format'] = format
+        end
+
+        def mime_type
+          env['pancake.request.mime']
+        end
+
+        def mime_type=(mime)
+          env['pancake.request.mime'] = mime
+        end
+
 
 
         # A place holder method for any implementor that wants
@@ -130,9 +177,9 @@ module Pancake
         end
 
         private
-        def _template_name_for(name, opts)
-          opts[:format] ||= params[:format] || :html
-          "#{name}.#{opts[:format]}"
+        def _template_name_for(name, opts = {})
+          opts[:format] ||= params[:format] || content_type
+          self.class._template_name_for(name, opts)
         end
 
         def _partial_template_name_for(name, opts)

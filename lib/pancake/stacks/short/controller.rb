@@ -52,18 +52,10 @@ module Pancake
           raise Errors::NotFound, "No Action Found" unless allowed_action?(params["action"])
 
           @action_opts  = actions[params["action"]]
-          if params[:format]
-            @content_type, ct, @mime_type = Pancake::MimeTypes.negotiate_by_extension(params[:format].to_s, @action_opts.formats)
-          else
-            @content_type, ct, @mime_type = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], @action_opts.formats)
-          end
 
-          raise Errors::NotAcceptable unless @content_type
+          negotiate_content_type!(@action_opts.formats, params)
 
           logger.info "Dispatching to #{params["action"].inspect}" if logger
-
-          # set the response header
-          headers["Content-Type"] = ct
 
           result = catch(:halt){ self.send(params['action']) }
           case result
@@ -90,10 +82,6 @@ module Pancake
             server_error = e
           end
           handle_request_exception(server_error)
-        end
-
-        def content_type
-          @content_type
         end
 
         def log_http_error?(error)
@@ -125,9 +113,14 @@ module Pancake
           stack_class.roots
         end
 
-        def _tempate_name_for(name, opts)
-          opts[:format] ||= content_type
+        def self._template_name_for(name, opts)
+          opts[:format] ||= :html
           "#{name}.#{opts[:format]}"
+        end
+
+        def _tempate_name_for(name, opts = {})
+          opts[:format] ||= content_type
+          self.class._template_name_for(name, opts)
         end
       end # Controller
 

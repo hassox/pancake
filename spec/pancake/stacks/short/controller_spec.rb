@@ -7,6 +7,7 @@ describe Pancake::Stacks::Short::Controller do
       add_root(__FILE__)
       add_root(File.expand_path(File.dirname(__FILE__)), "..", "fixtures", "stacks", "short", "foobar")
       class Controller
+
         def do_dispatch!
           dispatch!
         end

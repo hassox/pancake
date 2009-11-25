@@ -12,9 +12,14 @@ describe Pancake::Mixins::Render::ViewContext do
         @env = env
       end
 
-      def _template_name_for(name, opts)
+      def self._template_name_for(name, opts)
         "#{name}"
       end
+
+      def _template_name_for(name, opts)
+        self.class._template_name_for(name, opts)
+      end
+
       push_paths :views, "", "**/*"
 
       roots << File.join(File.expand_path(File.dirname(__FILE__)),"..","..", "fixtures", "render_templates", "view_context")
