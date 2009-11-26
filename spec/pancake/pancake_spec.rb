@@ -89,12 +89,14 @@ describe "pancake" do
   end
 
   describe "master stack" do
-    before(:all) do
-      @b4 = Pancake.master_stack
+    before do
+      @b4   = Pancake.master_stack
+      @tb4  = Pancake.master_templates
     end
 
-    after(:all) do
+    after do
       Pancake.master_stack = @b4
+      Pancake.master_templates = @tb4
     end
 
     it "should have a master stack" do
@@ -105,6 +107,28 @@ describe "pancake" do
       mock_stack = mock("stack", :null_object => true)
       Pancake.master_stack = mock_stack
       Pancake.master_stack.should == mock_stack
+    end
+
+    it "should provide master templates stack as the master stack" do
+      mock_stack = mock("stack", :null_object => true)
+      Pancake.master_stack = mock_stack
+      Pancake.master_templates.should == mock_stack
+    end
+
+    it "should let me overwrite the master_templates independantly of the master" do
+      mock_stack = mock("stack",    :null_object => true)
+      mock_ui    = mock("ui stack", :null_object => true)
+      Pancake.master_stack = mock_stack
+      Pancake.master_templates = mock_ui
+      Pancake.master_templates.should == mock_ui
+      Pancake.master_stack.should == mock_stack
+    end
+
+    it "should not change the master templates when updating the master" do
+      stack1 = mock("stack1", :null_object => true)
+      ui     = mock("ui",     :null_object => true)
+      Pancake.master_templates = ui
+      Pancake.master_stack = stack1
     end
   end
 end

@@ -120,12 +120,34 @@ module Pancake
       @logger = logr
     end
 
+    # The stack to use as the master stack.  Can be nil!
+    # The master stack is assumed to be the stack that is the controlling stack for the group of pancake stacks
+    # @api public
     def master_stack
       @master_stack
     end
 
+    # set the master stack.  This also sets the master_templates as this stack if that hasn't yet been set.
+    # @see Pancake.master_templates
+    # @api public
     def master_stack=(stack)
+      self.master_templates ||= stack
       @master_stack = stack
+    end
+
+    # Used as the definitive source of shared templates for the whole pancake graph.
+    # Allows different stacks to share the same templates
+    # @see Pancake.master_templates=
+    # @api public
+    def master_templates
+      @master_templates
+    end
+
+    # Set the master templates to control the default templates for the stack
+    # @see Pancake.master_templates
+    # @api public
+    def master_templates=(stack)
+      @master_templates = stack
     end
   end # self
 end # Pancake
