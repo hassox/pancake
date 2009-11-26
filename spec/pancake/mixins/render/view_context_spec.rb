@@ -3,6 +3,7 @@ require File.join(File.dirname(__FILE__), "..", "..", "..", "spec_helper")
 describe Pancake::Mixins::Render::ViewContext do
 
   before do
+    @masters = [Pancake.master_stack, Pancake.master_templates]
     $captures = []
     class ::FooBar
       include Pancake::Mixins::Render
@@ -20,9 +21,12 @@ describe Pancake::Mixins::Render::ViewContext do
 
       roots << File.join(File.expand_path(File.dirname(__FILE__)),"..","..", "fixtures", "render_templates", "view_context")
     end
+    Pancake.master_stack = FooBar
+    Pancake.master_templates = FooBar
   end
 
   after do
+    Pancake.master_stack, Pancake.master_templates = @masters
     clear_constants :FooBar, :BarFoo
   end
 
@@ -41,34 +45,6 @@ describe Pancake::Mixins::Render::ViewContext do
     it "should include the Pancake::Mixins::RequestHelper helper" do
       (Pancake::Mixins::RequestHelper > FooBar::ViewContext).should be_true
     end
-
-    #it "should allow me to setup the view context before the view is run" do
-    #  FooBar.class_eval do
-    #    def view_context_before_render(context)
-    #      super
-    #      $captures << :here
-    #    end
-    #  end
-    #  $captures.should be_blank
-    #  FooBar.new.render(:context)
-    #  $captures.should include(:here)
-    #end
-
-    #it "should execute the before render block in the instance" do
-    #  FooBar.class_eval do
-    #    def view_context_before_render(context)
-    #     super
-    #      $captures << data
-    #    end
-    #  end
-    #  foobar = FooBar.new
-    #  foobar.data = {:some => :data}
-    #  foobar.render(:context)
-    #  $captures.should include(:some => :data)
-    #  $captures.clear
-    #  FooBar.new.render(:context)
-    #  $captures.should_not include(:some => :data)
-    #end
   end
 
   describe "inheriting classes" do
@@ -249,6 +225,56 @@ describe Pancake::Mixins::Render::ViewContext do
       result.should include("nested foo content")
       result.should include("nested new bar content")
     end
+  end
+
+  describe "inheriting from a template object" do
+    before do
+      path = File.expand_path(File.join(File.dirname(__FILE__), "..", "..",  "fixtures", "render_templates", "inherit"))
+
+      class ::BarFoo
+        include Pancake::Mixins::Render
+        push_paths :views, "", "**/*"
+      end
+
+      class ::FooBar
+        def self._template_name_for(name, opts = {})
+          opts[:format] ||= :html
+          r = "#{name}.#{opts[:format]}"
+        end
+      end
+
+      FooBar.roots << File.join(path, "foo")
+      BarFoo.roots << File.join(path, "bar")
+      @app = FooBar.new({})
+      @bar = BarFoo.new
+      Pancake.master_templates = BarFoo
+    end
+
+    it "should inherit from it's own stack with a name" do
+      result = @app.render(:simple)
+      result.should include("Foo Base")
+      result.should include("Simple Foo Content")
+    end
+
+    it "should inherit from a stack, name pair" do
+      result = @app.render(:explicit)
+      result.should include("Bar Layout")
+      result.should include("Explicit Content")
+    end
+
+    it "should inherit from the pancake default using :defaults!" do
+      result = @app.render(:defaults)
+      result.should include("Bar Base")
+      result.should include("Defaults Content")
+    end
+
+    it "should use it's own base template when pancake does not have one set" do
+      Pancake.master_templates = nil
+      result = @app.render(:defaults)
+      result.should include("Foo Base")
+      result.should include("Defaults Content")
+    end
+
   end
 
   describe "partials" do

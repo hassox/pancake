@@ -77,6 +77,10 @@ module Pancake
           end
         end
 
+        def base_template_name
+          :base
+        end
+
       end # ClassMethods
 
       module InstanceMethods
@@ -128,7 +132,6 @@ module Pancake
           opts[:format] ||= content_type
           self.class.template(name_or_template, opts)
         end
-
 
         def negotiate_content_type!(*allowed_types)
           return content_type if content_type

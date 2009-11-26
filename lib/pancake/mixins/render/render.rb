@@ -72,6 +72,10 @@ module Pancake
           def _current_renderer
             @_current_renderer
           end
+
+          def content_type
+            @_view_context_for.content_type
+          end
         end # Renderer
 
         module Capture
@@ -116,7 +120,26 @@ module Pancake
             @_inherit_helper = Helper.new
           end
 
-          def inherits_from(name_or_template)
+          def inherits_from(ntos, name_or_opts = nil, opts = {})
+            name_or_template = case ntos
+            when String, Symbol
+              if ntos == :defaults!
+                begin
+                  Pancake.default_base_template(:format => content_type)
+                rescue
+                  :base
+                end
+              else
+                ntos
+              end
+            else
+              if name_or_opts.kind_of?(Hash)
+                opts = name_or_opts
+                name_or_opts = nil
+              end
+              name_or_opts ||= ntos.base_template_name
+              ntos.template(name_or_opts, opts)
+            end
             @_inherit_helper.inherits_from = name_or_template
           end
 
