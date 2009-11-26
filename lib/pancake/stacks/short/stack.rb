@@ -39,6 +39,10 @@ module Pancake
         self::Controller.class_eval{ include m }
       end
 
+      def self.template(*args)
+        self::Controller.template(*args)
+      end
+
       # Gets a resource at a given path
       #
       # The block should finish with the final result of the action

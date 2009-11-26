@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../../../spec_helper'
 describe Pancake::Stacks::Short do
 
   before do
+    @master_before = [Pancake.master_stack, Pancake.master_templates]
     $captures = []
     class ::ShortMiddle
       attr_accessor :app
@@ -34,14 +35,21 @@ describe Pancake::Stacks::Short do
     end
 
     @app = ShortFoo
+    Pancake.master_stack = ShortFoo
+    Pancake.master_templates = ShortFoo
   end
 
   after do
     clear_constants :ShortFoo, :ShortMiddle, :OtherFoo, "ShortFoo::Router"
+    Pancake.master_stack, Pancake.master_templates = @master_before
   end
 
   def app
     @app.stackup
+  end
+
+  it "should provide access through the stack interface to the templates" do
+    ShortFoo.template(:inherited_from_base).should be_an_instance_of(Pancake::Mixins::Render::Template)
   end
 
   it "should go through the middleware to get to the actions" do
