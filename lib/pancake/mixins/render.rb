@@ -178,7 +178,7 @@ module Pancake
 
         private
         def _template_name_for(name, opts = {})
-          opts[:format] ||= params[:format] || content_type
+          opts[:format] ||= content_type
           self.class._template_name_for(name, opts)
         end
 
