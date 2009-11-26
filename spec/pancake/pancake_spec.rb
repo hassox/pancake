@@ -87,4 +87,23 @@ describe "pancake" do
       Pancake.default_error_handling!
     end
   end
+
+  describe "master stack" do
+    before(:all) do
+      @b4 = Pancake.master_stack
+    end
+
+    after(:all) do
+      Pancake.master_stack = @b4
+    end
+
+    it "should have a master stack" do
+      Pancake.should respond_to(:master_stack)
+    end
+
+    it "should let me set a master stack" do
+      mock_stack = mock("stack", :null_object => true)
+      Pancake.master_stack.should = mock_stack
+    end
+  end
 end
