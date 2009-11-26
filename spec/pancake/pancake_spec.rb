@@ -130,5 +130,13 @@ describe "pancake" do
       Pancake.master_templates = ui
       Pancake.master_stack = stack1
     end
+
+    it "should provide me with the default template from the master_templates" do
+      ui = mock("ui")
+      ui.should_receive(:base_template_name).and_return(:fred)
+      ui.should_receive(:template).with(:fred).and_return(:template_fred)
+      Pancake.master_templates = ui
+      Pancake.default_base_template.should == :template_fred
+    end
   end
 end

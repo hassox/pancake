@@ -148,6 +148,11 @@ module Pancake
     def self.template(name,opts ={})
       raise Errors::NotImplemented, "Stack may not be used for templates until it implements a template method"
     end
+
+    def self.base_template_name
+      raise Errors::NotImplemented, "Stack may not be used for templates until it implements a base_template_name method"
+    end
+
     # Creates a bootloader hook(s) of the given name. That are inheritable
     # This will create hooks for use in a bootloader (but will not create the bootloader itself!)
     #

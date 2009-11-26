@@ -149,5 +149,13 @@ module Pancake
     def master_templates=(stack)
       @master_templates = stack
     end
+
+    # provides access to the default base template via the Pancake.master_templates object
+    # @see Pancake.master_templates
+    # @api public
+    def default_base_template(opts = {})
+      raise "Master Templates not set" unless master_templates
+      master_templates.template(master_templates.base_template_name)
+    end
   end # self
 end # Pancake
