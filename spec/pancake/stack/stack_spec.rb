@@ -2,13 +2,13 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "Pancake::Stack" do
   before(:each) do
-    class ::StackSpecStack < Pancake::Stack
-    end
+    class ::StackSpecStack < Pancake::Stack; end
+    class ::OtherSpecStack < Pancake::Stack; end
     StackSpecStack.roots.clear
   end
 
   after(:each) do
-    clear_constants(:StackSpecStack, :FooSpecStack)
+    clear_constants(:StackSpecStack, :FooSpecStack, :OtherSpecStack)
   end
 
   describe "roots" do
@@ -59,6 +59,14 @@ describe "Pancake::Stack" do
     end
   # end
     describe "master stack" do
+      before do
+        @b4 = Pancake.master_stack
+      end
+
+      after do
+        Pancake.master_stack = @b4
+      end
+
       it "should set the stack to be master, and include the master dir in each root" do
         StackSpecStack.add_root(__FILE__)
         before_roots = StackSpecStack.roots.dup
@@ -66,6 +74,16 @@ describe "Pancake::Stack" do
         before_roots.each do |r|
           StackSpecStack.roots.should include(File.join(r, "master"))
         end
+        Pancake.master_stack.should == StackSpecStack
+      end
+
+      it "should not set a master stack when one has already been set" do
+        StackSpecStack.add_root(__FILE__)
+        OtherSpecStack.add_root(__FILE__)
+        StackSpecStack.stackup(:master => true)
+        Pancake.master_stack.should == StackSpecStack
+        OtherSpecStack.stackup(:master => true)
+        Pancake.master_stack.should == StackSpecStack
       end
     end
 

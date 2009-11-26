@@ -119,5 +119,13 @@ module Pancake
     def logger=(logr)
       @logger = logr
     end
+
+    def master_stack
+      @master_stack
+    end
+
+    def master_stack=(stack)
+      @master_stack = stack
+    end
   end # self
 end # Pancake

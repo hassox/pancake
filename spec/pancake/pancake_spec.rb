@@ -103,7 +103,8 @@ describe "pancake" do
 
     it "should let me set a master stack" do
       mock_stack = mock("stack", :null_object => true)
-      Pancake.master_stack.should = mock_stack
+      Pancake.master_stack = mock_stack
+      Pancake.master_stack.should == mock_stack
     end
   end
 end

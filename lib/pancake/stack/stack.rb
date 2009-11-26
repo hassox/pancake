@@ -136,6 +136,7 @@ module Pancake
 
     # Sets this as a master stack.  This means that the "master" directory will be added to all existing stack roots
     def self.set_as_master!
+      Pancake.master_stack ||= self
       # Want to add master to the roots for this stack only
       roots.dup.each do |root|
         unless root =~ /master\/?$/
