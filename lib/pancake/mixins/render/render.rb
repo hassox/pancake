@@ -123,7 +123,7 @@ module Pancake
           def inherits_from(ntos, name_or_opts = nil, opts = {})
             name_or_template = case ntos
             when String, Symbol
-              if ntos == :defaults!
+              if ntos == :default!
                 begin
                   Pancake.default_base_template(:format => content_type)
                 rescue
