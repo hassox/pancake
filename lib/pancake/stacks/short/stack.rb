@@ -43,6 +43,10 @@ module Pancake
         self::Controller.template(*args)
       end
 
+      def self.base_template_name
+        self::Controller.base_template_name
+      end
+
       # Gets a resource at a given path
       #
       # The block should finish with the final result of the action

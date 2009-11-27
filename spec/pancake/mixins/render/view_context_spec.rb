@@ -155,6 +155,13 @@ describe Pancake::Mixins::Render::ViewContext do
       result.should include("inherited haml content")
     end
 
+    it "should inherit a template multiple times" do
+      result = @foo.render(:inherited_haml_level_2)
+      result.should include("inherited haml level 0")
+      result.should include("inherited haml level 1 content")
+      result.should include("inherited haml level 2 content")
+    end
+
   end
 
   describe "super blocks" do
@@ -273,6 +280,20 @@ describe Pancake::Mixins::Render::ViewContext do
       result = @app.render(:defaults)
       result.should include("Foo Base")
       result.should include("Defaults Content")
+    end
+
+    it "should inherit multiple levels to an explicit base template" do
+      result = @app.render(:from_explicit)
+      result.should include("Bar Layout")
+      result.should include("Explicit Content")
+      result.should include("From Explicit Content")
+    end
+
+    it "should inherit to an explicit layout that inherits to a scoped template" do
+      result = @app.render(:from_implicit_scope)
+      result.should include("Bar Base")
+      result.should include("Bar Implicit Scope Content")
+      result.should include("From Implicit Scope Content")
     end
 
   end

@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
-  s.date = %q{2009-11-23}
+  s.date = %q{2009-11-27}
   s.default_executable = %q{pancake-gen}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
@@ -131,6 +131,12 @@ Gem::Specification.new do |s|
      "spec/pancake/fixtures/render_templates/erb_template.json.erb",
      "spec/pancake/fixtures/render_templates/haml_template.html.haml",
      "spec/pancake/fixtures/render_templates/haml_template.xml.haml",
+     "spec/pancake/fixtures/render_templates/inherit/bar/base.html.haml",
+     "spec/pancake/fixtures/render_templates/inherit/bar/layout.html.haml",
+     "spec/pancake/fixtures/render_templates/inherit/foo/base.html.haml",
+     "spec/pancake/fixtures/render_templates/inherit/foo/defaults.html.haml",
+     "spec/pancake/fixtures/render_templates/inherit/foo/explicit.html.haml",
+     "spec/pancake/fixtures/render_templates/inherit/foo/simple.html.haml",
      "spec/pancake/fixtures/render_templates/templates/context.erb",
      "spec/pancake/fixtures/render_templates/view_context/_basic.haml",
      "spec/pancake/fixtures/render_templates/view_context/_basic.html.haml",
