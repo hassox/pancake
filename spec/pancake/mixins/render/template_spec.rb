@@ -14,31 +14,31 @@ describe Pancake::Mixins::Render::Template do
 
   describe "Creation" do
     it "should create a template with a name and a path" do
-      result = FooBar::Template.new(:context, File.join(@templates_path, "context.erb"))
+      result = FooBar::Template.new(:context, FooBar, File.join(@templates_path, "context.erb"))
       result.should_not be_nil
     end
 
     it "should raise an error when creating a template without a name" do
       lambda do
-        FooBar::Template.new(nil, File.join(@templates_path, "context.erb"))
+        FooBar::Template.new(nil, FooBar, File.join(@templates_path, "context.erb"))
       end.should raise_error(Pancake::Mixins::Render::Template::UnamedTemplate)
     end
 
     it "should raise an error when createing a template withouth a valid file name" do
       lambda do
-        FooBar::Template.new(:foo, "/not/a/real/file.erb")
+        FooBar::Template.new(:foo, FooBar, "/not/a/real/file.erb")
       end.should raise_error(Pancake::Mixins::Render::Template::NotFound)
     end
 
     it "should raise an error when it cannot create a rendering object for the file" do
       lambda do
-        FooBar::Template.new(:foo, "/not/registed")
+        FooBar::Template.new(:foo, FooBar, "/not/registed")
       end.should raise_error
     end
 
     describe "accessing information" do
       before do
-        @template = FooBar::Template.new(:context, File.join(@templates_path, "context.erb"))
+        @template = FooBar::Template.new(:context, FooBar, File.join(@templates_path, "context.erb"))
       end
 
       it "should provide access to it's name" do

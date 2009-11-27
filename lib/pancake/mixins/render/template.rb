@@ -5,10 +5,10 @@ module Pancake
         class UnamedTemplate < Pancake::Errors::NotFound; end
         class NotFound       < Pancake::Errors::NotFound; end
 
-        attr_reader :name, :path, :renderer
+        attr_reader :name, :path, :renderer, :owner
 
-        def initialize(name, path)
-          @name, @path = name, path
+        def initialize(name, owner, path)
+          @name, @owner, @path = name, owner, path
           raise UnamedTemplate unless name
           raise NotFound unless File.exists?(path)
           @renderer = Tilt.new(path)

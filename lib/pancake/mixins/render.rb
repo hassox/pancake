@@ -42,7 +42,7 @@ module Pancake
           end
 
           raise TemplateNotFound unless renderer_path
-          _template_cache[name] = Template.new(name, renderer_path.join)
+          _template_cache[name] = Template.new(name, self, renderer_path.join)
         end
 
         def _view_context_cache

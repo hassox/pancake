@@ -48,7 +48,7 @@ module Pancake
             end
 
             if @_inherit_helper.inherits_from
-              next_template = _view_context_for.template(@_inherit_helper.inherits_from)
+              next_template = template.owner.template(@_inherit_helper.inherits_from)
               @_inherit_helper.inherits_from = nil
               result = _with_renderer next_template do
                 render(next_template, opts)
