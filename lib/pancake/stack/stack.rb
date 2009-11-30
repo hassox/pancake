@@ -15,6 +15,7 @@ module Pancake
     push_paths(:router,       "config",               "router.rb")
     push_paths(:rake_tasks,   "tasks",                "**/*.rake")
     push_paths(:public,       "public",               "**/*")
+    push_paths(:mounts,       "mounts",               "*/pancake_init.rb")
 
 
     #Iterates the list of roots in the stack, and initializes the app found their

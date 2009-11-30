@@ -18,28 +18,22 @@ end # Pancake
 
 Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
   def run!
-    stack_class.roots.each do |root|
-      stack_class.paths_for(:config).each{|f| require f.join}
-    end
+    stack_class.paths_for(:config).each{|f| require f.join}
   end
 end
 
 Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   def run!
     # Mount any stacks this stack may have in it.
-    stack_class.roots.each do |root|
-      Dir["#{root}/mounts/*/pancake_init.rb"].each{|f| load f if File.exists?(f)}
-    end
+    stack_class.paths_for(:mounts).each{|f| require f}
   end
 end
 
 
 Pancake::Stack::BootLoader.add(:load_application, :level => :init) do
   def run!
-    stack_class.roots.each do |root|
-      [:models, :controllers].each do |type|
-        stack_class.paths_for(type).each{|f| require f.join}
-      end
+    [:models, :controllers].each do |type|
+      stack_class.paths_for(type).each{|f| require f.join}
     end
   end
 end
@@ -57,9 +51,7 @@ end
 
 Pancake::Stack::BootLoader.add(:load_routes, :level => :init) do
   def run!
-    stack_class.roots.each do |root|
-      stack_class.paths_for(:router).each{|f| require f.join}
-    end
+    stack_class.paths_for(:router).each{|f| require f.join}
   end
 end
 
