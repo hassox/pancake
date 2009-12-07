@@ -37,7 +37,7 @@ module Pancake
   # @see http://github.com/joshbuddy/usher
   # @since 0.1.2
   # @author Daniel Neighman
-  class Router < Usher::Interface::RackInterface
+  class Router < Usher::Interface::Rack
     attr_writer :router
 
     CONFIGURATION_KEY = "pancake.request.configuration".freeze
@@ -113,7 +113,7 @@ module Pancake
     end
 
     # Adds a route to the router.
-    # @see Usher::Interface::RackInterface#add
+    # @see Usher::Interface::Rack#add
     def add(path, opts = {}, &block)
       opts = cooerce_options_to_usher(opts)
       route = super(path, opts)
@@ -162,7 +162,7 @@ module Pancake
       opts
     end
 
-    # Overwrites the method in Rack::Interface::RackInterface to mash
+    # Overwrites the method in Rack::Interface::Rack to mash
     # the usher.params into the rack request.params
     # @api private
     def after_match(request, response)

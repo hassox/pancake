@@ -13,7 +13,7 @@ require 'extlib/logger'
 require 'extlib/mash'
 require 'extlib/hash'
 require 'usher'
-require 'usher/interface/rack_interface'
+require 'usher/interface/rack'
 require 'tilt'
 
 module Pancake
