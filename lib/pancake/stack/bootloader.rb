@@ -25,7 +25,7 @@ end
 Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   def run!
     # Mount any stacks this stack may have in it.
-    stack_class.paths_for(:mounts).each{|f| require f}
+    stack_class.paths_for(:mounts).each{|f| require f.join}
   end
 end
 
