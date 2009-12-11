@@ -74,7 +74,7 @@ module Pancake
     # Provides removal of a bootloader, by replacing it as an empty lambda
     # :api: public
     def delete(name)
-      !!self[name] && _bootloaders[name] = lambda{}
+      !!self[name] && _bootloaders[name] = nil
     end
 
     # Add a bootloader.  Inside the block we're inside a class definition.
@@ -125,6 +125,7 @@ module Pancake
       options[:stack_class] ||= stack
 
       each(conditions) do |name, bl|
+        next if bl.nil?
         bl.call(options)
       end
     end

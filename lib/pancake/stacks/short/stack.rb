@@ -170,8 +170,7 @@ module Pancake
         name = options.delete(:_name)
         options[:conditions] ||= {}
         options[:conditions][:request_method] = method.to_s.upcase unless method == :any
-        options[:default_values] ||= {}
-        options[:default_values][:action] = action_name
+        options[:action] ||= action_name
         r = router.add(path, options)
         r.name(name) if name
         r

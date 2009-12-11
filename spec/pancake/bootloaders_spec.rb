@@ -35,9 +35,10 @@ describe "Pancake::Stack::BootLoader" do
     FooStack::BootLoader.add(:bar){ def run!; FooStack::BootLoader.delete(:removed); end }
     FooStack::BootLoader.add(:removed){ def run!; $captures << :removed; end}
     FooStack.new
+
     $captures.should == [:foo]
   end
-  
+
   it "should allow me to add multiple boot loaders" do
     FooStack::BootLoader.add(:foo){ def run!; :foo; end}
     FooStack::BootLoader.add(:bar){ def run!; :bar; end}
