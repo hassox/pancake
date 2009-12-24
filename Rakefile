@@ -13,7 +13,7 @@ begin
     gem.add_development_dependency "rspec"
     gem.add_dependency "usher", ">=0.5.10"
     gem.add_development_dependency "extlib"
-    gem.add_dependency "thor"
+    gem.add_development_dependency "thor"
     gem.add_dependency "rack"
     gem.add_dependency "tilt", ">=0.3"
     gem.add_dependency "hashie", ">=0.1.4"
