@@ -28,7 +28,9 @@ module Pancake
         end
 
         if static_file
-          Rack::Response.new(File.open(static_file)).finish
+          Rack::Response.new(File.open(static_file), 200, {
+            'Content-Type' => Rack::Mime.mime_type(File.extname(static_file))
+          }).finish
         else
           app.call(env)
         end
