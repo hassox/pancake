@@ -35,7 +35,7 @@ class Pancake::Stack::Configuration
       unless stack.nil?
         r = stack.router.dup
         r.configuration = self
-        r.app = app
+        r.default(app)
         r.configuration = self
         r
       end
