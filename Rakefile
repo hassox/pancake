@@ -11,7 +11,7 @@ begin
     gem.homepage = "http://github.com/hassox/pancake"
     gem.authors = ["Daniel Neighman"]
     gem.add_development_dependency "rspec"
-    gem.add_dependency "usher", ">=0.5.10"
+    gem.add_dependency "usher", ">=0.6.4"
     gem.add_development_dependency "extlib"
     gem.add_development_dependency "thor"
     gem.add_dependency "rack"
