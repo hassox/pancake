@@ -1,4 +1,5 @@
 require 'thor'
+require 'thor/group'
 require 'extlib'
 
 require File.join(File.dirname(__FILE__), "generators", "base.rb")

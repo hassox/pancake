@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'thor'
+require 'thor/group'
 require 'thor/runner'
 require 'pancake/generators'
 
