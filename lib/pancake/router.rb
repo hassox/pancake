@@ -166,6 +166,7 @@ module Pancake
     # the usher.params into the rack request.params
     # @api private
     def after_match(request, response)
+      request.env['rack.request.query_hash'] = request.params.dup
       super
       consume_path!(request, response) if !response.partial_match? && response.path.route.consuming
       request.params.merge!(request.env['usher.params']) unless request.env['usher.params'].empty?

@@ -1,0 +1,13 @@
+h1. TODO
+
+* Port to active support (minimal) & remove extlib
+* Simplify middleware stacks to use TSort and remove conditional inclusion
+** add (default, after and before)
+** remove
+** replace
+** configure
+* Incorporate url_mount (or simliar) into the router for open route mounting
+* Port View context over to use any_view
+* Write Layouter middleware (as seperate gem)
+* Add before / after filters to short stack
+* Add development bundler support (And to .gemspec)

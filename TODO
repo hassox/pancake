@@ -1,7 +1,0 @@
-TODO:
-
-* Add default middleware to the short stack
-* Add before/after filters to the short stack
-* move the mount apps bootloader to after the before_build_stack bootloader which will allow us to mount application later and allow devs to add new things just before building the stack.
-* optimise template lookup
-
