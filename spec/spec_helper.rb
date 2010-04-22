@@ -11,6 +11,7 @@ require 'json'
 ENV['RACK_ENV'] = "test"
 
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
 require 'pancake'
 
 Dir[File.join(File.dirname(__FILE__), "helpers", "**/*.rb")].each{|f| require f}

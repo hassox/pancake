@@ -98,10 +98,10 @@ module Pancake
           end
 
           def _erb_capture(block)
-            _out_buf, @_out_buf = @_out_buf, ""
+            _out_buf, @_erbout = @_erbout, ""
             block.call
-            ret = @_out_buf
-            @_out_buf = _out_buf
+            ret = @_erbout
+            @_erbout = _out_buf
             ret
           end
 
@@ -110,7 +110,7 @@ module Pancake
           end
 
           def _erb_concat(string)
-            @_out_buf << string
+            @_erbout << string
           end
         end # Capture
 
