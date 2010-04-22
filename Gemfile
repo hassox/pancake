@@ -1,14 +1,19 @@
 source :rubygems
 
-gem 'usher'
+gem 'usher',    '0.7.1'
 gem 'rack',     '~> 1.1'
+gem 'extlib',   '0.9.14'
 gem 'rack-test'
 gem 'hashie'
-gem 'extlib'
 gem 'tilt',     '~> 0.9'
 gem 'rack-accept-media-types'
+gem 'json'
 
-gem 'rake', :require => false
+gem 'thor', :require => false
+
+group(:development) do
+  gem 'rake', :require => false
+end
 
 group(:test) do
   gem 'rspec'
