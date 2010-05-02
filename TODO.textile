@@ -1,6 +1,18 @@
 h1. TODO
 
 * Port to active support (minimal) & remove extlib
-* Simplify middleware stacks to use TSort
+* Simplify middleware implementation to use TSort
 * Incorporate url_mount (or simliar) into the router for open route mounting
 * Add before / after filters to short stack
+* Provide a streamlined way to specify middleware in an application
+* Create a syrup gem that configures some basic middlewares
+** Provide a way to turn middleware on and off
+** Possible inclusions:
+*** Wrapt
+*** Compass
+*** ESI
+* Remove automatic asset path namespacing
+* Reduce complexity of bootloaders
+* Proivde easy to use hooks in the bootloaders
+* Add a to_s method on the configuration so that configuation may be easily interrogated
+* Add an example into the generated applications showing how to add mime types
