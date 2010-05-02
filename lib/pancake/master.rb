@@ -19,8 +19,7 @@ module Pancake
     # @api public
     # @author Daniel Neighman
     def start(opts, &block)
-      raise "You must specify a root directory for pancake" unless opts[:root]
-      self.root = opts[:root]
+      self.root = opts[:root] || Dir.pwd
 
       # Build Pancake
       the_app = instance_eval(&block)
