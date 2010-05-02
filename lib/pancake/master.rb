@@ -45,52 +45,15 @@ module Pancake
       File.expand_path(File.join(File.dirname(file), *args))
     end
 
-    # Labels that specify what kind of stack you're intending on loading.
-    # This is a simliar concept to environments but it is in fact seperate conceptually.
-    #
-    # The reasoning is that you may want to use a particular stack type or types.
-    # By using stack labels, you can define middleware to be active.
-    #
-    # @example
-    #   Pancake.stack_labels == [:development, :demo]
-    #
-    #   # This would activate middleware marked with :development or :demo or the implicit :any label
-    #
-    # @return [Array<Symbol>]
-    #   An array of labels to activate
-    #   The default is [:production]
-    # @see Pancake.stack_labels= to set the labels for this stack
-    # @see Pancake::Middleware#stack to see how to specify middleware to be active for the given labels
-    # @api public
-    # @author Daniel Neighman
-    def stack_labels
-      return @stack_labels unless @stack_labels.nil? || @stack_labels.empty?
-      self.stack_labels = [:production]
-    end
-
-    # Sets the stack labels to activate the associated middleware
-    #
-    # @param [Array<Symbol>, Symbol] An array of labels or a single label, specifying the middlewares to activate
-    #
-    # @example
-    #   Pancake.stack_labels = [:demo, :production]
-    #
-    # @see Pancake.stack_labels
-    # @see Pancake::Middleware#stack
-    # @api public
-    # @author Daniel Neighman
-    def stack_labels=(*labels)
-      @stack_labels = labels.flatten.compact
-    end
 
     def handle_errors!(*args)
       @handle_errors = begin
-                         if args.size > 1
-                           args.flatten
-                         else
-                           args.first
-                         end
-                      end
+        if args.size > 1
+          args.flatten
+        else
+          args.first
+        end
+      end
     end
 
     def handle_errors?

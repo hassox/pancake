@@ -47,21 +47,15 @@ module Pancake
 
     # @param [Array<Symbol>] labels An array of labels specifying the stack labels to use to build the middlware list
     #
-    # @example
-    #   MyApp.middlewares(:production) # provides all middlewares matching the :production label, or the implicit :any label
-    #   MyApp.middlewares(:development, :demo) # provides all middlewares matching the :development or :demo or implicit :any label
-    #
     # @return [Array<StackMiddleware>]
     #   An array of middleware specifications in the order they should be used to wrap the application
     #
     # @see Pancake::Middleware::StackMiddleware
-    # @see Pancake.stack_labels for a decription of stack_labels
     # @api public
     # @since 0.1.0
     # @author Daniel Neighman
-    def middlewares(*labels)
-      labels = labels.flatten
-      self::StackMiddleware.middlewares(*labels)
+    def middlewares
+      self::StackMiddleware.middlewares
     end
 
     # Useful for adding additional information into your middleware stack  definition
@@ -70,8 +64,6 @@ module Pancake
     #   The name of a given middleware.  Each piece of middleware has a name in the stack.
     #   By naming middleware we can refer to it later, swap it out for a different class or even just remove it from the stack.
     # @param        [Hash] opts An options hash
-    # @option opts  [Array<Symbol>] :labels ([:any])
-    #   An array of symbols, or a straight symbol that defines what stacks this middleware sould be active in
     # @option opts [Object] :before
     #   Sets this middlware to be run after the middleware named.  Name is either the name given to the
     #   middleware stack, or the Middleware class itself.
@@ -100,15 +92,6 @@ module Pancake
     #
     # This middleware will be named :foo and will be run after the middleware named :bar
     # If :bar is not run, :foo will not be run either
-    #
-    # @example Declaring a named middleware with some labels
-    #   MyClass.stack(:foo, :lables => [:demo, :production, :staging]).use(MyMiddleware)
-    #
-    # This middleware will only be run when pancake is set with the :demo, :production or :staging labels
-    #
-    # @example A full example
-    #   MyClass.stack(:foo, :labels => [:staging, :development], :after => :session).use(MyMiddleware)
-    #
     #
     # @see Pancake::Middleware#use
     # @api public
@@ -186,17 +169,7 @@ module Pancake
           _after.clear
         end
 
-        # Get the middleware list for this StackMiddleware for the given labels
-        #
-        # @param [Symbol] labels The label or list of labels to construct a stack from.
-        #
-        # @example Specified labels
-        #   MyClass::StackMiddleware.middlewares(:production, :demo)
-        #
-        # @example No Labels Specified
-        #   MyClass::StackMiddleware.middlewares
-        #
-        # This will include all defined middlewares in the given stack
+        # Get the middleware list for this StackMiddleware
         #
         # @return [Array<StackMiddleware>]
         #   An array of the middleware definitions to use in the order that they should be applied
@@ -207,39 +180,29 @@ module Pancake
         # @api public
         # @since 0.1.0
         # @author Daniel Neighman
-        def middlewares(*labels)
+        def middlewares
           _central_mwares.map do |name|
-            map_middleware(name, *labels)
+            map_middleware(name)
           end.flatten
         end
 
         # Map the middleware for a given <name>ed middleware.  Applies the before and after groups of middlewares
         #
         # @param [Object] name    The name of the middleware to map the before and after groups to
-        # @param [Symbol] labels  A label or list of labels to use to construct the middleware stack
-        #
-        # @example
-        #   MyClass::StackMiddleware.map_middleware(:foo, :production, :demo)
-        #
-        # Constructs the middleware list based on the middleware named :foo, including all :before, and :after groups
-        #
         # @return [Array<StackMiddleware>]
         #   Provides an array of StackMiddleware instances in the array [<before :foo>, <:foo>, <after :foo>]
         #
         # @api private
         # @since 0.1.0
         # @author Daniel Neighman
-        def map_middleware(name, *labels)
+        def map_middleware(name)
           result = []
           _before[name] ||= []
           _after[name]  ||= []
-          if _mwares[name] && _mwares[name].use_for_labels?(*labels)
-            result << _before[name].map{|n| map_middleware(n)}
-            result << _mwares[name]
-            result << _after[name].map{|n| map_middleware(n)}
-            result.flatten
-          end
-          result
+          result << _before[name].map{|n| map_middleware(n)}
+          result << _mwares[name]
+          result << _after[name].map{|n| map_middleware(n)}
+          result.flatten
         end
 
         # Provides access to a named middleware
@@ -268,8 +231,6 @@ module Pancake
       # @param          [Object]  name a name for this middleware definition.  Usually a symbol, but could be the class.
       # @param          [Object]  stack the stack owner of this middleware.
       # @param          [Hash]    options an options hash.  Provide labels for this middleware.
-      # @option options [Array]   :labels ([:any])
-      #   The labels that are associated with this middleware
       # @option options [Object]  :before A middleware name to add this middleware before
       # @option options [Object]  :after A middleware name to add this middleware after
       #
@@ -278,7 +239,6 @@ module Pancake
       # @author Daniel Neighman
       def initialize(name, stack, options = {})
         @name, @stack, @options = name, stack, options
-        @options[:labels] ||= [:any]
       end
 
       # Delete this middleware from the current stack
@@ -320,19 +280,6 @@ module Pancake
         end
         self.class._mwares[name] = self
         self
-      end
-
-      # Checks if this middleware definition should be included from the labels given
-      # @param [Symbol] labels The label or list of labels to check if this middleware should be included
-      #
-      # @return [Boolean] true if this middlware should be included
-      #
-      # @api private
-      # @since 0.1.0
-      # @author Daniel Neighman
-      def use_for_labels?(*labels)
-        return true if labels.empty? || options[:labels].nil? || options[:labels].include?(:any)
-        !(options[:labels] & labels).empty?
       end
 
       # @api private

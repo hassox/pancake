@@ -94,7 +94,7 @@ end
 
 Pancake::Stack::BootLoader.add(:build_stack) do
   def run!
-    mwares = stack_class.middlewares(Pancake.stack_labels)
+    mwares = stack_class.middlewares
     app = Pancake::Middleware.build(config[:app], mwares)
     app_config = Pancake.configuration.configs(config[:app_name])
     app_config.app   = app

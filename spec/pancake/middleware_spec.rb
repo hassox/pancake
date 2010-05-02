@@ -370,32 +370,10 @@ describe "Pancake::Middleware" do
       class BarMiddle < GeneralMiddleware; end
       class BazMiddle < GeneralMiddleware; end
 
-      FooApp.stack(:general,  :labels => [:production]        ).use(GeneralMiddleware)
-      FooApp.stack(:foo,      :labels => [:production, :demo] ).use(FooMiddle)
-      FooApp.stack(:bar,      :labels => [:test]              ).use(BarMiddle)
-      FooApp.stack(:baz,      :labels => [:any]               ).use(BazMiddle)
-    end
-
-    it "should differentiate between stack types" do
-      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle]
-      FooApp.middlewares(:demo).map{|m| m.middleware}.should == [FooMiddle, BazMiddle]
-      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, BazMiddle]
-      FooApp.middlewares(:demo, :test).map{|m| m.middleware}.should == [FooMiddle, BarMiddle,BazMiddle]
-    end
-
-    it "should add a middleware that is not declared with any particular label to all stacks" do
-      class PazMiddle < GeneralMiddleware; end
-      FooApp.stack(:paz).use(PazMiddle)
-      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, BazMiddle, PazMiddle]
-      FooApp.middlewares(:demo).map{|m| m.middleware}.should == [FooMiddle, BazMiddle, PazMiddle]
-      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle, PazMiddle]
-    end
-
-    it "should not use a middleware if it is dependent on middleware that is not in the correct stack" do
-      class PazMiddle < GeneralMiddleware; end
-      FooApp.stack(:paz, :after => :bar).use(PazMiddle)
-      FooApp.middlewares(:production).map{|m| m.middleware}.should == [GeneralMiddleware, FooMiddle, BazMiddle]
-      FooApp.middlewares(:test).map{|m| m.middleware}.should == [BarMiddle, PazMiddle, BazMiddle]
+      FooApp.stack(:general ).use(GeneralMiddleware)
+      FooApp.stack(:foo     ).use(FooMiddle)
+      FooApp.stack(:bar     ).use(BarMiddle)
+      FooApp.stack(:baz     ).use(BazMiddle)
     end
   end
 end

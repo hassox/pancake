@@ -1,8 +1,5 @@
 Pancake.logger.info "Loading Staging Environment"
 
-# Set the middleware lables to load
-Pancake.stack_labels = [:staging]
-
 Pancake.handle_errors!(true) # uncomment to have the stack handle any errors that occur
 
 class <%= stack_name.camel_case %>
