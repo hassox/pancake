@@ -1,5 +1,5 @@
 <% $captures << self %>
 <p>erb capture test</p>
-<% @captured_erb = capture do %>
+<% @captured_erb = capture_content do %>
   <p><%= "captured erb" %></p>
 <% end %>

@@ -22,6 +22,7 @@ Pancake::Stack::BootLoader.add(:load_configuration, :level => :init) do
   end
 end
 
+
 Pancake::Stack::BootLoader.add(:load_mounted_inits, :level => :init) do
   def run!
     # Mount any stacks this stack may have in it.
@@ -58,6 +59,12 @@ end
 Pancake::Stack::BootLoader.add(:before_mount_applicaions) do
   def run!
     stack_class.before_mount_applications.each{|blk| blk.call}
+  end
+end
+
+Pancake::Stack::BootLoader.add(:load_middlewares) do
+  def run!
+    stack_class.paths_for(:middlewares).each{|f| require f.join}
   end
 end
 

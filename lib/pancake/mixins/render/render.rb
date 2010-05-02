@@ -1,16 +1,14 @@
+require 'any_view'
+
+AnyView::TiltBase
+
 module Pancake
   module Mixins
     module Render
       class ViewContext
+        include Tilt::CompileSite
+
         class << self
-          def _concat_methods
-            @_concat_methods ||= {}
-          end
-
-          def _capture_methods
-            @_capture_methods ||= {}
-          end
-
           def capture_method_for(item)
             key = case item
                   when Template
@@ -18,7 +16,7 @@ module Pancake
                   when Tilt::Template
                     item
                   end
-            _capture_methods[key]
+            AnyView::TiltBase.capture_methods[key]
           end
 
           def concat_method_for(item)
@@ -28,16 +26,9 @@ module Pancake
                   when Tilt::Template
                     item
                   end
-            _concat_methods[key]
+            AnyView::TiltBase.concat_methods[key]
           end
         end
-
-        _capture_methods[Tilt::HamlTemplate   ] = :_haml_capture
-        _capture_methods[Tilt::ERBTemplate    ] = :_erb_capture
-        _capture_methods[Tilt::ErubisTemplate ] = :_erb_capture
-        _concat_methods[ Tilt::HamlTemplate   ] = :_haml_concat
-        _concat_methods[ Tilt::ERBTemplate    ] = :_erb_concat
-        _concat_methods[ Tilt::ErubisTemplate ] = :_erb_concat
 
         module Renderer
           def render(template, opts = {}, &blk)
@@ -78,41 +69,41 @@ module Pancake
           end
         end # Renderer
 
-        module Capture
-          def capture(opts = {}, &block)
-            opts[:_capture_method] ||= ViewContext.capture_method_for(_current_renderer)
-            raise "CaptureMethod not specified" unless opts[:_capture_method]
-            send(opts[:_capture_method], block)
-          end
-
-          def concat(string, opts = {})
-            opts[:_concat_method] ||= ViewContext.concat_method_for(_current_renderer)
-            raise "ConcatMethod not specified" unless opts[:_concat_method]
-            send(opts[:_concat_method], string)
-          end
-
-          def _haml_capture(block)
-            with_haml_buffer Haml::Buffer.new(nil, :encoding => "UTF-8") do
-              capture_haml(&block)
-            end
-          end
-
-          def _erb_capture(block)
-            _out_buf, @_erbout = @_erbout, ""
-            block.call
-            ret = @_erbout
-            @_erbout = _out_buf
-            ret
-          end
-
-          def _haml_concat(string)
-            haml_concat string
-          end
-
-          def _erb_concat(string)
-            @_erbout << string
-          end
-        end # Capture
+#        module Capture
+#          def capture(opts = {}, &block)
+#            opts[:_capture_method] ||= ViewContext.capture_method_for(_current_renderer)
+#            raise "CaptureMethod not specified" unless opts[:_capture_method]
+#            send(opts[:_capture_method], block)
+#          end
+#
+#          def concat(string, opts = {})
+#            opts[:_concat_method] ||= ViewContext.concat_method_for(_current_renderer)
+#            raise "ConcatMethod not specified" unless opts[:_concat_method]
+#            send(opts[:_concat_method], string)
+#          end
+#
+#          def _haml_capture(block)
+#            with_haml_buffer Haml::Buffer.new(nil, :encoding => "UTF-8") do
+#              capture_haml(&block)
+#            end
+#          end
+#
+#          def _erb_capture(block)
+#            _out_buf, @_erbout = @_erbout, ""
+#            block.call
+#            ret = @_erbout
+#            @_erbout = _out_buf
+#            ret
+#          end
+#
+#          def _haml_concat(string)
+#            haml_concat string
+#          end
+#
+#          def _erb_concat(string)
+#            @_erbout << string
+#          end
+#        end # Capture
 
         module ContentInheritance
           def initialize(*args)
@@ -148,6 +139,7 @@ module Pancake
             current_label = @_inherit_helper.current_label
             @_inherit_helper.current_label = label
             capture_method = ViewContext.capture_method_for(_current_renderer)
+
             @_inherit_helper.blocks[label] << [block, capture_method]
             if @_inherit_helper.inherits_from.nil?
               result = _capture_content_block(label)
@@ -166,7 +158,7 @@ module Pancake
           private
           def _capture_content_block(label)
             blk, meth = @_inherit_helper.block_for(label)
-            send(meth, blk)
+            send(meth, &blk)
           end
 
           class Helper

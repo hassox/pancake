@@ -170,7 +170,6 @@ module Pancake
         end
 
 
-
         # A place holder method for any implementor that wants
         # to configure the view context prior to rendering occuring
         # any time this method is overwritten, it should call super!

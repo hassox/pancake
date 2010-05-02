@@ -4,9 +4,12 @@ module Pancake
     module Render
       class ViewContext
         # These are included as modules not for modularization, but because super can be called for the module versions
-        include Capture
+        include AnyView::TiltBase
         include Renderer
         include ContentInheritance
+        include Tilt::CompileSite
+
+        include AnyView
 
         attr_reader :_view_context_for
         def initialize(env, renderer_for = nil )

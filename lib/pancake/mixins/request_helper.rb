@@ -3,7 +3,7 @@ module Pancake
     # Some helpers for requests that come in handy for applications that
     # are part of stacks
     module RequestHelper
-      VARS_KEY = 'pancake.request.vars'
+      VARS_KEY = 'request.variables'
 
       # A data area that allows you to carry data accross middlewares, controller / views etc.
       # Stores the data in session for the length of the request.
