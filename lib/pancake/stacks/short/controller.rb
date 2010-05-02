@@ -2,7 +2,6 @@ module Pancake
   module Stacks
     class Short
       inheritable_inner_classes :Controller
-
       class Controller
         extend  Mixins::Publish
         include Mixins::Render
@@ -40,6 +39,7 @@ module Pancake
 
         # Dispatches to an action based on the params["action"] parameter
         def dispatch!
+
           params["action"] ||= params[:action]
           params[:format]  ||= params["format"]
 
@@ -55,14 +55,33 @@ module Pancake
 
           negotiate_content_type!(@action_opts.formats, params)
 
+          # Setup the layout
+          use_layout = env[Router::LAYOUT_KEY]
+          layout = env['layout']
+
+          # Set the layout defaults before the action is rendered
+          if use_layout && stack_class.default_layout
+            layout.template_name = stack_class.default_layout
+          end
+          layout.format = params['format'] if use_layout
+
           logger.info "Dispatching to #{params["action"].inspect}" if logger
 
           result = catch(:halt){ self.send(params['action']) }
+
           case result
           when Array
             result
           when Rack::Response
             result.finish
+          when String
+            out = if use_layout
+              layout.content = result
+              layout
+            else
+              result
+            end
+            Rack::Response.new(out, status, headers).finish
           else
             Rack::Response.new((result || ""), status, headers).finish
           end

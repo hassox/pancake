@@ -38,10 +38,12 @@ module Pancake
   # @since 0.1.2
   # @author Daniel Neighman
   class Router < Usher::Interface::Rack
-    attr_writer :router
+    attr_writer   :router
+    attr_accessor :stack
 
     CONFIGURATION_KEY = "pancake.request.configuration".freeze
     ROUTE_KEY         = "pancake.request.matching_route".freeze
+    LAYOUT_KEY        = "pancake.apply_layout".freeze
 
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
@@ -141,13 +143,18 @@ module Pancake
     end
 
     def call(env)
+      apply_layout = env[LAYOUT_KEY]
+      env[LAYOUT_KEY] = true if stack.use_layout?
+
       orig_config = env[CONFIGURATION_KEY]
       orig_route  = env[ROUTE_KEY]
       env[CONFIGURATION_KEY] = configuration
+
       super(env)
     ensure
       env[CONFIGURATION_KEY] = orig_config
       env[ROUTE_KEY]         = orig_route
+      env[LAYOUT_KEY]        = apply_layout
     end
 
     private

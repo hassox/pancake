@@ -12,6 +12,8 @@ gem 'json'
 
 gem 'thor', :require => false
 
+gem 'wrapt'
+
 group(:development) do
   gem 'rake', :require => false
 end

@@ -12,9 +12,11 @@ module Pancake
         unless self == Pancake::Stack
           r.router = superclass._router.router.dup
         end
+        r.stack = self
         r
       end
     end
+
     # Resets the router to use the stacks namespaced router.
     # This allows a router to mixin a module, and have that module
     # mixed in to child stacks/routers.  Effectively, this will reset the scope of inheritance so that a stack type can have particular route helpers
@@ -37,7 +39,6 @@ module Pancake
       yield router if block_given?
       router
     end
-
   end
 end
 

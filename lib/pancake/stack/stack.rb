@@ -136,6 +136,56 @@ module Pancake
       end
     end
 
+    # Specify a layout to use for this stack and all children stacks
+    # Layouts are provided by Wrapt, and Pancake::Stacks::Short will use the layout when directed to by calling this method.  Simply call it to activate layouts with the default options, or provide it with options to direct wrapt.
+    #
+    # You can specify a layout to use by name, provide it options or provide a block that you can use to set the layout via the environment.
+    #
+    # @params name [String] (optional) The name of the layout to use
+    # @params opts [Hash] Options for use with Wrapt
+    #
+    # @block The block is used to determine at runtime which layout to use.  It is yielded the environment where appropriate action can be taken.  It assumes that you will set the layout object directly
+    #
+    # @example
+    #   # Direct the short stack to use a layout
+    #   layout
+    #
+    #   # Set the layout to a non-default one
+    #   layout "non_standard"
+    #
+    #   # Directly set the layout via the Wrapt::Layout object
+    #   layout do |env|
+    #     r = Rack::Request.new(env)
+    #     l = env['layout']
+    #     if r.params['foo'] == 'bar'
+    #       l.template_name = "foo"
+    #     end
+    #   end
+    #
+    # @see Wrapt
+    # @see Wrapt::Layout
+    # @api public
+    def self.apply_layout(name = nil, &blk)
+      @use_layout = true
+      @default_layout = name
+    end
+
+    def self.use_layout?
+      if @use_layout
+        @use_layout
+      else
+        @use_layout = superclass.respond_to?(:use_layout?) && superclass.use_layout?
+      end
+    end
+
+    def self.default_layout
+      if @default_layout
+        @default_layout
+      else
+        @default_layout = superclass.respond_to?(:default_layout) && superclass.default_layout
+      end
+    end
+
     # Sets this as a master stack.  This means that the "master" directory will be added to all existing stack roots
     def self.set_as_master!
       Pancake.master_stack ||= self
