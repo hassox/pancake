@@ -236,6 +236,13 @@ module Pancake
       end
     end
 
-    create_bootloader_hook :before_build_stack, :before_mount_applications, :after_initialize_application, :after_build_stack
+    create_bootloader_hook :before_build_stack, :before_mount_applications, :after_initialize_application, :after_build_stack, :before_stack_loads
   end # Stack
 end # Pancake
+
+require 'pancake/stack/configuration'
+require 'pancake/stack/router'
+require 'pancake/stack/bootloader'
+require 'pancake/stack/app'
+require 'pancake/defaults/middlewares'
+require 'pancake/defaults/configuration'

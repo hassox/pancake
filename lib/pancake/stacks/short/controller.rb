@@ -14,13 +14,26 @@ module Pancake
         push_paths(:views, ["app/views", "views"], "**/*")
 
         DEFAULT_EXCEPTION_HANDLER = lambda do |error|
-          "#{error.name}: #{error.description}"
+          v[:errors] ||= []
+          v[:errors] << error
+          use_layout = env[Router::LAYOUT_KEY]
+          if use_layout
+            layout = env['layout']
+            layout.content = render :error
+            layout
+          else
+            render :error
+          end
         end unless defined?(DEFAULT_EXCEPTION_HANDLER)
 
         # @api private
         def self.call(env)
           app = new(env)
           app.dispatch!
+        end
+
+        def layout
+          env['layout']
         end
 
         # @api public

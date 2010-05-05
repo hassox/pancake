@@ -16,3 +16,4 @@ h1. TODO
 * Proivde easy to use hooks in the bootloaders
 * Add a to_s method on the configuration so that configuation may be easily interrogated
 * Add an example into the generated applications showing how to add mime types
+* Error handling in stacks needs improvement

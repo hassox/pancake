@@ -17,51 +17,46 @@ require 'usher/interface/rack'
 require 'tilt'
 
 module Pancake
-  autoload    :Logger,    "pancake/logger"
-  autoload    :Constants, "pancake/constants"
-  autoload    :Console,   "pancake/console"
+  autoload    :Logger,          "pancake/logger"
+  autoload    :Constants,       "pancake/constants"
+  autoload    :Console,         "pancake/console"
+  autoload    :Paths,           "pancake/paths"
+  autoload    :Configuration,   "pancake/configuration"
+  autoload    :BootLoaderMixin, "pancake/bootloaders"
+  autoload    :MimeTypes,       "pancake/mime_types"
+  autoload    :Middleware,      "pancake/middleware"
+  autoload    :Router,          "pancake/router"
+  autoload    :Errors,          "pancake/errors"
+  autoload    :Stack,           "pancake/stack/stack"
 
   module Stacks
     autoload :Short,      "pancake/stacks/short"
   end
 
+  module Hooks
+    autoload :OnInherit,                'pancake/hooks/on_inherit'
+    autoload :InheritableInnerClasses,  'pancake/hooks/inheritable_inner_classes'
+  end
+
   module Mixins
-    autoload :RequestHelper,"pancake/mixins/request_helper"
-    autoload :Publish,      "pancake/mixins/publish"
-    autoload :Render,       "pancake/mixins/render"
-    autoload :StackHelper, "pancake/mixins/stack_helper"
-    autoload :ResponseHelper,  "pancake/mixins/response_helper"
+    autoload :RequestHelper,  "pancake/mixins/request_helper"
+    autoload :Publish,        "pancake/mixins/publish"
+    autoload :Render,         "pancake/mixins/render"
+    autoload :StackHelper,    "pancake/mixins/stack_helper"
+    autoload :ResponseHelper, "pancake/mixins/response_helper"
   end
 
   module Middlewares
     autoload :Static,       "pancake/middlewares/static"
-    autoload :Logger,     "pancake/middlewares/logger"
+    autoload :Logger,       "pancake/middlewares/logger"
   end
 
   module Test
     autoload :Matchers,    "pancake/test/matchers"
   end
-
 end
 
-require 'pancake/paths'
-require 'pancake/hooks/on_inherit'
-require 'pancake/hooks/inheritable_inner_classes'
 require 'pancake/core_ext/class'
 require 'pancake/core_ext/object'
 require 'pancake/core_ext/symbol'
-require 'pancake/configuration'
-require 'pancake/bootloaders'
-require 'pancake/mime_types'
-require 'pancake/middleware'
-require 'pancake/router'
 require 'pancake/master'
-require 'pancake/errors'
-require 'pancake/stack/stack'
-require 'pancake/stack/configuration'
-require 'pancake/stack/router'
-require 'pancake/stack/bootloader'
-require 'pancake/stack/app'
-require 'pancake/mixins/request_helper'
-require 'pancake/defaults/middlewares'
-require 'pancake/defaults/configuration'

@@ -56,7 +56,5 @@ module Pancake
        self.description = "The requeseted format could not be provided"
      end
 
-
-
   end
 end

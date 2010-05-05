@@ -34,6 +34,7 @@ module Pancake
         end
 
         def _find_template(name)
+          return name if Template === name
           renderer = _template_cache[name]
           return renderer if renderer
 

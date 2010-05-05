@@ -78,10 +78,6 @@ end</code></pre>
 
 A stack doesn't have to mount other stacks.  Pancake stacks are full applications in their own right and can be used standalone as Rack endpoints, or as middleware.
 
-Rails 3 is shipping with a pluggable router which can be the awesome "Usher":http://github.com/joshbuddy/usher router.  If you use Usher in your Rails app, you'll be able to mount Pancake stacks directly.  For now, you can mount them as Metals.
-
-TODO: Demonstrate in a gist mounting pancake in a rails application
-
 All stacks are namespaced.  Pancake makes heavy use of namespacing to help construct applications concisely.
 
 h2. Middleware In Stacks

@@ -123,6 +123,8 @@ module Pancake
               else
                 ntos
               end
+            when Pancake::Mixins::Render::Template
+              ntos
             else
               if name_or_opts.kind_of?(Hash)
                 opts = name_or_opts
