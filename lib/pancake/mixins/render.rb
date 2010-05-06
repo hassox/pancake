@@ -1,5 +1,4 @@
 require 'pancake/mixins/render/template'
-require 'pancake/mixins/render/render'
 require 'pancake/mixins/render/view_context'
 module Pancake
   module Mixins
@@ -10,11 +9,9 @@ module Pancake
         base.class_eval do
           extend  Pancake::Mixins::Render::ClassMethods
           include Pancake::Mixins::Render::InstanceMethods
-          include Pancake::Mixins::RequestHelper
 
-          class self::ViewContext < Pancake::Mixins::Render::ViewContext
-            include Pancake::Mixins::RequestHelper
-          end
+          class base::ViewContext < Pancake::Mixins::Render::ViewContext; end
+
           inheritable_inner_classes :ViewContext
 
           unless ancestors.include?(Pancake::Paths)
@@ -53,7 +50,7 @@ module Pancake
 
         def _find_view_context_class_for(template)
           _view_context_cache[template] ||= begin
-                                              Class.new(self::ViewContext)
+                                              self::ViewContext
                                             end
           _view_context_cache[template]
         end
@@ -62,9 +59,8 @@ module Pancake
           [_find_template(template), _find_view_context_class_for(template)]
         end
 
-        def _template_name_for(name, opts = {})
-          opts[:format] ||= :html
-          "#{name}.#{opts[:format]}"
+        def _template_name_for(name, opts)
+          "#{name}"
         end
 
         def template(name_or_template, opts = {})
@@ -96,7 +92,7 @@ module Pancake
 
           yield v if block_given?
 
-          view_context = vc_class.new(env, self)
+          view_context = vc_class.new(self)
           view_context_before_render(view_context)
           view_context.render(template, opts)
         end
@@ -112,7 +108,7 @@ module Pancake
           # Get the view context for the tempalte
           template, vc_class = self.class._renderer_and_view_context_class_for(partial_name)
 
-          view_context = vc_class.new(env, self)
+          view_context = vc_class.new(self)
           view_context_before_render(view_context)
 
           out = ""
@@ -130,46 +126,8 @@ module Pancake
         end
 
         def template(name_or_template, opts = {})
-          opts[:format] ||= content_type
           self.class.template(name_or_template, opts)
         end
-
-        def negotiate_content_type!(*allowed_types)
-          return content_type if content_type
-
-          allowed_types = allowed_types.flatten
-          opts = allowed_types.pop if allowed_types.last.kind_of?(Hash)
-          if opts[:format]
-            cont, ct, mt = Pancake::MimeTypes.negotiate_by_extension(opts[:format].to_s, allowed_types)
-          else
-            env["HTTP_ACCEPT"] ||= "*/*"
-            cont, ct, mt = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], allowed_types)
-          end
-
-          raise Errors::NotAcceptable unless cont
-
-          headers["Content-Type"] = ct
-          self.mime_type    = mt
-          self.content_type = cont
-          cont
-        end
-
-        def content_type
-          env['pancake.request.format']
-        end
-
-        def content_type=(format)
-          env['pancake.request.format'] = format
-        end
-
-        def mime_type
-          env['pancake.request.mime']
-        end
-
-        def mime_type=(mime)
-          env['pancake.request.mime'] = mime
-        end
-
 
         # A place holder method for any implementor that wants
         # to configure the view context prior to rendering occuring
@@ -180,8 +138,8 @@ module Pancake
         end
 
         private
+        # @api_overwritable
         def _template_name_for(name, opts = {})
-          opts[:format] ||= content_type
           self.class._template_name_for(name, opts)
         end
 

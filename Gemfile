@@ -16,6 +16,7 @@ gem 'wrapt'
 
 group(:development) do
   gem 'rake', :require => false
+  gem 'ruby-debug', :require => false
 end
 
 group(:test) do

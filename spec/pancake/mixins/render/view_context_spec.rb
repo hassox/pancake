@@ -9,14 +9,6 @@ describe Pancake::Mixins::Render::ViewContext do
       include Pancake::Mixins::Render
       attr_accessor :params, :data
 
-      def initialize(env)
-        @env = env
-      end
-
-      def self._template_name_for(name, opts)
-        "#{name}"
-      end
-
       push_paths :views, "", "**/*"
 
       roots << File.join(File.expand_path(File.dirname(__FILE__)),"..","..", "fixtures", "render_templates", "view_context")
@@ -40,10 +32,6 @@ describe Pancake::Mixins::Render::ViewContext do
 
     it "should inherit from Pancake::Mixins::Render::ViewContext" do
       FooBar::ViewContext.should inherit_from(Pancake::Mixins::Render::ViewContext)
-    end
-
-    it "should include the Pancake::Mixins::RequestHelper helper" do
-      (Pancake::Mixins::RequestHelper > FooBar::ViewContext).should be_true
     end
   end
 
@@ -71,12 +59,12 @@ describe Pancake::Mixins::Render::ViewContext do
     end
 
     it "should provide access to the object the view context is rendering for" do
-      context = FooBar::ViewContext.new({}, @renderer)
+      context = FooBar::ViewContext.new(@renderer)
       context._view_context_for.should == @renderer
     end
 
     it "should grab the template from the view context when rendering" do
-      context = FooBar::ViewContext.new({}, @renderer)
+      context = FooBar::ViewContext.new(@renderer)
       @renderer.should_receive(:template).with(:foo).and_return(@renderer)
       context.render(:foo, :some => :opts)
     end
@@ -87,7 +75,7 @@ describe Pancake::Mixins::Render::ViewContext do
     end
 
     it "should render the haml template with a capture" do
-      result = FooBar.new({}).render(:capture_haml)
+      result = FooBar.new.render(:capture_haml)
       result.should_not include("captured haml")
 
       context = $captures.first
@@ -96,7 +84,7 @@ describe Pancake::Mixins::Render::ViewContext do
     end
 
     it "should capture in erb" do
-      result = FooBar.new({}).render(:capture_erb)
+      result = FooBar.new.render(:capture_erb)
       result.should_not include("captured erb")
       context = $captures.first
       context.should_not be_nil
@@ -104,19 +92,19 @@ describe Pancake::Mixins::Render::ViewContext do
     end
 
     it "should concat in haml" do
-      result = FooBar.new({}).render(:concat_haml)
+      result = FooBar.new.render(:concat_haml)
       result.should include("concatenated")
     end
 
     it "should concat in erb" do
-      result = FooBar.new({}).render(:concat_erb)
+      result = FooBar.new.render(:concat_erb)
       result.should include("concatenated")
     end
   end
 
   describe "content_block" do
     before do
-      @foo = FooBar.new({})
+      @foo = FooBar.new
     end
 
     it "should include the default text" do
@@ -166,7 +154,7 @@ describe Pancake::Mixins::Render::ViewContext do
 
   describe "super blocks" do
     before do
-      @foo = FooBar.new({})
+      @foo = FooBar.new
     end
 
     it "should render the super text" do
@@ -216,7 +204,7 @@ describe Pancake::Mixins::Render::ViewContext do
 
   describe "multiple context blocks" do
     before do
-      @foo = FooBar.new({})
+      @foo = FooBar.new
     end
 
     it "should allow nested default captures" do
@@ -241,6 +229,10 @@ describe Pancake::Mixins::Render::ViewContext do
       class ::BarFoo
         include Pancake::Mixins::Render
         push_paths :views, "", "**/*"
+        def self._template_name_for(name, opts = {})
+          opts[:format] ||= :html
+          r = "#{name}.#{opts[:format]}"
+        end
       end
 
       class ::FooBar
@@ -252,7 +244,7 @@ describe Pancake::Mixins::Render::ViewContext do
 
       FooBar.roots << File.join(path, "foo")
       BarFoo.roots << File.join(path, "bar")
-      @app = FooBar.new({})
+      @app = FooBar.new
       @bar = BarFoo.new
       Pancake.master_templates = BarFoo
     end
@@ -300,7 +292,7 @@ describe Pancake::Mixins::Render::ViewContext do
 
   describe "partials" do
     before do
-      @foo = FooBar.new({})
+      @foo = FooBar.new
       @collection = %w(one two three four)
       $captures = []
     end

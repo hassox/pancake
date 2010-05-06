@@ -1,14 +1,16 @@
 --- 
 dependencies: 
-  wrapt: 
+  ruby-debug: 
     group: 
-    - :default
+    - :development
     version: ">= 0"
+    require: []
+
   usher: 
     group: 
     - :default
     version: = 0.7.1
-  any_view: 
+  wrapt: 
     group: 
     - :default
     version: ">= 0"
@@ -18,17 +20,13 @@ dependencies:
     version: ">= 0"
     require: []
 
+  any_view: 
+    group: 
+    - :default
+    version: ">= 0"
   haml: 
     group: 
     - :test
-    version: ">= 0"
-  hashie: 
-    group: 
-    - :default
-    version: ">= 0"
-  rack-accept-media-types: 
-    group: 
-    - :default
     version: ">= 0"
   thor: 
     group: 
@@ -36,6 +34,14 @@ dependencies:
     version: ">= 0"
     require: []
 
+  rack-accept-media-types: 
+    group: 
+    - :default
+    version: ">= 0"
+  hashie: 
+    group: 
+    - :default
+    version: ">= 0"
   rspec: 
     group: 
     - :test
@@ -52,14 +58,14 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  extlib: 
-    group: 
-    - :default
-    version: = 0.9.14
   rack-test: 
     group: 
     - :default
     version: ">= 0"
+  extlib: 
+    group: 
+    - :default
+    version: = 0.9.14
   tilt: 
     group: 
     - :default
@@ -75,6 +81,8 @@ specs:
 - any_view: 
     version: 0.2.0pre
     source: 0
+- columnize: 
+    version: 0.3.1
 - erubis: 
     version: 2.6.5
 - extlib: 
@@ -86,7 +94,9 @@ specs:
 - hashie: 
     version: 0.2.0
 - json: 
-    version: 1.4.2
+    version: 1.4.3
+- linecache: 
+    version: "0.43"
 - rack: 
     version: 1.1.0
 - rack-accept-media-types: 
@@ -95,13 +105,17 @@ specs:
     version: 0.5.3
 - rspec: 
     version: 1.3.0
+- ruby-debug-base: 
+    version: 0.10.3
+- ruby-debug: 
+    version: 0.10.3
 - thor: 
     version: 0.13.6
 - usher: 
     version: 0.7.1
 - wrapt: 
-    version: 0.1.4
-hash: ed8740869c90ca17ea892cc04f3f5af115ed61ac
+    version: 0.1.5
+hash: b3de0812e0cbc83cf7cacf43bf9c977f339bdc9f
 sources: 
 - Git: 
     uri: git://github.com/hassox/any_view.git

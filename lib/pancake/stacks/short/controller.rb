@@ -9,20 +9,43 @@ module Pancake
         include Mixins::ResponseHelper
         include Mixins::StackHelper
 
+        class self::ViewContext
+          include Mixins::RequestHelper
+          include AnyView
+
+          # No way to get the env into the view context... this is not good :(
+          def env
+            _view_context_for.env
+          end
+
+          def self.template(name_or_template, opts = {})
+            opts[:format] ||= content_type
+            super
+          end
+
+          def template(name_or_template, opts={})
+            opts[:format] ||= content_type
+            super
+          end
+
+          def _template_name_for(name, opts = {})
+            opts[:format] ||= :html
+            "#{name}.#{opts[:format]}"
+          end
+        end
+
         class_inheritable_accessor :_handle_exception
 
         push_paths(:views, ["app/views", "views"], "**/*")
 
         DEFAULT_EXCEPTION_HANDLER = lambda do |error|
-          v[:errors] ||= []
-          v[:errors] << error
           use_layout = env[Router::LAYOUT_KEY]
           if use_layout
             layout = env['layout']
-            layout.content = render :error
+            layout.content = render :error, :error => error
             layout
           else
-            render :error
+            render :error, :error => error
           end
         end unless defined?(DEFAULT_EXCEPTION_HANDLER)
 

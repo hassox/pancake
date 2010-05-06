@@ -125,6 +125,42 @@ module Pancake
       def logger
         env[Pancake::Constants::ENV_LOGGER_KEY]
       end
+
+      def negotiate_content_type!(*allowed_types)
+        return content_type if content_type
+
+        allowed_types = allowed_types.flatten
+        opts = allowed_types.pop if allowed_types.last.kind_of?(Hash)
+        if opts[:format]
+          cont, ct, mt = Pancake::MimeTypes.negotiate_by_extension(opts[:format].to_s, allowed_types)
+        else
+          env["HTTP_ACCEPT"] ||= "*/*"
+          cont, ct, mt = Pancake::MimeTypes.negotiate_accept_type(env["HTTP_ACCEPT"], allowed_types)
+        end
+
+        raise Errors::NotAcceptable unless cont
+
+        headers["Content-Type"] = ct
+        self.mime_type    = mt
+        self.content_type = cont
+        cont
+      end
+
+      def content_type
+        env['pancake.request.format']
+      end
+
+      def content_type=(format)
+        env['pancake.request.format'] = format
+      end
+
+      def mime_type
+        env['pancake.request.mime']
+      end
+
+      def mime_type=(mime)
+        env['pancake.request.mime'] = mime
+      end
     end # RequestHelper
   end # Mixins
 end # Pancake

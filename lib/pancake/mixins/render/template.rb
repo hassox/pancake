@@ -14,7 +14,7 @@ module Pancake
           @renderer = Tilt.new(path, :outvar => '@_erbout')
         end
 
-        def render(context = Object.new, opts = {})
+        def render(context = ViewContext.new, opts = {})
           @renderer.render(context, opts)
         end
       end #Template

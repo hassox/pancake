@@ -9,6 +9,11 @@ describe Pancake::Mixins::Render do
       roots << File.expand_path(File.join(File.dirname(__FILE__), "..", "fixtures", "render_templates"))
       push_paths :views, "/", "**/*"
 
+      def self._template_name_for(name, opts = {})
+        opts[:format] ||= :html
+        "#{name}.#{opts[:format]}"
+      end
+
       def params
         @params ||= {}
       end

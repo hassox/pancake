@@ -1,11 +1,10 @@
 - content_block :error do
-  - error = v[:errors].first
   .error
     %h1
       Error:
       = error.class
     .description
-      = error.respond_to?(:descripton) ? error.description : error.message
+      = error.respond_to?(:description) ? error.description : error.message
 
     %ul.backtrace
       - error.backtrace.each do |line|
