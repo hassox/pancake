@@ -27,8 +27,23 @@ describe Pancake::Mixins::Render do
       end
     end
 
+    unless defined?(AnotherRenderSpecClass)
+      class ::AnotherRenderSpecClass < RenderSpecClass
+        def self._template_name_for(name, opts = {})
+          opts[:format] ||= :html
+          names = []
+          names << "#{name}.#{ENV['RACK_ENV']}.#{opts[:format]}" if ENV['RACK_ENV']
+          names << "#{name}.#{opts[:format]}"
+          names
+        end
+      end
+    end
+
     @render = RenderSpecClass.new
   end
+
+
+
   after do
     clear_constants "RenderSpecClass"
   end
@@ -76,6 +91,40 @@ describe Pancake::Mixins::Render do
     @render.render(:haml_template) do |v|
       v.should be_a_kind_of(Hash)
       v.in_the_block
+    end
+  end
+
+  it "should render the first avaibale template with the rack env set" do
+    begin
+      orig_env = ENV['RACK_ENV']
+      ENV['RACK_ENV'] = 'foo_env'
+
+
+      renderer = AnotherRenderSpecClass.new
+      template = AnotherRenderSpecClass.template(:alternate)
+      template.name.should == "alternate.foo_env.html"
+
+      response = renderer.render(:alternate)
+      response.should include("In alternate.foo_env.html")
+    ensure
+      ENV['RACK_ENV'] = orig_env
+    end
+  end
+
+  it "should render the correct template with the rack env set" do
+    begin
+      orig_env = ENV['RACK_ENV']
+      ENV['RACK_ENV'] = nil
+
+
+      renderer = AnotherRenderSpecClass.new
+      template = AnotherRenderSpecClass.template(:alternate)
+      template.name.should == "alternate.html"
+
+      response = renderer.render(:alternate)
+      response.should include("In alternate.html")
+    ensure
+      ENV['RACK_ENV'] = orig_env
     end
   end
 end

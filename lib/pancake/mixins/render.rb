@@ -42,16 +42,7 @@ module Pancake
         end
 
         def _find_template(name, opts = {})
-          return name if Template === name
-          renderer = _template_cache[name]
-          return renderer if renderer
-
-          renderer_path = unique_paths_for(_template_path_name(opts), :invert => true).detect do |path|
-            path.last =~ %r[^\/?(#{name})\.\w+$]
-          end
-
-          raise TemplateNotFound unless renderer_path
-          _template_cache[name] = Template.new(name, self, renderer_path.join)
+          template(name, opts)
         end
 
         def _view_context_cache
@@ -66,20 +57,50 @@ module Pancake
           _view_context_cache[template]
         end
 
-        def _renderer_and_view_context_class_for(template)
-          [_find_template(template), _find_view_context_class_for(template)]
+        def _renderer_and_view_context_class_for(tplate)
+          [template(tplate), _find_view_context_class_for(tplate)]
         end
 
         def _template_name_for(name, opts)
           "#{name}"
         end
 
-        def template(name_or_template, opts = {})
-          case name_or_template
-          when String, Symbol
-            _find_template(_template_name_for(name_or_template, opts))
+        def template(name, opts = {})
+          case name
           when Template
-            name_or_template
+            name
+          when String, Symbol
+
+            template_names = case __template = _template_name_for(name, opts)
+            when String, Symbol
+              [__template]
+            when Array
+              __template
+            when Proc
+              [__template.call(opts)].flatten
+            else
+              nil
+            end
+
+            renderer = _template_cache[template_names]
+            return renderer if renderer
+
+            unique_paths = unique_paths_for(_template_path_name(opts), :invert => true)
+
+            renderer_path = nil
+            template_name = nil
+
+            template_names.detect do |tn|
+              unique_paths.detect do |path|
+                if path.last =~ %r[^\/?(#{tn})\.\w+$]
+                  template_name = tn
+                  renderer_path = path.join
+                end
+              end
+            end
+
+            raise TemplateNotFound unless renderer_path
+            _template_cache[template_names] = Template.new(template_name, self, renderer_path)
           else
             nil
           end
@@ -95,11 +116,11 @@ module Pancake
         def render(*args)
           opts          = Hash === args.last ? args.pop : {}
           name          = args.shift
-          template_name = _template_name_for(name, opts)
+          template      = self.class.template(name, opts)
           return opts[:text] if opts[:text]
 
           # Get the view context for the tempalte
-          template, vc_class = self.class._renderer_and_view_context_class_for(template_name)
+          template, vc_class = self.class._renderer_and_view_context_class_for(template)
 
           yield v if block_given?
 
