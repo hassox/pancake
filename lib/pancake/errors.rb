@@ -1,7 +1,7 @@
 module Pancake
   module Errors
     class HttpError < StandardError
-      class_inheritable_accessor :name, :code, :description
+      class_inheritable_accessor :error_name, :code, :description
 
       def name; self.class.name; end
 
@@ -12,7 +12,7 @@ module Pancake
     end
 
     class NotFound < HttpError
-      self.name = "Not Found"
+      self.error_name = "Not Found"
       self.code = 404
       self.description = "The requested resource could not be found but may be available again in the future."
     end
@@ -26,13 +26,13 @@ module Pancake
     end
 
      class Unauthorized < HttpError
-       self.name = "Unauthorized"
+       self.error_name = "Unauthorized"
        self.code = 401
        self.description = "Authentication is required to access this resource."
      end
 
      class Forbidden < HttpError
-       self.name = "Forbidden"
+       self.error_name = "Forbidden"
        self.code = 403
        self.description = "Access to this resource is denied."
      end
@@ -40,7 +40,7 @@ module Pancake
      class Server < HttpError
        attr_accessor :exceptions
 
-       self.name = "Server Error"
+       self.error_name = "Server Error"
        self.code = 500
        self.description = "An internal server error"
 
@@ -51,7 +51,7 @@ module Pancake
      end
 
      class NotAcceptable < HttpError
-       self.name =  "Not Acceptable"
+       self.error_name =  "Not Acceptable"
        self.code = 406
        self.description = "The requeseted format could not be provided"
      end

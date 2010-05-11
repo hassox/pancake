@@ -30,12 +30,23 @@ module Pancake
           @_template_cache ||= {}
         end
 
-        def _find_template(name)
+        # Allows you to set path label for the templates for this class
+        #
+        # @example
+        #   MyClass.push_paths(:my_templates, "somewhere", "**/*")
+        #
+        #   MyClass._template_path_name #=> :my_templates
+        # @api public
+        def _template_path_name(opts = {})
+          opts[:template_path_name] || :views
+        end
+
+        def _find_template(name, opts = {})
           return name if Template === name
           renderer = _template_cache[name]
           return renderer if renderer
 
-          renderer_path = unique_paths_for(:views, :invert => true).detect do |path|
+          renderer_path = unique_paths_for(_template_path_name(opts), :invert => true).detect do |path|
             path.last =~ %r[^\/?(#{name})\.\w+$]
           end
 

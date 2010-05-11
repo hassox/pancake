@@ -131,6 +131,7 @@ module Pancake
 
         allowed_types = allowed_types.flatten
         opts = allowed_types.pop if allowed_types.last.kind_of?(Hash)
+        opts ||= {}
         if opts[:format]
           cont, ct, mt = Pancake::MimeTypes.negotiate_by_extension(opts[:format].to_s, allowed_types)
         else
