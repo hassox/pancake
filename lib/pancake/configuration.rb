@@ -2,7 +2,7 @@ module Pancake
   class Configuration
 
     class Base
-      class_inheritable_reader :defaults
+      extlib_inheritable_reader :defaults
       @defaults = Hash.new{|h,k| h[k] = {:value => nil, :description => ""}}
 
       # Set a default on the the configuartion

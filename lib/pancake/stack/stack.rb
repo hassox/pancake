@@ -224,7 +224,7 @@ module Pancake
     # @api public
     def self.create_bootloader_hook(*hooks)
       hooks.each do |hook|
-        class_inheritable_reader "_#{hook}"
+        extlib_inheritable_reader "_#{hook}"
         instance_variable_set("@_#{hook}", [])
 
         class_eval <<-RUBY

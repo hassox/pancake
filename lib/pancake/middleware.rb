@@ -148,7 +148,7 @@ module Pancake
     # the StackMiddleware class is inherited to an inner class of the same name on the child.
     class StackMiddleware
       # @api private
-      class_inheritable_reader :_central_mwares, :_mwares, :_before, :_after
+      extlib_inheritable_reader :_central_mwares, :_mwares, :_before, :_after
       @_central_mwares, @_before, @_after, @_mwares = [], {}, {}, {}
 
       # @api private

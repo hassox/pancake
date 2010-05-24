@@ -1,7 +1,7 @@
 module Pancake
   module Errors
     class HttpError < StandardError
-      class_inheritable_accessor :error_name, :code, :description
+      extlib_inheritable_accessor :error_name, :code, :description
 
       def name; self.class.name; end
 

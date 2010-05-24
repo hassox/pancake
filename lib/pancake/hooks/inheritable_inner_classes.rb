@@ -3,7 +3,7 @@ module Pancake
     module InheritableInnerClasses
       def self.extended(base)
         base.class_eval do
-          class_inheritable_reader :_inhertiable_inner_classes
+          extlib_inheritable_reader :_inhertiable_inner_classes
           @_inhertiable_inner_classes = []
         end
       end # extended

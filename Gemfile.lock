@@ -62,19 +62,29 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  extlib: 
-    group: 
-    - :default
-    version: = 0.9.14
   tilt: 
     group: 
     - :default
     version: ">= 0"
+  activesupport: 
+    group: 
+    - :default
+    version: = 3.0.0.beta3
 specs: 
 - rake: 
     version: 0.8.7
 - abstract: 
     version: 1.0.0
+- builder: 
+    version: 2.1.2
+- i18n: 
+    version: 0.3.7
+- memcache-client: 
+    version: 1.8.3
+- tzinfo: 
+    version: 0.3.20
+- activesupport: 
+    version: 3.0.0.beta3
 - tilt: 
     version: "0.9"
     source: 1
@@ -85,12 +95,10 @@ specs:
     version: 0.3.1
 - erubis: 
     version: 2.6.5
-- extlib: 
-    version: 0.9.14
 - fuzzyhash: 
     version: 0.0.11
 - haml: 
-    version: 2.2.24
+    version: 3.0.6
 - hashie: 
     version: 0.2.0
 - json: 
@@ -115,7 +123,7 @@ specs:
     version: 0.7.1
 - wrapt: 
     version: 0.1.5
-hash: b3de0812e0cbc83cf7cacf43bf9c977f339bdc9f
+hash: de7af5f8b9adb99c7885b0782f7f921b3b9a3832
 sources: 
 - Git: 
     uri: git://github.com/hassox/any_view.git

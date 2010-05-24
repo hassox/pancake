@@ -36,9 +36,9 @@ class Class
       end # unless
     end # ivars.each
   end # self.deep_inheritable_reader
-  
+
   def deep_copy_class_inheritable_accessor(*ivars)
     deep_copy_class_inheritable_reader(*ivars)
-    class_inheritable_writer(*ivars)
+    extlib_inheritable_writer(*ivars)
   end
 end # Class

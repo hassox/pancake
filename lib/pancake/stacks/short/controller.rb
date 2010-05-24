@@ -34,7 +34,7 @@ module Pancake
           end
         end
 
-        class_inheritable_accessor :_handle_exception
+        extlib_inheritable_accessor :_handle_exception
 
         push_paths(:views, ["app/views", "views"], "**/*")
 

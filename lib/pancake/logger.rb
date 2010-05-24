@@ -1,16 +1,3 @@
-# Pancake::Logger == Merb::Logger
-class Pancake::Logger < Extlib::Logger
-  # :api: public
-  def verbose!(message, level = :warn)
-    send("#{level}!", message) if Pancake.configuration.verbose_logging
-  end
-
-  # :api: public
-  def verbose(message, level = :warn)
-    send(level, message) if Pancake.configuration.verbose_logging
-  end
-end
-
 # require "time" # httpdate
 # ==== Public Pancake Logger API
 #
@@ -62,7 +49,7 @@ module Pancake
     # :warn:: A warning
     # :info:: generic (useful) information about system operation
     # :debug:: low-level information for developers
-    Levels = Mash.new({
+    Levels = Hashie::Mash.new({
       :fatal => 7,
       :error => 6,
       :warn  => 4,

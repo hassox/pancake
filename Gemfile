@@ -2,7 +2,8 @@ source :rubygems
 
 gem 'usher',    '0.7.1'
 gem 'rack',     '~> 1.1'
-gem 'extlib',   '0.9.14'
+#gem 'extlib',   '0.9.14'
+gem 'activesupport', '3.0.0.beta3'
 gem 'rack-test'
 gem 'hashie'
 gem 'tilt',     :git => 'git@github.com:hassox/tilt.git', :branch => 'hassox'

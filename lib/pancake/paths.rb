@@ -41,7 +41,7 @@ module Pancake
     def self.extended(base) #:nodoc:#
       base.class_eval do
         deep_copy_class_inheritable_reader :_load_paths, :roots
-        @_load_paths = Dictionary.new
+        @_load_paths = ActiveSupport::OrderedHash.new
         @roots = []
       end
     end

@@ -2,7 +2,7 @@ module Pancake
   module Mixins
     module StackHelper
       def self.included(base)
-        base.class_inheritable_accessor :_stack_class
+        base.extlib_inheritable_accessor :_stack_class
         base.extend ClassMethods
         base.class_eval do
           include ::Pancake::Mixins::StackHelper::InstanceMethods
@@ -19,7 +19,7 @@ module Pancake
           end
           ns = name.split("::")
           until ns.empty? || klass
-            r = Object.full_const_get(ns.join("::"))
+            r = ns.join("::").constantize
             if r.ancestors.include?(::Pancake::Stack)
               klass = r
             else

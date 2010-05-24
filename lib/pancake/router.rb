@@ -47,7 +47,7 @@ module Pancake
 
     class RackApplicationExpected < ArgumentError; end
     attr_accessor :configuration
-    class_inheritable_accessor :mounted_applications
+    extlib_inheritable_accessor :mounted_applications
     self.mounted_applications = []
 
     class MountedApplication

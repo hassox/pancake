@@ -59,7 +59,7 @@ module Pancake
 
     def self.extended(base)
       base.class_eval do
-        class_inheritable_reader :_bootloaders, :_central_bootloaders, :_bootloader_map
+        extlib_inheritable_reader :_bootloaders, :_central_bootloaders, :_bootloader_map
         @_bootloaders, @_central_bootloaders = {}, []
         @_bootloader_map = Hash.new{|h,k| h[k] = {:before => [], :after => []}}
       end
@@ -139,7 +139,7 @@ module Pancake
     # Access to the stack that this bootloader is responsible for
     # :api: public
     def stack
-      @stack ||= Object.full_const_get(self.name.split("::")[0..-2].join("::"))
+      @stack ||= self.name.split("::")[0..-2].join("::").constantize
     end
 
     # Resets the bootloaders on the stack
