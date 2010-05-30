@@ -11,7 +11,7 @@ module Pancake
           @name, @owner, @path = name, owner, path
           raise UnamedTemplate unless name
           raise NotFound unless File.exists?(path)
-          @renderer = Tilt.new(path, :outvar => '@_erbout')
+          @renderer = Tilt.new(path)
         end
 
         def render(context = ViewContext.new, opts = {})

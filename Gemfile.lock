@@ -23,7 +23,7 @@ dependencies:
   any_view: 
     group: 
     - :default
-    version: ">= 0"
+    version: ">= 0.2"
   haml: 
     group: 
     - :test
@@ -65,7 +65,7 @@ dependencies:
   tilt: 
     group: 
     - :default
-    version: ">= 0"
+    version: ">= 0.10"
   activesupport: 
     group: 
     - :default
@@ -82,17 +82,21 @@ specs:
 - memcache-client: 
     version: 1.8.3
 - tzinfo: 
-    version: 0.3.20
+    version: 0.3.22
 - activesupport: 
     version: 3.0.0.beta3
-- tilt: 
-    version: "0.9"
-    source: 1
-- any_view: 
-    version: 0.2.0pre
-    source: 0
 - columnize: 
     version: 0.3.1
+- linecache: 
+    version: "0.43"
+- ruby-debug-base: 
+    version: 0.10.3
+- ruby-debug: 
+    version: 0.10.3
+- tilt: 
+    version: "0.10"
+- any_view: 
+    version: 0.2.2
 - erubis: 
     version: 2.6.5
 - fuzzyhash: 
@@ -103,36 +107,21 @@ specs:
     version: 0.2.0
 - json: 
     version: 1.4.3
-- linecache: 
-    version: "0.43"
 - rack: 
     version: 1.1.0
 - rack-accept-media-types: 
     version: "0.9"
 - rack-test: 
-    version: 0.5.3
+    version: 0.5.4
 - rspec: 
     version: 1.3.0
-- ruby-debug-base: 
-    version: 0.10.3
-- ruby-debug: 
-    version: 0.10.3
 - thor: 
     version: 0.13.6
 - usher: 
     version: 0.7.1
 - wrapt: 
     version: 0.1.5
-hash: de7af5f8b9adb99c7885b0782f7f921b3b9a3832
+hash: 2060a927bda4c457339715e1bd55122414570783
 sources: 
-- Git: 
-    uri: git://github.com/hassox/any_view.git
-    git: git://github.com/hassox/any_view.git
-    ref: e1db4990883427eb634ae824ef95928f4ca51415
-- Git: 
-    uri: git@github.com:hassox/tilt.git
-    branch: hassox
-    git: git@github.com:hassox/tilt.git
-    ref: 8c652c803c1a62ec9854e1c320bee58c40546349
 - Rubygems: 
     uri: http://gemcutter.org

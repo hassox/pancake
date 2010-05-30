@@ -4,8 +4,8 @@ module Pancake
     module Render
       class ViewContext
         # These are included as modules not for modularization, but because super can be called for the module versions
-        include Tilt::CompileSite
-        include AnyView::TiltBase
+        include ::Tilt::CompileSite
+        include ::AnyView::TiltBase
 
         class << self
           def capture_method_for(item)
