@@ -150,6 +150,7 @@ module Pancake
       orig_route  = env[ROUTE_KEY]
       env[CONFIGURATION_KEY] = configuration
 
+      debugger if $debugger
       super(env)
     ensure
       env[CONFIGURATION_KEY] = orig_config

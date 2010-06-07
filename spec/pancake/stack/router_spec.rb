@@ -189,7 +189,7 @@ describe "stack router" do
     it "should pass through to the underlying app when adding a route" do
       FooApp.router.add("/bar", :_defaults => {:action => "bar"}).name(:gary)
       class ::FooApp
-        def self.new_app_instance
+        def self.new_endpoint_instance
           INNER_APP
         end
       end

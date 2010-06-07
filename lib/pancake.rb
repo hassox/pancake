@@ -14,16 +14,12 @@ module Pancake
   autoload    :Console,         "pancake/console"
   autoload    :Paths,           "pancake/paths"
   autoload    :Configuration,   "pancake/configuration"
-  autoload    :BootLoaderMixin, "pancake/bootloaders"
   autoload    :MimeTypes,       "pancake/mime_types"
   autoload    :Middleware,      "pancake/middleware"
   autoload    :Router,          "pancake/router"
   autoload    :Errors,          "pancake/errors"
   autoload    :Stack,           "pancake/stack/stack"
-
-  module Stacks
-    autoload :Short,      "pancake/stacks/short"
-  end
+  autoload    :PancakeConfig,   "pancake/defaults/configuration"
 
   module Hooks
     autoload :OnInherit,                'pancake/hooks/on_inherit'

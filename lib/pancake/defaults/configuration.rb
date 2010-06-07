@@ -1,4 +1,4 @@
-class Pancake::PancakeConfig
+class Pancake::PancakeConfig < Pancake::Configuration::Base
   default :log_path,        Proc.new{ "log/pancake_#{Pancake.env}.log"}
   default :log_level,       :info
   default :log_delimiter,   " ~ "
@@ -19,5 +19,25 @@ class Pancake::PancakeConfig
 
   def reset_log_stream!
     values.delete(:log_stream)
+  end
+
+  def stacks(label = nil)
+    @stacks ||=  {}
+    result = label.nil? ? @stacks : @stacks[label]
+    yield result if block_given?
+    result
+  end
+
+  def configs(label = nil)
+    @configs ||= Hash.new do |h,k|
+      if (k.is_a?(Class) || k.is_a?(Module)) && defined?(k::Configuration)
+        h[k] = k::Configuration.new
+      else
+        nil
+      end
+    end
+    result = label.nil? ? @configs : @configs[label]
+    yield result if block_given?
+    result
   end
 end

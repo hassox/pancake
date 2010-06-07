@@ -1,6 +1,9 @@
 module Pancake
   class Stack
     attr_accessor :app_name
+    class_inheritable_array :_after_stack_initialze, :_after_build_stack
+    self._after_stack_initialze = []
+    self._after_build_stack     = []
 
     # extend Hooks::InheritableInnerClasses
     extend Hooks::OnInherit
@@ -10,9 +13,6 @@ module Pancake
     # Push the default paths in for this stack
     push_paths(:config,       "config",               "config.rb")
     push_paths(:config,       "config/environments",  "#{Pancake.env}.rb")
-    push_paths(:models,       "app/models",           "**/*.rb")
-    push_paths(:controllers,  "app/controllers",      "**/*.rb")
-    push_paths(:router,       "config",               "router.rb")
     push_paths(:rake_tasks,   "tasks",                "**/*.rake")
     push_paths(:public,       "public",               "**/*")
     push_paths(:mounts,       "mounts",               "*/pancake_init.rb")
@@ -24,13 +24,29 @@ module Pancake
       raise "Stack root not set" if roots.empty?
       master = opts.delete(:master)
       set_as_master! if master
-      # Run any :init level bootloaders for this stack
-      self::BootLoader.run!(:stack_class => self, :only => {:level => :init})
-      # Pick up any new stacks added during the boot process.
-      set_as_master! if master
 
+      paths_for(:config     ).each{ |f| require f.join }
+      paths_for(:mounts     ).each{ |f| require f.join }
+      paths_for(:middleware ).each{ |f| require f.join }
+
+      router.mount_applications!
+
+      set_as_master! if master
       @initialized = true
+      # run the hook for after mounting
+      after_stack_initialze.each{ |blk| blk.call(self) }
     end # initiailze stack
+
+
+    def self.after_stack_initialze(&blk)
+      _after_stack_initialze << blk if blk
+      _after_stack_initialze
+    end
+
+    def self.after_build_stack(&blk)
+      _after_build_stack << blk if blk
+      _after_build_stack
+    end
 
     # Adds the file to the stack root.
     #
@@ -60,13 +76,17 @@ module Pancake
       self.configuration(@app_name)
       yield self.configuration(@app_name) if block_given?
 
-      self.class::BootLoader.run!({
-        :stack_class  => self.class,
-        :stack        => self,
-        :app          => app,
-        :app_name     => @app_name,
-        :except       => {:level => :init}
-      }.merge(opts))
+      @app ||= self.class.new_endpoint_instance
+
+      mwares = self.class.middlewares
+
+      @stack = Pancake::Middleware.build(@app, mwares)
+      app_config = Pancake.configuration.configs(@app_name)
+      app_config.stack = self.class
+      app_config.router.configuration = app_config
+      router = Pancake.configuration.configs[@app_name].router
+      router.default(@stack)
+      self.class.after_build_stack{ |blk| blk.call(self, @app_name, opts) }
     end
 
     # Construct a stack using the application, wrapped in the middlewares
@@ -75,6 +95,18 @@ module Pancake
       app = new(nil, opts, &block)
       Pancake.configuration.configs[app.app_name].router
     end # stackup
+
+    def call(env)
+      Pancake.configuration.configs[@app_name].router.call(env)
+    end
+
+
+    # get a new instance of the application for this stack
+    # Ovewrite this to provide custom application initialization
+    # :api: overwritable
+    def self.new_endpoint_instance
+      MISSING_APP
+    end
 
     # Loads the rake task for this stack, and all mounted stacks
     #
@@ -204,45 +236,10 @@ module Pancake
     def self.base_template_name
       raise Errors::NotImplemented, "Stack may not be used for templates until it implements a base_template_name method"
     end
-
-    # Creates a bootloader hook(s) of the given name. That are inheritable
-    # This will create hooks for use in a bootloader (but will not create the bootloader itself!)
-    #
-    # @example
-    #   MyStack.create_bootloader_hook(:before_stuff, :after_stuff)
-    #
-    #   MyStack.before_stuff do
-    #     # stuff to do before stuff
-    #   end
-    #
-    #   MyStack.after_stuff do
-    #     # stuff to do after stuff
-    #   enc
-    #
-    #   MyStack.before_stuff.each{|blk| blk.call}
-    #
-    # @api public
-    def self.create_bootloader_hook(*hooks)
-      hooks.each do |hook|
-        extlib_inheritable_reader "_#{hook}"
-        instance_variable_set("@_#{hook}", [])
-
-        class_eval <<-RUBY
-          def self.#{hook}(&blk)
-            _#{hook} << blk if blk
-            _#{hook}
-          end
-        RUBY
-      end
-    end
-
-    create_bootloader_hook :before_build_stack, :before_mount_applications, :after_initialize_application, :after_build_stack, :before_stack_loads
   end # Stack
 end # Pancake
 
 require 'pancake/stack/configuration'
 require 'pancake/stack/router'
-require 'pancake/stack/bootloader'
-require 'pancake/stack/app'
 require 'pancake/defaults/middlewares'
 require 'pancake/defaults/configuration'

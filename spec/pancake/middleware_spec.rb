@@ -37,7 +37,7 @@ describe "Pancake::Middleware" do
     end # GeneralMiddlware
 
     class ::FooApp < Pancake::Stack
-      def self.new_app_instance; self end
+      def self.new_endpoint_instance; self end
 
       def self.call(env)
         $current_env = env

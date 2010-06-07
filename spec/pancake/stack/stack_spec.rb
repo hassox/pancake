@@ -48,7 +48,6 @@ describe "Pancake::Stack" do
   # describe "initialize stack" do
 
     it "should mark a stack as initialized once it has called the initialize_stack method" do
-      StackSpecStack::BootLoader
       StackSpecStack.roots << ::Pancake.get_root(__FILE__)
       StackSpecStack.initialize_stack
       StackSpecStack.should be_initialized
@@ -110,7 +109,7 @@ describe "Pancake::Stack" do
       end
 
       it "should load rake tasks for mounted applications" do
-        class ::FooSpecStack < Pancake::Stacks::Short
+        class ::FooSpecStack < Pancake::Stack
           add_root(__FILE__, "..", "fixtures", "tasks", "root2")
         end
         StackSpecStack.router.mount(FooSpecStack, "/foo")

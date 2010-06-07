@@ -111,28 +111,6 @@ module Pancake
     end # self
   end # Configuration
 
-  class PancakeConfig < Configuration::Base
-    def stacks(label = nil)
-      @stacks ||=  {}
-      result = label.nil? ? @stacks : @stacks[label]
-      yield result if block_given?
-      result
-    end
-
-    def configs(label = nil)
-      @configs ||= Hash.new do |h,k|
-        if (k.is_a?(Class) || k.is_a?(Module)) && defined?(k::Configuration)
-          h[k] = k::Configuration.new
-        else
-          nil
-        end
-      end
-      result = label.nil? ? @configs : @configs[label]
-      yield result if block_given?
-      result
-    end
-  end
-
   def self.configuration
     @configuration ||= PancakeConfig.new
   end
