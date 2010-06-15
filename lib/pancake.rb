@@ -41,6 +41,7 @@ module Pancake
 
   module Test
     autoload :Matchers,    "pancake/test/matchers"
+    autoload :Helpers,     "pancake/test/helpers"
   end
 end
 
