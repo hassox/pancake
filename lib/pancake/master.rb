@@ -7,6 +7,15 @@ module Pancake
 
   class << self
     attr_accessor :root
+    attr_accessor :_before_build
+
+    def before_build(&blk)
+      unless _before_build
+        self._before_build = []
+      end
+      _before_build << blk if blk
+      _before_build
+    end
 
     # Start Pancake.  This provides a full pancake stack to use inside a rack application
     #
@@ -18,11 +27,13 @@ module Pancake
     #
     # @api public
     # @author Daniel Neighman
-    def start(opts, &block)
+    def start(opts = {}, &block)
       self.root = opts[:root] || Dir.pwd
 
       # Build Pancake
       the_app = instance_eval(&block)
+      before_build.each{|blk| blk.call}
+
       Pancake::Middleware.build(the_app, middlewares)
     end
 

@@ -70,6 +70,14 @@ module Pancake
       !!@initialized
     end
 
+    def self.include_pancake_stack!
+      @include_pancake_stack = true
+    end
+
+    def self.include_pancake_stack?
+      !!@include_pancake_stack
+    end
+
     def initialize(app = nil, opts = {})
       @app_name = opts.delete(:app_name) || self.class
 
@@ -102,7 +110,12 @@ module Pancake
     # @api public
     def self.stackup(opts = {}, &block)
       app = new(nil, opts, &block)
-      Pancake.configuration.configs[app.app_name].router
+      r = Pancake.configuration.configs[app.app_name].router
+      if include_pancake_stack?
+        Pancake.start{r}
+      else
+        r
+      end
     end # stackup
 
     def call(env)

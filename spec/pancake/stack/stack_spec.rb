@@ -56,7 +56,51 @@ describe "Pancake::Stack" do
     it "should not be initialized when it has not called initialize_stack" do
       StackSpecStack.should_not be_initialized
     end
-  # end
+
+    describe "include pancake stack" do
+      before do
+        $captures = []
+        clear_constants(:GeneralMiddleware, :MySpecStack)
+        Pancake::StackMiddleware.reset!
+
+        class ::GeneralMiddleware
+          def initialize(app)
+            @app = app
+          end
+
+          def call(env)
+            $captures << self.class
+            @app.call(env)
+          end
+        end
+        Pancake.stack(:general).use(GeneralMiddleware)
+      end
+
+      it "should let me tell the stack to include the pancake stack" do
+        lambda do
+          StackSpecStack.include_pancake_stack!
+        end.should_not raise_error
+      end
+
+      it "should remember that I told it to include the pancake stack" do
+        StackSpecStack.include_pancake_stack!
+        StackSpecStack.include_pancake_stack?.should be_true
+      end
+
+      it "should not remember when inherited" do
+        StackSpecStack.include_pancake_stack!
+        class ::MySpecStack < StackSpecStack; end
+        MySpecStack.include_pancake_stack?.should be_false
+      end
+
+      it "should build the stack with the pancake stack out front" do
+        StackSpecStack.roots << Pancake.get_root(__FILE__)
+        StackSpecStack.include_pancake_stack!
+        stack = StackSpecStack.stackup
+        stack.should be_an_instance_of(GeneralMiddleware)
+      end
+    end
+
     describe "master stack" do
       before do
         @b4 = Pancake.master_stack
