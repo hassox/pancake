@@ -14,7 +14,7 @@ describe "stack router" do
           JSON.generate({
             "SCRIPT_NAME" => e["SCRIPT_NAME"],
             "PATH_INFO"   => e["PATH_INFO"],
-            "usher.params" => e["usher.params"]
+            "router.params" => e["router.params"].to_hash
           })
         ]
       ]
@@ -34,15 +34,15 @@ describe "stack router" do
   describe "mount" do
     it "should let me setup routes for the stack" do
       FooApp.router do |r|
-        r.mount(INNER_APP, "/foo", :_defaults => {:action => "foo action"}).name(:foo)
-        r.mount(INNER_APP, "/bar", :_defaults => {:action => "bar action"}).name(:root)
+        r.mount(INNER_APP, "/foo", :default_values => {:action => "foo action"}).name(:foo)
+        r.mount(INNER_APP, "/bar", :default_values => {:action => "bar action"}).name(:root)
       end
 
       @app = FooApp.stackup
       expected = {
         "SCRIPT_NAME" => "/foo",
         "PATH_INFO"   => "",
-        "usher.params" => {"action" => "foo action"}
+        "router.params" => {"action" => "foo action"}
       }
 
       get "/foo"
@@ -50,14 +50,14 @@ describe "stack router" do
     end
 
     it "should allow me to stop the route from partially matching" do
-        FooApp.with_router do |r|
-          r.mount(INNER_APP, "/foo/bar", :_defaults => {:action => "foo/bar"}, :_exact => true).name(:foobar)
+        FooApp.router do |r|
+          r.mount(INNER_APP, "/foo/bar", :default_values => {:action => "foo/bar"}, :_exact => true).name(:foobar)
         end
         @app = FooApp.stackup
         expected = {
           "SCRIPT_NAME"   => "/foo/bar",
           "PATH_INFO"     => "",
-          "usher.params"  => {"action" => "foo/bar"}
+          "router.params"  => {"action" => "foo/bar"}
         }
         get "/foo/bar"
         JSON.parse(last_response.body).should == expected
@@ -66,7 +66,7 @@ describe "stack router" do
     end
 
     it "should not match a single segment route when only / is defined" do
-      FooApp.router.add("/", :_defaults => {:root => :var}) do |e|
+      FooApp.router.add("/", :default_values => {:root => :var}) do |e|
         Rack::Response.new("In the Root").finish
       end
       @app = FooApp.stackup
@@ -94,38 +94,23 @@ describe "stack router" do
         result = get "/stackup"
         result.body.should include("stacked up")
       end
-
-      it "should provide the rack params as a Hashie" do
-        FooApp.router.add("/hashie") do |e|
-          r = Rack::Request.new(e)
-          r.params.should be_a_kind_of(Hashie::Mash)
-          Rack::Response.new("OK").finish
-        end
-        @app = FooApp.stackup
-        get "/hashie"
-      end
     end
   end
 
   describe "generating routes" do
     before do
       FooApp.router do |r|
-        r.add("/simple/route"    ).name(:simple)
-        r.add("/var/with/:var", :_defaults => {:var => "some_var"}).name(:defaults)
-        r.add("/complex/:var"    ).name(:complex)
-        r.add("/optional(/:var)" ).name(:optional)
-        r.add("/some/:unique_var")
-        r.add("/", :_defaults => {:var => "root var"}).name(:root)
+        r.add("/simple/route"    ).name(:simple).compile
+        r.add("/var/with/:var", :default_values => {:var => "some_var"}).name(:defaults).compile
+        r.add("/complex/:var"    ).name(:complex).compile
+        r.add("/optional(/:var)" ).name(:optional).compile
+        r.add("/some/:unique_var").compile
+        r.add("/", :default_values => {:var => "root var"}).name(:root).compile
       end
     end
 
     it "should allow me to generate a named route for a stack" do
       Pancake.url(FooApp, :simple).should == "/simple/route"
-    end
-
-    it "should generate a / when / is optional" do
-      FooApp.router.add("(/)").name(:foo)
-      Pancake.url(FooApp, :foo).should == "/"
     end
 
     it "should allow me to generate a non-named route for a stack" do
@@ -142,10 +127,6 @@ describe "stack router" do
       Pancake.url(FooApp, :defaults, :var => "this_is_a_var").should == "/var/with/this_is_a_var"
     end
 
-    it "should allow me to generate a route by params" do
-      Pancake.url(FooApp, :unique_var => "unique_var").should == "/some/unique_var"
-    end
-
     it "should generate a base url of '/' for the top level router" do
       FooApp.router.base_url.should == "/"
     end
@@ -155,8 +136,8 @@ describe "stack router" do
         class ::BarApp < Pancake::Stack; end
         BarApp.roots << Pancake.get_root(__FILE__)
         BarApp.router do |r|
-          r.add("/simple").name(:simple)
-          r.add("/some/:var", :_defaults => {:var => "foo"}).name(:foo)
+          r.add("/simple").name(:simple).compile
+          r.add("/some/:var", :default_values => {:var => "foo"}).name(:foo).compile
         end
         FooApp.router.mount(BarApp, "/bar")
         FooApp.router.mount_applications!
@@ -187,7 +168,7 @@ describe "stack router" do
 
   describe "internal stack routes" do
     it "should pass through to the underlying app when adding a route" do
-      FooApp.router.add("/bar", :_defaults => {:action => "bar"}).name(:gary)
+      FooApp.router.add("/bar", :default_values => {:action => "bar"}).name(:gary).compile
       class ::FooApp
         def self.new_endpoint_instance
           INNER_APP
@@ -198,39 +179,28 @@ describe "stack router" do
       @app = FooApp.stackup
       get "/bar"
       result = JSON.parse(last_response.body)
-      result["usher.params"].should == {"action" => "bar"}
-    end
-
-    it "should add the usher.params to the request params" do
-      app = mock("app", :call => Rack::Response.new("OK").finish, :null_object => true)
-      app.should_receive(:call).with do |e|
-        params = Rack::Request.new(e).params
-        params[:action].should == "jackson"
-      end
-      FooApp.router.mount(app, "/foo/app", :_defaults => {:action => "jackson"})
-      @app = FooApp.stackup
-      get "/foo/app"
+      result["router.params"].should == {"action" => "bar"}
     end
   end
 
   it "should allow me to inherit routes" do
     FooApp.router do |r|
-      r.mount(INNER_APP, "/foo(/:stuff)", :_defaults => {"originator" => "FooApp"})
+      r.mount(INNER_APP, "/foo(/:stuff)", :default_values => {"originator" => "FooApp"})
     end
     class ::BarApp < FooApp; end
     BarApp.router do |r|
-      r.mount(INNER_APP, "/bar", :_defaults => {"originator" => "BarApp"})
+      r.mount(INNER_APP, "/bar", :default_values => {"originator" => "BarApp"})
     end
 
     @app = BarApp.stackup
 
     get "/bar"
     response = JSON.parse(last_response.body)
-    response["usher.params"]["originator"].should == "BarApp"
+    response["router.params"]["originator"].should == "BarApp"
 
     get "/foo/thing"
     response = JSON.parse(last_response.body)
-    response["usher.params"]["originator"].should == "FooApp"
+    response["router.params"]["originator"].should == "FooApp"
   end
 
   it "should generate an inherited route" do
@@ -243,7 +213,6 @@ describe "stack router" do
     FooApp.router.mount_applications!
 
     Pancake.url(BarApp, :simple).should == "/simple"
-    Pancake.url(BarApp, :stuff => "this_stuff").should == "/foo/this_stuff"
     Pancake.url(BarApp, :stuff, :stuff => "that_stuff").should == "/foo/that_stuff"
   end
 
@@ -266,13 +235,6 @@ describe "stack router" do
     FooApp.router.class.should == FooApp::Router
     BarApp.router.class.should == BarApp::Router
   end
-
-  it "should reset the router to the namespaced router" do
-    class ::BarApp < FooApp; end
-    BarApp.reset_router!
-    BarApp.router.class.should == BarApp::Router
-  end
-
 
   describe "generating urls inside an application" do
     before do

@@ -19,7 +19,7 @@ module Pancake
           end
           ns = name.split("::")
           until ns.empty? || klass
-            r = ns.join("::").constantize
+            r = ActiveSupport::Inflector.constantize(ns.join("::"))
             if r.ancestors.include?(::Pancake::Stack)
               klass = r
             else

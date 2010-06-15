@@ -1,9 +1,11 @@
 module Pancake
   class Stack
     attr_accessor :app_name
-    class_inheritable_array :_after_stack_initialze, :_after_build_stack
+
+    class_inheritable_array :_after_stack_initialze, :_after_build_stack, :_before_build_stack
     self._after_stack_initialze = []
     self._after_build_stack     = []
+    self._before_build_stack    = []
 
     # extend Hooks::InheritableInnerClasses
     extend Hooks::OnInherit
@@ -48,6 +50,11 @@ module Pancake
       _after_build_stack
     end
 
+    def self.before_build_stack(&blk)
+      _before_build_stack << blk if blk
+      _before_build_stack
+    end
+
     # Adds the file to the stack root.
     #
     # @param file - The file identifier
@@ -77,6 +84,8 @@ module Pancake
       yield self.configuration(@app_name) if block_given?
 
       @app ||= self.class.new_endpoint_instance
+
+      self.class.before_build_stack{|b| b.call(self, @app_name, opts)}
 
       mwares = self.class.middlewares
 

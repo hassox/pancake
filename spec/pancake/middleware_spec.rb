@@ -48,7 +48,7 @@ describe "Pancake::Middleware" do
   end
 
   after(:each) do
-    clear_constants(:FooApp, :BarApp, :BazApp, :GeneralMiddleware, :BarMiddle, :FooMiddle, :BazMiddle, :PazMiddle)
+    clear_constants(:MasterApp, :FooApp, :BarApp, :BazApp, :GeneralMiddleware, :BarMiddle, :FooMiddle, :BazMiddle, :PazMiddle)
   end
 
   describe "pancake middlewares" do
@@ -80,17 +80,18 @@ describe "Pancake::Middleware" do
       class ::BarMiddle < GeneralMiddleware; end
       class ::BarApp < FooApp; end
       class ::BazApp < FooApp; end
+      class ::MasterApp < FooApp; end
 
       BarApp.use BarMiddle
       BazApp.use FooMiddle
       Pancake.use GeneralMiddleware
 
-      FooApp.router do |r|
+      MasterApp.router do |r|
         r.mount(BarApp, "/bar")
         r.mount(BazApp, "/baz")
       end
 
-      @app = Pancake.start(:root => @root){ FooApp.stackup }
+      @app = Pancake.start(:root => @root){ MasterApp.stackup }
       result = get "/baz"
       $current_env["p.s.c"].should == [GeneralMiddleware, FooMiddle]
       reult = get "/bar"

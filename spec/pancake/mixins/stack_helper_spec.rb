@@ -38,9 +38,9 @@ describe Pancake::Mixins::StackHelper do
     class ::FooBar < FooStack::Bar; end
     FooBar.stack_class.should == FooStack
   end
-  
+
   it "should provide access to the stack helper from an instance of the Bar class" do
     FooStack::Bar.new.stack_class.should == FooStack
   end
-  
+
 end

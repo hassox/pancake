@@ -4,8 +4,7 @@ require 'active_support/core_ext/class'
 require 'active_support/inflector'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/ordered_hash'
-require 'usher'
-require 'usher/interface/rack'
+require 'http_router'
 require 'tilt'
 
 module Pancake
