@@ -70,7 +70,6 @@ module Pancake
           when Template
             name
           when String, Symbol
-
             template_names = case __template = _template_name_for(name, opts)
             when String, Symbol
               [__template]
@@ -176,7 +175,7 @@ module Pancake
         end
 
         def _partial_template_name_for(name, opts)
-          "_#{_template_name_for(name, opts)}"
+          "_#{name}"
         end
       end # InstanceMethods
     end # Render

@@ -2,8 +2,8 @@ module Pancake
   class Stack
     attr_accessor :app_name
 
-    class_inheritable_array :_after_stack_initialze, :_after_build_stack, :_before_build_stack
-    self._after_stack_initialze = []
+    class_inheritable_array :_after_stack_initialize, :_after_build_stack, :_before_build_stack
+    self._after_stack_initialize = []
     self._after_build_stack     = []
     self._before_build_stack    = []
 
@@ -23,7 +23,6 @@ module Pancake
 
     #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack(opts = {})
-      return if @initialized
       raise "Stack root not set" if roots.empty?
       master = opts.delete(:master)
       set_as_master! if master
@@ -37,13 +36,13 @@ module Pancake
       set_as_master! if master
       @initialized = true
       # run the hook for after mounting
-      after_stack_initialze.each{ |blk| blk.call(self) }
+      after_stack_initialize.each{ |blk| blk.call(self) }
     end # initiailze stack
 
 
-    def self.after_stack_initialze(&blk)
-      _after_stack_initialze << blk if blk
-      _after_stack_initialze
+    def self.after_stack_initialize(&blk)
+      _after_stack_initialize << blk if blk
+      _after_stack_initialize
     end
 
     def self.after_build_stack(&blk)
@@ -94,7 +93,7 @@ module Pancake
 
       @app ||= self.class.new_endpoint_instance
 
-      self.class.before_build_stack{|b| b.call(self, @app_name, opts)}
+      self.class.before_build_stack.each{|b| b.call(self, @app_name, opts)}
 
       mwares = self.class.middlewares
 
@@ -103,8 +102,9 @@ module Pancake
       app_config.stack = self.class
       app_config.router.configuration = app_config
       router = Pancake.configuration.configs[@app_name].router
+      router.mount_applications!
       router.default(@stack)
-      self.class.after_build_stack{ |blk| blk.call(self, @app_name, opts) }
+      self.class.after_build_stack.each{ |blk| blk.call(self, @app_name, opts) }
     end
 
     # Construct a stack using the application, wrapped in the middlewares
