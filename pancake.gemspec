@@ -8,13 +8,13 @@ Gem::Specification.new do |s|
   s.authors = ["Daniel Neighman"]
   s.autorequire = %q{pancake}
   s.date = Date.today
-  s.default_executable = %q{pancake-gen}
+  s.default_executable = %q{pancake}
   s.description = %q{Eat Pancake Stacks for Breakfast}
   s.email = %q{has.sox@gmail.com}
 
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.executables = ["pancake-gen", 'pancake']
+  s.executables = ["pancake"]
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Eat Pancake Stacks for Breakfast}
 
