@@ -70,8 +70,8 @@ module Pancake
       !!@initialized
     end
 
-    def self.include_pancake_stack!
-      @include_pancake_stack = true
+    def self.include_pancake_stack!(include_it = true)
+      @include_pancake_stack = include_it
     end
 
     def self.include_pancake_stack?

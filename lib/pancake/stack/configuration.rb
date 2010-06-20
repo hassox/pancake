@@ -33,7 +33,7 @@ class Pancake::Stack::Configuration
   def _router
     @_router ||= begin
       unless stack.nil?
-        r = stack.router.clone
+        r = stack.router
         r.stack = stack
         r.configuration = self
         r

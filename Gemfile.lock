@@ -95,14 +95,12 @@ specs:
     version: 3.0.12
 - hashie: 
     version: 0.2.0
-    source: 0
 - rack: 
     version: 1.2.0
 - url_mount: 
     version: 0.2.1
 - http_router: 
     version: 0.2.4
-    source: 1
 - json: 
     version: 1.4.3
 - rack-accept-media-types: 
@@ -115,15 +113,7 @@ specs:
     version: 0.13.6
 - wrapt: 
     version: 0.1.7
-hash: 23a0bde22a0be3dc176efadba3ba8f8f4caa0434
+hash: fedc5d0d5bdd49b758b0129ac9ae91bfcfe813de
 sources: 
-- Git: 
-    uri: git://github.com/hassox/hashie.git
-    branch: hassox
-    git: git://github.com/hassox/hashie.git
-    ref: 3c678fb0f8f72998c3e02f9e4a0ab1eeb804ea3e
-- Path: 
-    path: !ruby/object:Pathname 
-      path: /Users/dneighman/Projects/http_router
 - Rubygems: 
     uri: http://gemcutter.org

@@ -7,7 +7,7 @@ module Pancake
 
   class << self
     attr_accessor :root
-    attr_accessor :_before_build
+    attr_accessor :_before_build, :_generators
 
     def before_build(&blk)
       unless _before_build
@@ -15,6 +15,28 @@ module Pancake
       end
       _before_build << blk if blk
       _before_build
+    end
+
+    def generators(&blk)
+      self._generators = [] unless _generators
+      _generators << blk if blk
+      _generators
+    end
+
+    def load_generators!
+      return if @load_generators
+      @load_generators = true
+      generators.each{|b| b.call}
+
+      # load any global generator files
+      highest = {}
+      Gem.find_files("pancake/generators/global.rb").sort.reverse.each do |f|
+        f =~ /gems\/([^\/]+?)-(\d\.[^\/]+?)\/lib\/pancake/
+        highest[$1] ||= begin
+          require f
+          f
+        end
+      end
     end
 
     # Start Pancake.  This provides a full pancake stack to use inside a rack application

@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'thor/runner'
+require 'pancake'
+
+Pancake.load_generators!
+
+class PancakeGeneratorRunner < Thor
+  map "-T" => :list, "-i" => :install, "-u" => :update, "-v" => :version
+
+desc "list [SEARCH]", "List the available pancake tasks (--substring means .*SEARCH)"
+  method_options :substring => :boolean, :all => :boolean
+  def list(search="")
+    search = ".*#{search}" if options["substring"]
+    search = /^#{search}.*/i
+    group  = options[:group] || "standard"
+
+    klasses = Thor::Base.subclasses.select do |k|
+      (options[:all] || k.group == group) && k.namespace =~ search
+    end
+
+    display_klasses(klasses)
+  end
+
+  def method_missing(meth, *args, &blk)
+    klass, task = Thor::Util.find_class_and_task_by_namespace(meth.to_s)
+    args.unshift(task) if task
+    klass.start(args, :shell => self.shell)
+  end
+
+  private
+  def display_klasses(klasses)
+    klasses -= [Thor, Thor::Runner, Thor::Group]
+
+    # Remove subclasses
+    klasses.dup.each do |klass|
+      klasses -= Thor::Util.thor_classes_in(klass)
+    end
+
+    klasses.reject!{|k| k == self.class}
+
+    list = Hash.new { |h,k| h[k] = [] }
+    groups = klasses.select { |k| k.ancestors.include?(Thor::Group) }
+
+    # Get classes which inherit from Thor
+    (klasses - groups).each { |k| list[k.namespace] += k.printable_tasks(false) }
+
+    # Get classes which inherit from Thor::Base
+    groups.map! { |k| k.printable_tasks(false).first }
+    list["root"] = groups
+
+    # Order namespaces with default coming first
+    list = list.sort{ |a,b| a[0].sub(/^default/, '') <=> b[0].sub(/^default/, '') }
+    list.each { |n, tasks| display_tasks(n, tasks) unless tasks.empty? }
+  end
+
+  def display_tasks(namespace, list)
+    list.sort!{ |a,b| a[0] <=> b[0] }
+
+    say shell.set_color(namespace, :blue, true)
+    say "-" * namespace.size
+
+    print_table(list, :truncate => true)
+    say
+  end
+end
+
+PancakeGeneratorRunner.start
+
+#case ARGV.shift
+#when "short"
+#  Pancake::Generators::Short.start
+#when "micro"
+#  Pancake::Generators::Micro.start
+#when '-v', '--version'
+#  version_file = File.dirname(__FILE__) + '/../VERSION'
+#  if File.exists?(version_file) and version = File.read(version_file)
+#    puts "Pancake Version: #{version}"
+#  end
+#else
+#  puts %{
+#  Usage: pancake-gen [type|options] /path/to/your/app
+#
+#      Type can be:
+#        micro, short
+#
+#      Options:
+#      -v, --version                    Show the version number and quit.
+#      -h, --help                       Show this help message and quit.
+#  }
+#end
+

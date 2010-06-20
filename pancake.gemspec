@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.executables = ["pancake-gen"]
+  s.executables = ["pancake-gen", 'pancake']
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Eat Pancake Stacks for Breakfast}
 
@@ -27,6 +27,5 @@ Gem::Specification.new do |s|
   s.files = %w(LICENSE README.textile Rakefile TODO.textile) + Dir.glob("{lib,spec,bin}/**/{*,.[a-z]*}")
 
   s.add_bundler_dependencies
-
 end
 
