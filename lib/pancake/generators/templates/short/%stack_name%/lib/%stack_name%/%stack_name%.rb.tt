@@ -1,6 +1,0 @@
-class <%= stack_name.camel_case %>
-  get "/" do
-    render :root
-  end
-end
-

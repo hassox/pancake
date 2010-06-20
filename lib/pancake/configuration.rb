@@ -71,7 +71,8 @@ module Pancake
             # If the default is a proc, do not cache it
             case defaults[name][:value]
             when Proc
-              instance_eval(&defaults[name][:value])
+              p = defaults[name][:value]
+              instance_eval &p
             else
               val = defaults[name][:value]
               val = val.dup rescue val

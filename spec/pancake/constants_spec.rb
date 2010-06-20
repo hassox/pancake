@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Pancake::Constants do
   it "should have the ENV_LOGGER_KEY constant" do

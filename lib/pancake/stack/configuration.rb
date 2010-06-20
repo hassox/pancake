@@ -28,12 +28,12 @@ end # Pancake
 ####################
 # Setup the default configuration for each stack
 class Pancake::Stack::Configuration
-  default :router, lambda{ _router }, "The router for this stack"
+  default :router, Proc.new{ _router }, "The router for this stack"
 
   def _router
     @_router ||= begin
       unless stack.nil?
-        r = stack.router
+        r = stack.router.clone
         r.stack = stack
         r.configuration = self
         r

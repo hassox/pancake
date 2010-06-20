@@ -1,4 +1,6 @@
 require 'rubygems'
+#require 'hashie'
+$:.unshift File.join(File.dirname(__FILE__), "pancake", "vendor", "hashie", "lib")
 require 'hashie'
 require 'active_support/core_ext/class'
 require 'active_support/inflector'

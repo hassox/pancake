@@ -1,32 +1,30 @@
 --- 
 dependencies: 
-  ruby-debug: 
-    group: 
-    - :development
-    version: ">= 0"
-    require: []
-
   wrapt: 
-    group: 
-    - :default
-    version: ">= 0"
-  rake: 
-    group: 
-    - :development
-    version: ">= 0"
-    require: []
-
-  http_router: 
     group: 
     - :default
     version: ">= 0"
   any_view: 
     group: 
     - :default
-    version: ">= 0.2"
+    version: ">= 0.2.3"
+  http_router: 
+    group: 
+    - :default
+    version: = 0.2.5
+  rake: 
+    group: 
+    - :development
+    version: ">= 0"
+    require: []
+
   haml: 
     group: 
     - :test
+    version: ">= 0"
+  rack-accept-media-types: 
+    group: 
+    - :default
     version: ">= 0"
   thor: 
     group: 
@@ -34,14 +32,6 @@ dependencies:
     version: ">= 0"
     require: []
 
-  rack-accept-media-types: 
-    group: 
-    - :default
-    version: ">= 0"
-  hashie: 
-    group: 
-    - :default
-    version: ">= 0"
   rspec: 
     group: 
     - :test
@@ -62,10 +52,6 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  tilt: 
-    group: 
-    - :default
-    version: ">= 0.10"
   activesupport: 
     group: 
     - :default
@@ -77,18 +63,10 @@ specs:
     version: 1.0.0
 - activesupport: 
     version: 3.0.0.beta4
-- columnize: 
-    version: 0.3.1
-- linecache: 
-    version: "0.43"
-- ruby-debug-base: 
-    version: 0.10.3
-- ruby-debug: 
-    version: 0.10.3
 - tilt: 
-    version: "0.10"
+    version: 1.0.1
 - any_view: 
-    version: 0.2.2
+    version: 0.2.3
 - erubis: 
     version: 2.6.5
 - haml: 
@@ -96,11 +74,11 @@ specs:
 - hashie: 
     version: 0.2.0
 - rack: 
-    version: 1.2.0
+    version: 1.2.1
 - url_mount: 
     version: 0.2.1
 - http_router: 
-    version: 0.2.4
+    version: 0.2.5
 - json: 
     version: 1.4.3
 - rack-accept-media-types: 
@@ -113,7 +91,6 @@ specs:
     version: 0.13.6
 - wrapt: 
     version: 0.1.7
-hash: fedc5d0d5bdd49b758b0129ac9ae91bfcfe813de
-sources: 
-- Rubygems: 
-    uri: http://gemcutter.org
+hash: b773b60f736b294348ef7b814f715db4a98f444e
+sources: []
+
