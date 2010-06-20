@@ -24,6 +24,10 @@ desc "list [SEARCH]", "List the available pancake tasks (--substring means .*SEA
 
   def method_missing(meth, *args, &blk)
     klass, task = Thor::Util.find_class_and_task_by_namespace(meth.to_s)
+    unless klass
+      puts "Could not find a generator for #{meth.to_s}"
+      exit(1)
+    end
     args.unshift(task) if task
     klass.start(args, :shell => self.shell)
   end

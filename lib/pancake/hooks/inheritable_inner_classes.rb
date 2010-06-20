@@ -3,8 +3,9 @@ module Pancake
     module InheritableInnerClasses
       def self.extended(base)
         base.class_eval do
-          extlib_inheritable_reader :_inhertiable_inner_classes
-          @_inhertiable_inner_classes = []
+          extlib_inheritable_reader :_inhertiable_inner_classes, :_before_inner_class_inheritance
+          @_inhertiable_inner_classes      = []
+          @_before_inner_class_inheritance = []
         end
       end # extended
 
@@ -40,6 +41,16 @@ module Pancake
         _inhertiable_inner_classes
       end
 
+      # Runs any hooks before the inheritance of any inner classes
+      #
+      # @api public
+      # @since 0.3.0
+      # @author Daniel Neighman
+      def before_inner_class_inheritance(&blk)
+        _before_inner_class_inheritance << blk if blk
+        _before_inner_class_inheritance
+      end
+
       # The inherited hook that sets up inherited inner classes.  Remember if you overwrite this method, you should
       # call super!
       #
@@ -49,10 +60,12 @@ module Pancake
       def inherited(base)
         super
         class_defs = inheritable_inner_classes.map do |klass|
+          _before_inner_class_inheritance.each{|blk| blk.call(base.superclass) }
           "class #{klass} < superclass::#{klass}; end\n"
         end
         base.class_eval(class_defs.join)
       end
+
 
     end # InheritableInnerClasses
   end # Hooks

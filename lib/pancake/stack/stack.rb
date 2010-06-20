@@ -23,6 +23,7 @@ module Pancake
 
     #Iterates the list of roots in the stack, and initializes the app found their
     def self.initialize_stack(opts = {})
+      return if @initialized
       raise "Stack root not set" if roots.empty?
       master = opts.delete(:master)
       set_as_master! if master
