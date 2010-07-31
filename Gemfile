@@ -1,4 +1,4 @@
-#source :rubygems
+source :rubygems
 
 gem 'http_router',    '0.2.5'
 gem 'rack',           '~> 1.1'

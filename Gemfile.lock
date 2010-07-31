@@ -1,61 +1,65 @@
 --- 
+sources: 
+- Rubygems: 
+    uri: http://gemcutter.org
+hash: 9373a481885e22686474154c10411b0730a8b5c3
 dependencies: 
   wrapt: 
-    group: 
-    - :default
     version: ">= 0"
-  any_view: 
     group: 
     - :default
-    version: ">= 0.2.3"
-  http_router: 
-    group: 
-    - :default
-    version: = 0.2.5
   rake: 
+    version: ">= 0"
+    require: []
+
     group: 
     - :development
-    version: ">= 0"
-    require: []
-
-  haml: 
-    group: 
-    - :test
-    version: ">= 0"
-  rack-accept-media-types: 
-    group: 
-    - :default
-    version: ">= 0"
-  thor: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: []
-
-  rspec: 
-    group: 
-    - :test
-    version: ">= 0"
-  rack: 
-    group: 
-    - :default
-    version: ~> 1.1
   erubis: 
+    version: ">= 0"
     group: 
     - :test
-    version: ">= 0"
+  rack: 
+    version: ~> 1.1
+    group: 
+    - :default
   json: 
+    version: ">= 0"
     group: 
     - :default
+  haml: 
     version: ">= 0"
-  rack-test: 
+    group: 
+    - :test
+  any_view: 
+    version: ">= 0.2.3"
     group: 
     - :default
+  thor: 
     version: ">= 0"
+    require: []
+
+    group: 
+    - :default
   activesupport: 
+    version: ">= 3.0.0.beta4"
     group: 
     - :default
-    version: ">= 3.0.0.beta4"
+  rack-accept-media-types: 
+    version: ">= 0"
+    group: 
+    - :default
+  rspec: 
+    version: ">= 0"
+    group: 
+    - :test
+  http_router: 
+    version: = 0.2.5
+    group: 
+    - :default
+  rack-test: 
+    version: ">= 0"
+    group: 
+    - :default
 specs: 
 - rake: 
     version: 0.8.7
@@ -72,7 +76,7 @@ specs:
 - haml: 
     version: 3.0.12
 - hashie: 
-    version: 0.2.0
+    version: 0.2.1
 - rack: 
     version: 1.2.1
 - url_mount: 
@@ -91,6 +95,3 @@ specs:
     version: 0.13.6
 - wrapt: 
     version: 0.1.7
-hash: b773b60f736b294348ef7b814f715db4a98f444e
-sources: []
-
